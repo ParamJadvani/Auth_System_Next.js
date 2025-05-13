@@ -66,6 +66,7 @@ export default function useAuth() {
     const forgotPassword = async (data: LoginValues): Promise<void> => {
         try {
             await API.post("/auth/password/forgot", data);
+            pushPath(LOGIN_PAGE);
         } catch {}
     };
 

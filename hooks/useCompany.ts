@@ -1,20 +1,19 @@
+import { HOME_PAGE } from "@/constants/redirect";
+import useNavigation from "@/hooks/useNavigation";
 import API from "@/lib/axios";
 import { CompanyDataValues } from "@/lib/validations/company";
 
 export default function useCompany() {
-    const registerCompany = async (
-        data: CompanyDataValues
-    ): Promise<{ error: boolean; message: string }> => {
+    const pushPath = useNavigation().pushPath;
+    const registerCompany = async (data: CompanyDataValues) => {
         try {
-            const res = await API.post("/company", data, {
+            await API.post("/company", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            return { error: false, message: res.data.success };
-        } catch {
-            return { error: true, message: "Failed to register company." };
-        }
+            pushPath(HOME_PAGE);
+        } catch {}
     };
 
     return { registerCompany };

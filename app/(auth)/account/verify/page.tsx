@@ -1,15 +1,14 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2Icon, MailIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import { LOGIN_PAGE } from '@/constants/redirect';
+import { toast } from 'react-toastify';
 
 export default function VerifyPage() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const { logout, resendEmailVerification, verifyEmail } = useAuth();
@@ -19,9 +18,8 @@ export default function VerifyPage() {
         if (!token) return;
         (async () => {
             await verifyEmail(token);
-            router.replace(HOME_PAGE);
         })();
-    }, [token, router, verifyEmail]);
+    }, [token, verifyEmail]);
 
 
     const onResend = useCallback(async () => {
@@ -31,8 +29,8 @@ export default function VerifyPage() {
 
     const onLogout = useCallback(async () => {
         await logout();
-        router.replace(LOGIN_PAGE);
-    }, [logout, router]);
+        toast.success("Logout Successful");
+    }, [logout]);
 
 
     if (!token) {

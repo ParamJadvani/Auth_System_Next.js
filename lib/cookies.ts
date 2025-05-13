@@ -1,6 +1,7 @@
 // lib/cookies.ts
 "use server";
 
+import { HOME_PAGE } from "@/constants/redirect";
 import { cookies } from "next/headers";
 
 export const setToken = async (key: string, token: string) => {

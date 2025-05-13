@@ -1,19 +1,19 @@
 "use client";
 
-import { useLayoutEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { LOGIN_PAGE } from '@/constants/redirect';
+import useNavigation from '@/hooks/useNavigation';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     const { isLoggedIn } = useAuth();
-    const router = useRouter();
+    const replacePath = useNavigation().replacePath;
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!isLoggedIn) {
-            router.replace(LOGIN_PAGE);
+            replacePath(LOGIN_PAGE);
         }
-    }, [isLoggedIn, router]);
+    }, [isLoggedIn, replacePath]);
 
     if (!isLoggedIn) {
         return null;

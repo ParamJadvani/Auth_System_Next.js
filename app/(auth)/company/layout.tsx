@@ -1,18 +1,19 @@
 "use client";
 
+import { HOME_PAGE } from '@/constants/redirect';
+import useNavigation from '@/hooks/useNavigation';
 import authStore from '@/store/authStore';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function CompanyAccountLayout({ children }: { children: React.ReactNode }) {
     const user = authStore.getState().user;
-    const router = useRouter();
+    const replacePath = useNavigation().replacePath;
 
     useEffect(() => {
         if (user && user.company.length > 0) {
-            router.replace(HOME_PAGE)
+            replacePath(HOME_PAGE)
         }
-    }, [user, router]);
+    }, [user, replacePath]);
 
     return <>{children}</>
 
