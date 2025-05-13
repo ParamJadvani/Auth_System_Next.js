@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { companySchema, CompanyDataValues } from "@/lib/validations/company";
 import useCompany from "@/hooks/useCompany";
-import { toastMessage } from "@/utils/toastMessage";
 import {
     Card, CardHeader, CardTitle, CardDescription,
     CardContent, CardFooter
@@ -22,7 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { LOGIN_REDIRECT } from '@/constants/redirect';
+import { LOGIN_PAGE } from '@/constants/redirect';
 
 export default function CompanyRegisterPage() {
     const [logoPreview, setLogoPreview] = useState<string>();
@@ -55,9 +54,7 @@ export default function CompanyRegisterPage() {
     const router = useRouter();
 
     const onSubmit: SubmitHandler<CompanyDataValues> = async (data) => {
-        console.log("FORM VALUES (logo File):", data.logo);
-        const response = await registerCompany(data);
-        toastMessage({ response });
+        await registerCompany(data);
     };
 
     return (
@@ -209,7 +206,7 @@ export default function CompanyRegisterPage() {
                                 onClick={async () => {
                                     await logoutCompany()
                                     toast.success("Logout Successful");
-                                    router.push(LOGIN_REDIRECT);
+                                    router.push(LOGIN_PAGE);
                                 }}
                                 className="rounded-full flex items-center justify-center font-medium text-sm sm:text-base h-8 sm:h-10 px-4 sm:px-5 w-full sm:w-auto md:w-[158px] mt-2"
                             >

@@ -1,4 +1,4 @@
-import { getToken } from "@/lib/cookies";
+import { onRequest, onResponse, onResponseError } from "@/utils/apiInterception";
 import axios from "axios";
 
 const API = axios.create({
@@ -10,12 +10,7 @@ const API = axios.create({
     },
 });
 
-API.interceptors.request.use(async (config) => {
-    const token = await getToken("auth_token");
-    if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+API.interceptors.request.use(onRequest);
+API.interceptors.response.use(onResponse, onResponseError);
 
 export default API;

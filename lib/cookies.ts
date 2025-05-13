@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 export const setToken = async (key: string, token: string) => {
     (await cookies()).set(key, token, {
-        path: "/",
+        path: HOME_PAGE,
         httpOnly: true,
         secure: true,
         sameSite: "lax",

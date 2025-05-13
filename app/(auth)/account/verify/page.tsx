@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2Icon, MailIcon } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import { LOGIN_REDIRECT } from '@/constants/redirect';
-import { toastMessage } from '@/utils/toastMessage';
+import { LOGIN_PAGE } from '@/constants/redirect';
 
 export default function VerifyPage() {
     const router = useRouter();
@@ -19,21 +18,20 @@ export default function VerifyPage() {
     useEffect(() => {
         if (!token) return;
         (async () => {
-            const response = await verifyEmail(token);
-            toastMessage({ response, router, url: "/" });
+            await verifyEmail(token);
+            router.replace(HOME_PAGE);
         })();
     }, [token, router, verifyEmail]);
 
 
     const onResend = useCallback(async () => {
-        const response = await resendEmailVerification();
-        toastMessage({ response });
+        await resendEmailVerification();
     }, [resendEmailVerification]);
 
 
     const onLogout = useCallback(async () => {
         await logout();
-        router.replace(LOGIN_REDIRECT);
+        router.replace(LOGIN_PAGE);
     }, [logout, router]);
 
 

@@ -3,6 +3,7 @@
 import { useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import { LOGIN_PAGE } from '@/constants/redirect';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     const { isLoggedIn } = useAuth();
@@ -10,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
     useLayoutEffect(() => {
         if (!isLoggedIn) {
-            router.replace("/login");
+            router.replace(LOGIN_PAGE);
         }
     }, [isLoggedIn, router]);
 

@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { LOGIN_REDIRECT } from "@/constants/redirect";
-import { toastMessage } from '@/utils/toastMessage';
+import { LOGIN_PAGE } from "@/constants/redirect";
+import useNavigation from '@/hooks/useNavigation';
 
 export default function ForgotPasswordPage() {
     const form = useForm<LoginValues>({
@@ -29,11 +29,12 @@ export default function ForgotPasswordPage() {
     });
     const { errors, isLoading } = form.formState;
     const { forgotPassword } = useAuth();
+    const pushPath = useNavigation().pushPath;
 
     const onSubmit = async (data: LoginValues) => {
-        const response = await forgotPassword(data);
-        toastMessage({ response });
+        await forgotPassword(data);
         form.reset();
+        pushPath(LOGIN_PAGE);
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -69,7 +70,7 @@ export default function ForgotPasswordPage() {
                             <p className="text-sm text-center text-muted-foreground">
 
                                 <Link
-                                    href={LOGIN_REDIRECT}
+                                    href={LOGIN_PAGE}
                                     className="text-primary hover:underline"
                                 >
                                     Login

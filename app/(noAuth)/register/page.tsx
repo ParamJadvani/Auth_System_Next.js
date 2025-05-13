@@ -17,9 +17,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { LOGIN_REDIRECT } from "@/constants/redirect";
-import { useRouter } from 'next/navigation';
-import { toastMessage } from '@/utils/toastMessage';
+import { LOGIN_PAGE } from "@/constants/redirect";
 
 export default function RegisterPage() {
     const form = useForm<RegisterValues>({
@@ -34,11 +32,9 @@ export default function RegisterPage() {
     });
     const { errors, isLoading } = form.formState;
     const { register: registerAction } = useAuth();
-    const router = useRouter();
 
     const onSubmit = async (data: RegisterValues) => {
-        const response = await registerAction(data);
-        toastMessage({ response, router, url: "/" });
+        await registerAction(data);
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -113,7 +109,7 @@ export default function RegisterPage() {
                             <p className="text-sm text-center text-muted-foreground">
                                 Already have an account?{" "}
                                 <Link
-                                    href={LOGIN_REDIRECT}
+                                    href={LOGIN_PAGE}
                                     className="text-primary hover:underline"
                                 >
                                     Login

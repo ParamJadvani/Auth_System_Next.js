@@ -17,9 +17,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { REGISTER_REDIRECT } from "@/constants/redirect";
-import { useRouter } from "next/navigation";
-import { toastMessage } from '@/utils/toastMessage';
+import { FORGOT_PASSWORD_PAGE, REGISTER_PAGE } from "@/constants/redirect";
+
 
 export default function LoginPage() {
     const form = useForm<LoginValues>({
@@ -31,11 +30,9 @@ export default function LoginPage() {
     });
     const { errors, isLoading } = form.formState;
     const { login: loginAction } = useAuth();
-    const router = useRouter();
 
     const onSubmit = async (data: LoginValues) => {
-        const response = await loginAction(data);
-        toastMessage({ response, router, url: "/" });
+        await loginAction(data);
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -72,7 +69,7 @@ export default function LoginPage() {
                             <div className="w-full text-sm text-end">
 
                                 <Link
-                                    href="/forgot-password"
+                                    href={FORGOT_PASSWORD_PAGE}
                                     className="text-blue-700 font-normal hover:underline"
                                 >
                                     Forgot Password?
@@ -95,7 +92,7 @@ export default function LoginPage() {
                             <div className="w-full text-sm text-center text-muted-foreground">
                                 Don&apos;t have an account?{" "}
                                 <Link
-                                    href={REGISTER_REDIRECT}
+                                    href={REGISTER_PAGE}
                                     className="text-primary font-medium hover:underline"
                                 >
                                     Register

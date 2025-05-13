@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LOGIN_REDIRECT, VERIFY_EMAIL_REDIRECT } from "@/constants/redirect";
+import { COMPANY_REGISTER_PAGE, LOGIN_PAGE, VERIFY_EMAIL_PAGE } from "@/constants/redirect";
 import useAuth from "@/hooks/useAuth";
 import authStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
@@ -16,8 +16,9 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) return router.push(LOGIN_REDIRECT);
-        if (!user.user?.email_verified_at) return router.push(VERIFY_EMAIL_REDIRECT);
+        if (!user) return router.push(LOGIN_PAGE);
+        if (!user.user?.email_verified_at) return router.push(VERIFY_EMAIL_PAGE);
+        if (!user.company.length) return router.replace(COMPANY_REGISTER_PAGE);
     }, [user, router]);
     console.log(user)
     return (
@@ -75,7 +76,7 @@ export default function Home() {
                             onClick={async () => {
                                 await logout();
                                 toast.success("Logout Successful");
-                                router.push(LOGIN_REDIRECT);
+                                router.push(LOGIN_PAGE);
                             }}
                             className="rounded-full flex items-center justify-center hover:border-transparent font-medium text-sm sm:text-base h-8
                              sm:h-10 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"

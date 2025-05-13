@@ -10,7 +10,7 @@ export default function CompanyAccountLayout({ children }: { children: React.Rea
 
     useEffect(() => {
         if (user && user.company.length > 0) {
-            router.replace("/")
+            router.replace(HOME_PAGE)
         }
     }, [user, router]);
 

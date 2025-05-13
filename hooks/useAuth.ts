@@ -1,41 +1,31 @@
+"use client";
+
 import API from "@/lib/axios";
-import axios from "axios";
 import { LoginValues, RegisterValues, ResetPasswordValues } from "@/lib/validations/auth";
-import { getToken, removeToken, setToken } from "@/lib/cookies";
+import { removeToken, setToken } from "@/lib/cookies";
 import authStore from "@/store/authStore";
 import { IUser } from "@/types/user";
-import { handleAPIError } from "@/utils/apiErrorHandling";
+import useNavigation from "@/hooks/useNavigation";
+import { HOME_PAGE, LOGIN_PAGE } from "@/constants/redirect";
 
 export default function useAuth() {
     const setUserInStore = authStore.getState().setUser;
+    const pushPath = useNavigation().pushPath;
 
-    const register = async (
-        data: RegisterValues
-    ): Promise<{ error: boolean; message: string[] }> => {
+    const register = async (data: RegisterValues): Promise<void> => {
         try {
-            const res = await API.post("/auth/register", data);
+            await API.post("/auth/register", data);
             login(data);
-            return { error: false, message: [res.data.success] };
-        } catch (err) {
-            return handleAPIError(err, "Error in Registration.Please try again.") as {
-                error: boolean;
-                message: string[];
-            };
-        }
+        } catch {}
     };
 
-    const login = async (data: LoginValues): Promise<{ error: boolean; message: string }> => {
+    const login = async (data: LoginValues): Promise<void> => {
         try {
             const res = await API.post("/auth/login", data);
             await setToken("auth_token", res.data.token);
             await fetchUser();
-            return { error: false, message: "Login Successful." };
-        } catch (err) {
-            return handleAPIError(err, "Error in Login. Please try again.") as {
-                error: boolean;
-                message: string;
-            };
-        }
+            pushPath(HOME_PAGE);
+        } catch {}
     };
 
     const fetchUser = async (): Promise<IUser | null> => {
@@ -49,71 +39,41 @@ export default function useAuth() {
     };
 
     const logout = async (): Promise<void> => {
-        await API.post("/auth/logout");
-        await removeToken("auth_token");
-        authStore.setState({ user: null });
+        try {
+            await API.post("/auth/logout");
+            await removeToken("auth_token");
+            authStore.setState({ user: null });
+            pushPath(LOGIN_PAGE);
+        } catch {}
     };
 
-    const resendEmailVerification = async (): Promise<{ error: boolean; message: string }> => {
+    const resendEmailVerification = async (): Promise<void> => {
         try {
-            const res = await API.request({
+            await API.request({
                 method: "POST",
                 url: "/auth/email/verify/resend",
             });
-            return { error: false, message: res.data.success };
-        } catch (err) {
-            return handleAPIError(
-                err,
-                "Can't Resend Email Verification Link. Please try again."
-            ) as {
-                error: boolean;
-                message: string;
-            };
-        }
+        } catch {}
     };
 
-    const verifyEmail = async (url: string): Promise<{ error: boolean; message: string }> => {
+    const verifyEmail = async (url: string): Promise<void> => {
         try {
-            const token = await getToken("auth_token");
-            const res = await axios.get(url, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            return { error: false, message: res.data.success };
-        } catch (err) {
-            return handleAPIError(err, "Error in Email Verification. Please try again.") as {
-                error: boolean;
-                message: string;
-            };
-        }
+            await API.get(url);
+            pushPath(HOME_PAGE);
+        } catch {}
     };
 
-    const forgotPassword = async (
-        data: LoginValues
-    ): Promise<{ error: boolean; message: string }> => {
+    const forgotPassword = async (data: LoginValues): Promise<void> => {
         try {
-            const res = await API.post("/auth/password/forgot", data);
-            return { error: false, message: res.data.success };
-        } catch (err) {
-            return handleAPIError(err, "Error in Forgot Password. Please try again.") as {
-                error: boolean;
-                message: string;
-            };
-        }
+            await API.post("/auth/password/forgot", data);
+        } catch {}
     };
 
-    const resetPassword = async (
-        data: ResetPasswordValues,
-        url: string
-    ): Promise<{ error: boolean; message: string }> => {
+    const resetPassword = async (data: ResetPasswordValues, url: string): Promise<void> => {
         try {
-            const res = await axios.post(url, data);
-            return { error: false, message: res.data.success };
-        } catch (err) {
-            return handleAPIError(err, "Error in Reset Password. Please try again.") as {
-                error: boolean;
-                message: string;
-            };
-        }
+            await API.post(url, data);
+            pushPath(LOGIN_PAGE);
+        } catch {}
     };
 
     return {

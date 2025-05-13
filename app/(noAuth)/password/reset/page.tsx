@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { LOGIN_REDIRECT } from "@/constants/redirect";
-import { toastMessage } from '@/utils/toastMessage';
+import { LOGIN_PAGE } from "@/constants/redirect";
 import { resetPasswordSchema, ResetPasswordValues } from '@/lib/validations/auth';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import useNavigation from '@/hooks/useNavigation';
 
 
 export default function PasswordResetPage() {
@@ -32,15 +33,21 @@ export default function PasswordResetPage() {
     const { errors, isLoading } = form.formState;
     const { resetPassword } = useAuth();
     const searchParams = useSearchParams();
-    const token = searchParams.get("token");
+    const url = searchParams.get("token");
+    const pushPath = useNavigation().pushPath;
 
     const onSubmit = async (data: ResetPasswordValues) => {
-        if (token) {
-            const response = await resetPassword(data, token);
-            toastMessage({ response });
+        if (url) {
+            await resetPassword(data, url);
             form.reset();
         }
     };
+
+    useEffect(() => {
+        if (!url) {
+            pushPath(LOGIN_PAGE);
+        }
+    }, [url]);
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <Card className="w-full max-w-md">
@@ -84,7 +91,7 @@ export default function PasswordResetPage() {
                             <p className="text-sm text-center text-muted-foreground">
 
                                 <Link
-                                    href={LOGIN_REDIRECT}
+                                    href={LOGIN_PAGE}
                                     className="text-primary hover:underline"
                                 >
                                     Login
