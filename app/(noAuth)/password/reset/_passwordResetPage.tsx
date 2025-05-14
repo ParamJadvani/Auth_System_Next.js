@@ -63,7 +63,6 @@ export default function PasswordResetComponent() {
                                     label="Password"
                                     type="password"
                                     {...form.register("password")}
-                                    error={errors.password?.message}
                                 />
                             </FormControl>
 

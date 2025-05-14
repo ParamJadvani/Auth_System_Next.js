@@ -52,7 +52,6 @@ export default function RegisterPage() {
                                         id="firstname"
                                         label="First Name"
                                         {...form.register("firstname")}
-                                        error={errors.firstname?.message}
                                     />
                                 </FormControl>
 
@@ -61,7 +60,6 @@ export default function RegisterPage() {
                                         id="lastname"
                                         label="Last Name"
                                         {...form.register("lastname")}
-                                        error={errors.lastname?.message}
                                     />
                                 </FormControl>
                             </div>
@@ -71,7 +69,6 @@ export default function RegisterPage() {
                                     label="Email Address"
                                     type="email"
                                     {...form.register("email")}
-                                    error={errors.email?.message}
                                 />
                             </FormControl>
 
@@ -81,7 +78,6 @@ export default function RegisterPage() {
                                     label="Password"
                                     type="password"
                                     {...form.register("password")}
-                                    error={errors.password?.message}
                                 />
                             </FormControl>
 

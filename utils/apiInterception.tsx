@@ -32,8 +32,8 @@ export const onResponseError = (error: AxiosError): Promise<never> => {
 
     if (status === 404) {
         toast.error("Not Found");
-    } else if (Array.isArray(data?.errors)) {
-        data.errors.forEach(({ message }) => toast.error(message));
+    } else if (Array.isArray(data?.errors) && data.errors.length > 0) {
+        toast.error(data.errors[0].message);
     } else if (data?.error) {
         toast.error(data.error);
     } else if (data?.message) {

@@ -1,13 +1,16 @@
+// app/auth/layout.tsx
 "use client";
 
 import { useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { LOGIN_PAGE } from '@/constants/redirect';
 import useNavigation from '@/hooks/useNavigation';
+import ParentSidebar from '@/components/sidebar/ParentSidebar';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     const { isLoggedIn } = useAuth();
     const replacePath = useNavigation().replacePath;
+
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -19,5 +22,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         return null;
     }
 
-    return <div>{children}</div>;
+    return (
+        <ParentSidebar>
+            {children}
+        </ParentSidebar>
+    );
 }

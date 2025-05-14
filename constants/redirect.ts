@@ -5,6 +5,7 @@ const RESET_PASSWORD_PAGE = "/password/reset";
 const FORGOT_PASSWORD_PAGE = "/forgot-password";
 const VERIFY_EMAIL_PAGE = "/account/verify";
 const COMPANY_REGISTER_PAGE = "/company/register";
+const ADMIN_PAGE = "/admin";
 
 export {
     HOME_PAGE,
@@ -14,4 +15,5 @@ export {
     FORGOT_PASSWORD_PAGE,
     VERIFY_EMAIL_PAGE,
     COMPANY_REGISTER_PAGE,
+    ADMIN_PAGE,
 };

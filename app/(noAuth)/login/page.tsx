@@ -28,7 +28,7 @@ export default function LoginPage() {
             password: "",
         },
     });
-    const { errors, isLoading } = form.formState;
+    const { isLoading } = form.formState;
     const { login: loginAction } = useAuth();
 
     const onSubmit = async (data: LoginValues) => {
@@ -50,7 +50,6 @@ export default function LoginPage() {
                                     label="Email Address"
                                     type="email"
                                     {...form.register("email")}
-                                    error={errors.email?.message}
                                 />
                             </FormControl>
 
@@ -60,7 +59,6 @@ export default function LoginPage() {
                                     label="Password"
                                     type="password"
                                     {...form.register("password")}
-                                    error={errors.password?.message}
                                 />
                             </FormControl>
                         </CardContent>

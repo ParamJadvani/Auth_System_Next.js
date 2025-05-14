@@ -43,7 +43,7 @@ export default function CompanyRegisterPage() {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { isSubmitting },
     } = form;
 
     const { registerCompany } = useCompany();
@@ -72,7 +72,6 @@ export default function CompanyRegisterPage() {
                                     placeholder='company name...'
                                     icon={Building2}
                                     {...register("company_name")}
-                                    error={errors.company_name?.message}
                                 />
                             </FormControl>
 
@@ -84,7 +83,6 @@ export default function CompanyRegisterPage() {
                                     placeholder='email address...'
                                     icon={Mail}
                                     {...register("email")}
-                                    error={errors.email?.message}
                                 />
                             </FormControl>
 
@@ -96,7 +94,6 @@ export default function CompanyRegisterPage() {
                                     type="tel"
                                     icon={Phone}
                                     {...register("contact_no")}
-                                    error={errors.contact_no?.message}
                                 />
                             </FormControl>
 
@@ -108,7 +105,6 @@ export default function CompanyRegisterPage() {
                                         placeholder='city...'
                                         icon={MapPin}
                                         {...register("city")}
-                                        error={errors.city?.message}
                                     />
                                 </FormControl>
                                 <FormControl>
@@ -118,7 +114,6 @@ export default function CompanyRegisterPage() {
                                         placeholder='state...'
                                         icon={Landmark}
                                         {...register("state")}
-                                        error={errors.state?.message}
                                     />
                                 </FormControl>
                             </div>
@@ -131,7 +126,6 @@ export default function CompanyRegisterPage() {
                                         placeholder='country...'
                                         icon={Globe}
                                         {...register("country")}
-                                        error={errors.country?.message}
                                     />
                                 </FormControl>
                                 <FormControl>
@@ -141,7 +135,6 @@ export default function CompanyRegisterPage() {
                                         placeholder='pincode...'
                                         icon={Hash}
                                         {...register("pincode")}
-                                        error={errors.pincode?.message}
                                     />
                                 </FormControl>
                             </div>
@@ -153,7 +146,6 @@ export default function CompanyRegisterPage() {
                                     placeholder='address...'
                                     icon={MapIcon}
                                     {...register("address")}
-                                    error={errors.address?.message}
                                 />
                             </FormControl>
 
@@ -186,9 +178,6 @@ export default function CompanyRegisterPage() {
                                             className="cursor-pointer"
                                         />
                                     </div>
-                                    {errors.logo && (
-                                        <p className="text-red-500 text-sm">{errors.logo.message}</p>
-                                    )}
                                 </div>
                             </FormControl>
                         </CardContent>

@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import "./globals.css";
 import { fetchUserRepository } from "@/repository/user";
 import InitializeUser from "@/components/Initialize/InitializeUser";
-import ParentSidebar from '@/components/sidebar/ParentSidebar';
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -29,26 +28,18 @@ export default async function RootLayout({
     const userData = await fetchUserRepository();
     return (
         <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
                 <InitializeUser user={userData}>
-                    <ParentSidebar>
-                        <div className="bg-white">
-                            <div className="flex justify-between m-2">
-                                Dashboard
-                                <h1 className="border-l pl-3">Profile</h1>
-                            </div>
-                        </div>
-                        {children}
-                        <ToastContainer
-                            position="top-center"
-                            draggable={false}
-                            pauseOnHover={false}
-                            autoClose={2500}
-                            closeButton={false}
-                            hideProgressBar={true}
-                            theme="colored"
-                        />
-                    </ParentSidebar>
+                    {children}
+                    <ToastContainer
+                        position="top-center"
+                        draggable={false}
+                        pauseOnHover={false}
+                        autoClose={2500}
+                        closeButton={false}
+                        hideProgressBar={true}
+                        theme="colored"
+                    />
                 </InitializeUser>
             </body>
         </html>

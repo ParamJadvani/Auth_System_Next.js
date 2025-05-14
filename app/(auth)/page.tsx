@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { toast } from 'react-toastify';
 import useNavigation from '@/hooks/useNavigation';
 
-export default function Home() {
+export default function AuthPage() {
     const user = authStore.getState().user;
     const { logout } = useAuth();
     const { pushPath, replacePath } = useNavigation();
@@ -20,10 +20,9 @@ export default function Home() {
         if (!user.user?.email_verified_at) return pushPath(VERIFY_EMAIL_PAGE);
         if (!user.company.length) return replacePath(COMPANY_REGISTER_PAGE);
     }, [user, pushPath, replacePath]);
-    console.log(user)
     return (
-        <main className="flex items-center justify-center h-full">
-            <Card className="w-full max-w-3xl shadow-xl rounded-2xl p-6 sm:p-8 bg-white dark:bg-zinc-900">
+        <main className="flex items-center justify-center">
+            <Card className="w-full max-w-3xl shadow-xl rounded-2xl p-6 sm:p-8 dark:bg-zinc-900">
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-bold mb-4">
                         Welcome to the Auth System
