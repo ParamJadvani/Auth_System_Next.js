@@ -1,30 +1,30 @@
 "use client";
 
 import API from "@/lib/axios";
-import { LoginValues, RegisterValues, ResetPasswordValues } from "@/lib/validations/auth";
+import { ILoginValues, IRegisterValues, IResetPasswordValues } from "@/types/auth";
 import { removeToken, setToken } from "@/lib/cookies";
 import authStore from "@/store/authStore";
 import { IUser } from "@/types/user";
-import useNavigation from "@/hooks/useNavigation";
 import { HOME_PAGE, LOGIN_PAGE } from "@/constants/redirect";
+import { useRouter } from "next/navigation";
 
 export default function useAuth() {
     const setUserInStore = authStore.getState().setUser;
-    const pushPath = useNavigation().pushPath;
+    const router = useRouter();
 
-    const register = async (data: RegisterValues): Promise<void> => {
+    const register = async (data: IRegisterValues): Promise<void> => {
         try {
             await API.post("/auth/register", data);
             login(data);
         } catch {}
     };
 
-    const login = async (data: LoginValues): Promise<void> => {
+    const login = async (data: ILoginValues): Promise<void> => {
         try {
             const res = await API.post("/auth/login", data);
             await setToken("auth_token", res.data.token);
             await fetchUser();
-            pushPath(HOME_PAGE);
+            router.push(HOME_PAGE);
         } catch {}
     };
 
@@ -43,7 +43,7 @@ export default function useAuth() {
             await API.post("/auth/logout");
             await removeToken("auth_token");
             authStore.setState({ user: null });
-            pushPath(LOGIN_PAGE);
+            router.push(LOGIN_PAGE);
         } catch {}
     };
 
@@ -59,21 +59,21 @@ export default function useAuth() {
     const verifyEmail = async (url: string): Promise<void> => {
         try {
             await API.get(url);
-            pushPath(HOME_PAGE);
+            router.push(HOME_PAGE);
         } catch {}
     };
 
-    const forgotPassword = async (data: LoginValues): Promise<void> => {
+    const forgotPassword = async (data: ILoginValues): Promise<void> => {
         try {
             await API.post("/auth/password/forgot", data);
-            pushPath(LOGIN_PAGE);
+            router.push(LOGIN_PAGE);
         } catch {}
     };
 
-    const resetPassword = async (data: ResetPasswordValues, url: string): Promise<void> => {
+    const resetPassword = async (data: IResetPasswordValues, url: string): Promise<void> => {
         try {
             await API.post(url, data);
-            pushPath(LOGIN_PAGE);
+            router.push(LOGIN_PAGE);
         } catch {}
     };
 

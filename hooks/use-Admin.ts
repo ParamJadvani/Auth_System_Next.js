@@ -1,10 +1,10 @@
-import useNavigation from "@/hooks/useNavigation";
 import API from "@/lib/axios";
-import { CreateAdminValues, UpdateAdminValues } from "@/lib/validations/admin";
+import { IAdminValues, ICreateAdminValues } from "@/types/admin";
+import { useRouter } from "next/navigation";
 
 export default function useAdmin() {
-    const pushPath = useNavigation().pushPath;
-    const createAdmin = async (data: CreateAdminValues): Promise<boolean> => {
+    const router = useRouter();
+    const createAdmin = async (data: ICreateAdminValues): Promise<boolean> => {
         try {
             await API.post("/admins", data);
             return false;
@@ -16,15 +16,14 @@ export default function useAdmin() {
     const getAdmins = async () => {
         try {
             const res = await API.get("/admins");
-            console.log(res.data);
             return res.data;
         } catch {}
     };
 
-    const updateAdmin = async (id: number, data: UpdateAdminValues) => {
+    const updateAdmin = async (id: number, data: IAdminValues) => {
         try {
             await API.post(`/admins/${id}`, data);
-            pushPath(`/admin`);
+            router.push(`/admin`);
         } catch {}
     };
 
@@ -34,5 +33,12 @@ export default function useAdmin() {
         } catch {}
     };
 
-    return { createAdmin, getAdmins, updateAdmin, deleteAdmin };
+    const getAdminDetails = async (id: number) => {
+        try {
+            const res = await API.get(`/admins/${id}`);
+            return res.data;
+        } catch {}
+    };
+
+    return { createAdmin, getAdmins, updateAdmin, deleteAdmin, getAdminDetails };
 }

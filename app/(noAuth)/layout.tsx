@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
-import useNavigation from '@/hooks/useNavigation';
+import useAuth from "@/hooks/use-Auth";
+import useNavigation from '@/hooks/use-Navigation';
 import { HOME_PAGE } from '@/constants/redirect';
 
 export default function NoAuthLayout({ children }: { children: React.ReactNode }) {

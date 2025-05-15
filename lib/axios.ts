@@ -1,3 +1,5 @@
+"use client";
+
 import { onRequest, onResponse, onResponseError } from "@/utils/apiInterception";
 import axios from "axios";
 

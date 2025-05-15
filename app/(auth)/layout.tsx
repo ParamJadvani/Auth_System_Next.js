@@ -2,9 +2,9 @@
 "use client";
 
 import { useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from '@/constants/redirect';
-import useNavigation from '@/hooks/useNavigation';
+import useNavigation from '@/hooks/use-Navigation';
 import ParentSidebar from '@/components/sidebar/ParentSidebar';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

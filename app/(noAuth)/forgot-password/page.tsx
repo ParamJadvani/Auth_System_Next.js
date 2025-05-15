@@ -1,8 +1,6 @@
 "use client";
-import { loginSchema, LoginValues } from "@/lib/validations/auth";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -15,12 +13,12 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";
+import { ILoginValues } from '@/types/auth';
 
 export default function ForgotPasswordPage() {
-    const form = useForm<LoginValues>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<ILoginValues>({
         defaultValues: {
             email: "",
             password: "",
@@ -29,7 +27,7 @@ export default function ForgotPasswordPage() {
     const { errors, isLoading } = form.formState;
     const { forgotPassword } = useAuth();
 
-    const onSubmit = async (data: LoginValues) => {
+    const onSubmit = async (data: ILoginValues) => {
         await forgotPassword(data);
         form.reset();
     };
@@ -65,7 +63,6 @@ export default function ForgotPasswordPage() {
                                 )}
                             </Button>
                             <p className="text-sm text-center text-muted-foreground">
-
                                 <Link
                                     href={LOGIN_PAGE}
                                     className="text-primary hover:underline"

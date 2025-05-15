@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Dialog,
     DialogTrigger,
@@ -37,16 +36,15 @@ import {
     Globe as GlobeIcon,
     Lock as LockIcon,
 } from "lucide-react";
-import { createAdminSchema, CreateAdminValues } from "@/lib/validations/admin";
+import { ICreateAdminValues } from "@/types/admin";
 import { IconInput } from "@/components/ui/iconInput";
 import { Separator } from '@/components/ui/separator';
-import useAdmin from '@/hooks/useAdmin';
+import useAdmin from '@/hooks/use-Admin';
 
 export function AdminFormDialog() {
     const [open, setOpen] = useState(false);
 
-    const form = useForm<CreateAdminValues>({
-        resolver: zodResolver(createAdminSchema),
+    const form = useForm<ICreateAdminValues>({
         defaultValues: {
             firstname: "",
             middlename: "",
@@ -70,7 +68,7 @@ export function AdminFormDialog() {
 
     const createAdminAccount = useAdmin().createAdmin;
 
-    const onSubmit = async (data: CreateAdminValues) => {
+    const onSubmit = async (data: ICreateAdminValues) => {
         setOpen(await createAdminAccount(data));
     };
 
@@ -161,7 +159,7 @@ export function AdminFormDialog() {
                                         </label>
                                         <RadioGroup
                                             value={form.watch("gender")}
-                                            onValueChange={(value) => form.setValue("gender", value as CreateAdminValues["gender"], { shouldValidate: true })}
+                                            onValueChange={(value) => form.setValue("gender", value as ICreateAdminValues["gender"], { shouldValidate: true })}
                                             className="flex space-x-4"
                                         >
                                             <div className="flex items-center space-x-2">
@@ -184,7 +182,7 @@ export function AdminFormDialog() {
                                         </label>
                                         <RadioGroup
                                             value={form.watch("marital_status")}
-                                            onValueChange={(value) => form.setValue("marital_status", value as CreateAdminValues["marital_status"], { shouldValidate: true })}
+                                            onValueChange={(value) => form.setValue("marital_status", value as ICreateAdminValues["marital_status"], { shouldValidate: true })}
                                             className="flex space-x-4"
                                         >
                                             <div className="flex items-center space-x-2">
@@ -244,7 +242,7 @@ export function AdminFormDialog() {
                                         <Select
                                             value={form.watch("blood_group") ?? ""}
                                             onValueChange={(value) =>
-                                                form.setValue("blood_group", value as CreateAdminValues["blood_group"], {
+                                                form.setValue("blood_group", value as ICreateAdminValues["blood_group"], {
                                                     shouldValidate: true,
                                                 })
                                             }
@@ -270,7 +268,7 @@ export function AdminFormDialog() {
                                         <Select
                                             value={form.watch("status")}
                                             onValueChange={(value) =>
-                                                form.setValue("status", value as CreateAdminValues["status"], {
+                                                form.setValue("status", value as ICreateAdminValues["status"], {
                                                     shouldValidate: true,
                                                 })
                                             }

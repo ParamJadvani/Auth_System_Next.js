@@ -15,7 +15,7 @@ import {
     ChevronDown,
     ChevronUp,
 } from 'lucide-react'
-import useAuth from '@/hooks/useAuth'
+import  useAuth  from '@/hooks/use-Auth'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 

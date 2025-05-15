@@ -1,8 +1,8 @@
 "use client";
 
 import { HOME_PAGE, LOGIN_PAGE } from '@/constants/redirect';
-import useAuth from '@/hooks/useAuth';
-import useNavigation from '@/hooks/useNavigation';
+import useAuth from '@/hooks/use-Auth';
+import useNavigation from '@/hooks/use-Navigation';
 import authStore from '@/store/authStore';
 import { useEffect } from 'react';
 

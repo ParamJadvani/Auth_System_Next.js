@@ -1,7 +1,6 @@
 "use client";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -14,29 +13,28 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";
-import { resetPasswordSchema, ResetPasswordValues } from '@/lib/validations/auth';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import useNavigation from '@/hooks/useNavigation';
+import { IResetPasswordValues } from '@/types/auth';
+import { useRouter } from 'next/router';
 
 
 export default function PasswordResetComponent() {
-    const form = useForm<ResetPasswordValues>({
-        resolver: zodResolver(resetPasswordSchema),
+    const form = useForm<IResetPasswordValues>({
         defaultValues: {
             password: "",
             password_confirmation: "",
         },
     });
-    const { errors, isLoading } = form.formState;
+    const { isLoading } = form.formState;
     const { resetPassword } = useAuth();
     const searchParams = useSearchParams();
     const url = searchParams.get("token");
-    const pushPath = useNavigation().pushPath;
+    const router = useRouter();
 
-    const onSubmit = async (data: ResetPasswordValues) => {
+    const onSubmit = async (data: IResetPasswordValues) => {
         if (url) {
             await resetPassword(data, url);
             form.reset();
@@ -45,9 +43,9 @@ export default function PasswordResetComponent() {
 
     useEffect(() => {
         if (!url) {
-            pushPath(LOGIN_PAGE);
+            router.push(LOGIN_PAGE);
         }
-    }, [url, pushPath]);
+    }, [url, router]);
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <Card className="w-full max-w-md">
@@ -72,7 +70,6 @@ export default function PasswordResetComponent() {
                                     label="Confirm Password"
                                     type="password"
                                     {...form.register("password_confirmation")}
-                                    error={errors.password_confirmation?.message}
                                 />
                             </FormControl>
                         </CardContent>

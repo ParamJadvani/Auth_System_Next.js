@@ -1,68 +1,110 @@
-export interface CreateAdmin {
+interface Address {
+    city: string;
+    state: string;
+    country: string;
+    pincode: number;
+    residential: string;
+}
+
+interface BankInfo {
+    bank_name: string;
+    ifsc_code: string;
+    account_no: number;
+    branch_name: string;
+    account_holder_name: string;
+    account_type: string;
+}
+
+interface ContactNo {
+    home: number;
+}
+
+interface EducationInfo {
+    degree: string;
+    college_name: string;
+    end_month_year: string;
+    start_month_year: string;
+}
+
+interface BaseAdminValues {
     firstname: string;
-    lastname: string;
-    middlename: string;
+    lastname: string | null;
+    middlename: string | null;
     email: string;
-    password: string;
     date_of_birth: string;
     gender: "male" | "female" | "other";
     nationality: string;
-    marital_status: "unmarried" | "engage" | "married";
-    blood_group: "a+" | "a-" | "b+" | "b-" | "ab+" | "ab-" | "o+" | "o-";
+    marital_status: "unmarried" | "engaged" | "married";
+    blood_group: "a+" | "a-" | "b+" | "b-" | "ab+" | "ab-" | "o+" | "o-" | "" | null;
     date_of_joining: string;
     probation_end_date: string;
     status: "active" | "inactive";
     pf_contribution: number;
     abry_contribution: number;
     esi_contribution: number;
-    last_working_date: string;
+    last_working_date: string | null;
 }
 
-export interface Admin {
+export interface ICreateAdminValues extends BaseAdminValues {
+    password: string;
+}
+
+export interface IAdminValues extends BaseAdminValues {
     id: number;
+    aadhar_card: string;
+    abry_contribution: number;
+    address: Address;
+    city: string;
+    country: string;
+    pincode: number;
+    residential: string;
+    state: string;
+    bank_info: BankInfo;
+    account_holder_name: string;
+    account_no: number;
+    account_type: string;
+    bank_name: string;
+    branch_name: string;
+    ifsc_code: string;
     company_id: number;
-    firstname: string;
-    middlename: string | null;
-    lastname: string | null;
+    contact_no: ContactNo;
+    home: number;
+    created_at: string;
+    date_of_birth: string;
+    date_of_joining: string;
+    deleted_at: string | null;
+    designation: string;
+    education_info: EducationInfo;
+    college_name: string;
+    degree: string;
+    end_month_year: string;
+    start_month_year: string;
     email: string;
     email_verified_at: string;
-    contact_no: string | null;
-    address: string | null;
-    gender: "male" | "female" | "other";
-    date_of_birth: string;
-    marital_status: "unmarried" | "married" | "engaged";
-    nationality: string | null;
-    aadhar_card: string | null;
-    pan_card: string | null;
-    pf_account_no: string | null;
-    uan_no: string | null;
-    esi_no: string | null;
-    designation: string | null;
     employee_id: string | null;
-    education_info: string | null;
-    bank_info: string | null;
-    blood_group: "a+" | "a-" | "b+" | "b-" | "ab+" | "ab-" | "o+" | "o-" | "" | null;
-    salary_contract_period: string | null;
-    date_of_joining: string;
-    probation_end_date: string;
-    salary_increment_date: string | null;
-    next_increment_date: string | null;
-    last_working_date: string | null;
-    hold_percentage: number | null;
-    hold_paid_at: string | null;
-    abry_contribution: number;
     esi_contribution: number;
-    pf_contribution: number;
+    esi_no: string;
     file_size_limit: number;
-    used_size: number;
-    status: "active" | "inactive";
+    hold_paid_at: string | null;
+    hold_percentage: number | null;
     is_admin: number;
     is_super_admin: number;
-    two_factor_secret: string | null;
+    last_working_date: string;
+    lastname: string;
+    middlename: string;
+    nationality: string;
+    next_increment_date: string | null;
+    pan_card: string;
+    pf_account_no: string;
+    pf_contribution: number;
+    probation_end_date: string;
     remember_me_token: string | null;
-    created_at: string;
+    salary_contract_period: string | null;
+    salary_increment_date: string | null;
+    two_factor_secret: string | null;
+    uan_no: string;
     updated_at: string;
-    deleted_at: string | null;
+    used_size: number;
 }
 
 export interface Meta {
@@ -78,6 +120,6 @@ export interface Meta {
 }
 
 export interface AdminsResponse {
-    data: Admin[];
+    data: IAdminValues[];
     meta: Meta;
 }
