@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { COMPANY_REGISTER_PAGE, LOGIN_PAGE, VERIFY_EMAIL_PAGE } from "@/constants/redirect";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import authStore from "@/store/authStore";
 import Image from "next/image";
 import { useEffect } from "react";
 import { toast } from 'react-toastify';
-import useNavigation from '@/hooks/useNavigation';
+import useNavigation from '@/hooks/use-Navigation';
 
 export default function AuthPage() {
     const user = authStore.getState().user;

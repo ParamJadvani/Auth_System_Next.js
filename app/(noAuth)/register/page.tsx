@@ -1,8 +1,6 @@
 "use client";
-import { registerSchema, RegisterValues } from "@/lib/validations/auth";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -16,12 +14,12 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";
+import { IRegisterValues } from '@/types/auth';
 
 export default function RegisterPage() {
-    const form = useForm<RegisterValues>({
-        resolver: zodResolver(registerSchema),
+    const form = useForm<IRegisterValues>({
         defaultValues: {
             firstname: "",
             lastname: "",
@@ -30,10 +28,10 @@ export default function RegisterPage() {
             password_confirmation: "",
         },
     });
-    const { errors, isLoading } = form.formState;
+    const { isLoading } = form.formState;
     const { register: registerAction } = useAuth();
 
-    const onSubmit = async (data: RegisterValues) => {
+    const onSubmit = async (data: IRegisterValues) => {
         await registerAction(data);
     };
     return (
@@ -87,7 +85,6 @@ export default function RegisterPage() {
                                     label="Confirm Password"
                                     type="password"
                                     {...form.register("password_confirmation")}
-                                    error={errors.password_confirmation?.message}
                                 />
                             </FormControl>
                         </CardContent>

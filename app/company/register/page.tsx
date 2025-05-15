@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Resolver } from "react-hook-form";
-import { companySchema, CompanyDataValues } from "@/lib/validations/company";
-import useCompany from "@/hooks/useCompany";
+import { useForm } from "react-hook-form";
+import useCompany from "@/hooks/use-Company";
 import {
     Card, CardHeader, CardTitle, CardDescription,
     CardContent, CardFooter
@@ -18,15 +16,14 @@ import {
     Globe, Hash, MapIcon, LucideUploadCloud
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import useAuth from '@/hooks/useAuth';
+import  useAuth  from '@/hooks/use-Auth';
 import { toast } from 'react-toastify';
+import { ICompanyDataValues } from '@/types/company';
 
 export default function CompanyRegisterPage() {
     const [logoPreview, setLogoPreview] = useState<string>();
-    const resolver = zodResolver(companySchema) as Resolver<CompanyDataValues>;
 
-    const form = useForm<CompanyDataValues>({
-        resolver,
+    const form = useForm<ICompanyDataValues>({
         defaultValues: {
             company_name: "",
             email: "",
@@ -49,8 +46,7 @@ export default function CompanyRegisterPage() {
     const { registerCompany } = useCompany();
     const { logout: logoutCompany } = useAuth();
 
-
-    const onSubmit = async (data: CompanyDataValues) => {
+    const onSubmit = async (data: ICompanyDataValues) => {
         await registerCompany(data);
     };
 

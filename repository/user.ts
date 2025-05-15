@@ -1,4 +1,3 @@
-"use server";
 import API from "@/lib/axios";
 
 export const fetchUserRepository = async () => {

@@ -5,7 +5,7 @@ import { useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2Icon, MailIcon } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/hooks/use-Auth";
 import { toast } from 'react-toastify';
 
 export default function VerifyPage() {

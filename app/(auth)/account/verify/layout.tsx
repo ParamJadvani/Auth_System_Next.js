@@ -1,6 +1,6 @@
 "use client";
 import { COMPANY_REGISTER_PAGE, HOME_PAGE } from "@/constants/redirect";
-import useNavigation from '@/hooks/useNavigation';
+import useNavigation from '@/hooks/use-Navigation';
 import authStore from "@/store/authStore";
 import { useEffect } from "react";
 

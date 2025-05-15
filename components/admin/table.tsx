@@ -1,6 +1,5 @@
 'use client'
 
-import { Admin } from '@/types/admin'
 import { Button } from '@/components/ui/button'
 import {
     Table,
@@ -13,10 +12,11 @@ import {
 import { Pencil, Trash } from 'lucide-react'
 import { format } from 'date-fns'
 import Link from 'next/link'
-import useAdmin from '@/hooks/useAdmin'
+import useAdmin from '@/hooks/use-Admin'
+import { IAdminValues } from '@/types/admin'
 
 interface AdminTableProps {
-    data: Admin[]
+    data: IAdminValues[]
 }
 
 export function AdminTable({ data }: AdminTableProps) {
