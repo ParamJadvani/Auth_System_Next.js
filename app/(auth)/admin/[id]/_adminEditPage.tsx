@@ -1,5 +1,5 @@
 "use client";
-import { IAdminValues } from '@/types/admin';
+
 import { useForm } from 'react-hook-form';
 import {
     Card,
@@ -9,7 +9,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+    Form,
+    FormControl,
+} from "@/components/ui/form";
 import {
     Select,
     SelectTrigger,
@@ -19,9 +22,6 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from '@/components/ui/separator';
-import useAdmin from '@/hooks/use-Admin';
-import { Input } from "@/components/ui/input";
 import {
     Calendar as CalendarIcon,
     User as UserIcon,
@@ -30,27 +30,64 @@ import {
     Phone as PhoneIcon,
     MapPin as MapPinIcon,
 } from "lucide-react";
+import { IconInput } from "@/components/ui/iconInput";
+import { Separator } from '@/components/ui/separator';
+import useAdmin from '@/hooks/use-Admin';
+import { IAdminValues, IUpdateAdminValues } from '@/types/admin';
+import { useRouter } from 'next/navigation';
 
-const processDate = (dateStr?: string | null): string => {
-    return dateStr ? new Date(dateStr).toISOString().split("T")[0] : '';
+// Preprocess dates to match input types
+const processDate = (dateStr?: string | null, type: 'date' | 'month' = 'date'): string => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return type === 'date'
+        ? date.toISOString().split('T')[0] // YYYY-MM-DD
+        : date.toISOString().slice(0, 7); // YYYY-MM
 };
 
 export function AdminEditForm({ data }: { data: IAdminValues }) {
-    const form = useForm<IAdminValues>({
+    const form = useForm<IUpdateAdminValues>({
         defaultValues: {
             ...data,
-            date_of_birth: processDate(data.date_of_birth),
-            date_of_joining: processDate(data.date_of_joining),
-            last_working_date: processDate(data.last_working_date),
-            probation_end_date: processDate(data.probation_end_date),
-            start_month_year: processDate(data.start_month_year),
-            end_month_year: processDate(data.end_month_year),
+            middlename: data.middlename ?? '',
+            lastname: data.lastname ?? '',
+            designation: data.designation ?? '',
+            aadhar_card: data.aadhar_card ?? '',
+            pan_card: data.pan_card ?? '',
+            pf_account_no: data.pf_account_no ?? '',
+            uan_no: data.uan_no ?? '',
+            esi_no: data.esi_no ?? '',
+            blood_group: data.blood_group ?? '',
+            residential: data.address?.residential ?? '',
+            city: data.address?.city ?? '',
+            state: data.address?.state ?? '',
+            country: data.address?.country ?? '',
+            bank_name: data.bank_info?.bank_name ?? '',
+            account_holder_name: data.bank_info?.account_holder_name ?? '',
+            account_no: data.bank_info?.account_no ?? 0,
+            branch_name: data.bank_info?.branch_name ?? '',
+            ifsc_code: data.bank_info?.ifsc_code ?? '',
+            account_type: data.bank_info?.account_type ?? '',
+            degree: data.education_info?.degree ?? '',
+            college_name: data.education_info?.college_name ?? '',
+            date_of_birth: processDate(data.date_of_birth, 'date'),
+            last_working_date: processDate(data.last_working_date, 'date'),
+            date_of_joining: processDate(data.date_of_joining, 'date'),
+            probation_end_date: processDate(data.probation_end_date, 'date'),
+            start_month_year: processDate(data.education_info?.start_month_year, 'month'),
+            end_month_year: processDate(data.education_info?.end_month_year, 'month'),
+            pincode: data.address?.pincode ?? 0,
+            home: data.contact_no?.home ?? 0,
+            personal: data.contact_no?.personal ?? 0,
         },
     });
-    const updateAdmin = useAdmin().updateAdmin;
+    const router = useRouter();
 
-    const onSubmit = async (data: IAdminValues) => {
-        updateAdmin(data.id, data);
+    const { updateAdmin } = useAdmin();
+
+    const onSubmit = async (formData: IUpdateAdminValues) => {
+
+        await updateAdmin(data.id, formData);
     };
 
     return (
@@ -58,78 +95,66 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     {/* Basic Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">Basic Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Basic Details</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: firstName, middleName, lastName */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="First Name"
+                                    id="firstname"
+                                    placeholder="First Name"
+                                    icon={UserIcon}
+                                    {...form.register("firstname")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Middle Name"
+                                    id="middlename"
+                                    placeholder="Middle Name"
+                                    icon={UserIcon}
+                                    {...form.register("middlename")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Last Name"
+                                    id="lastname"
+                                    placeholder="Last Name"
+                                    icon={UserIcon}
+                                    {...form.register("lastname")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 2: email, status, gender */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Email"
+                                    id="email"
+                                    type="email"
+                                    placeholder="Email"
+                                    icon={MailIcon}
+                                    {...form.register("email")}
+                                />
+                            </FormControl>
                             <div className="space-y-1">
-                                <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
-                                    First Name <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="firstname"
-                                        placeholder="First Name"
-                                        className="pr-10"
-                                        {...form.register('firstname')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="middlename" className="block text-sm font-medium text-gray-700">
-                                    Middle Name
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="middlename"
-                                        placeholder="Middle Name"
-                                        className="pr-10"
-                                        {...form.register('middlename')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
-                                    Last Name
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="lastname"
-                                        placeholder="Last Name"
-                                        className="pr-10"
-                                        {...form.register('lastname')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    Email <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="email"
-                                        id="email"
-                                        placeholder="Email"
-                                        className="pr-10"
-                                        {...form.register('email')}
-                                    />
-                                    <MailIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                                    Status <span className="text-red-500">*</span>
+                                <label htmlFor="status" className="block text-sm font-medium">
+                                    Status <span className="text-destructive">*</span>
                                 </label>
                                 <Select
-                                    value={form.watch('status') ?? ''}
-                                    onValueChange={(value) => form.setValue('status', value as IAdminValues['status'], { shouldValidate: true })}
+                                    value={form.watch("status")}
+                                    onValueChange={(value) =>
+                                        form.setValue("status", value as IAdminValues["status"], {
+                                            shouldValidate: true,
+                                        })
+                                    }
                                 >
-                                    <SelectTrigger id="status" className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-700">
-                                        <SelectValue placeholder="Select status" />
+                                    <SelectTrigger id="status">
+                                        <SelectValue>{form.watch("status")}</SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="active">Active</SelectItem>
@@ -138,554 +163,447 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                 </Select>
                             </div>
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Gender <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium">
+                                    Gender <span className="text-destructive">*</span>
                                 </label>
                                 <RadioGroup
-                                    value={form.watch('gender')}
-                                    onValueChange={(value) => form.setValue('gender', value as IAdminValues['gender'], { shouldValidate: true })}
+                                    value={form.watch("gender")}
+                                    onValueChange={(value) =>
+                                        form.setValue("gender", value as IAdminValues["gender"], {
+                                            shouldValidate: true,
+                                        })
+                                    }
                                     className="flex space-x-4"
                                 >
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="male" id="male" className="text-blue-600" />
-                                        <label htmlFor="male" className="font-normal text-gray-900">Male</label>
+                                        <RadioGroupItem value="male" id="male" />
+                                        <label htmlFor="male" className="font-normal">Male</label>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="female" id="female" className="text-blue-600" />
-                                        <label htmlFor="female" className="font-normal text-gray-900">Female</label>
+                                        <RadioGroupItem value="female" id="female" />
+                                        <label htmlFor="female" className="font-normal">Female</label>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="other" id="other" className="text-blue-600" />
-                                        <label htmlFor="other" className="font-normal text-gray-900">Other</label>
+                                        <RadioGroupItem value="other" id="other" />
+                                        <label htmlFor="other" className="font-normal">Other</label>
                                     </div>
                                 </RadioGroup>
                             </div>
+                        </div>
+                        {/* Row 3: marital_status, DOB, DOJ */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Marital Status <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium">
+                                    Marital Status <span className="text-destructive">*</span>
                                 </label>
                                 <RadioGroup
-                                    value={form.watch('marital_status')}
-                                    onValueChange={(value) => form.setValue('marital_status', value as IAdminValues['marital_status'], { shouldValidate: true })}
+                                    value={form.watch("marital_status")}
+                                    onValueChange={(value) =>
+                                        form.setValue("marital_status", value as IAdminValues["marital_status"], {
+                                            shouldValidate: true,
+                                        })
+                                    }
                                     className="flex space-x-4"
                                 >
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="unmarried" id="unmarried" className="text-blue-600" />
-                                        <label htmlFor="unmarried" className="font-normal text-gray-900">Unmarried</label>
+                                        <RadioGroupItem value="unmarried" id="unmarried" />
+                                        <label htmlFor="unmarried" className="font-normal">Unmarried</label>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="engaged" id="engaged" className="text-blue-600" />
-                                        <label htmlFor="engaged" className="font-normal text-gray-900">Engaged</label>
+                                        <RadioGroupItem value="engaged" id="engaged" />
+                                        <label htmlFor="engaged" className="font-normal">Engaged</label>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="married" id="married" className="text-blue-600" />
-                                        <label htmlFor="married" className="font-normal text-gray-900">Married</label>
+                                        <RadioGroupItem value="married" id="married" />
+                                        <label htmlFor="married" className="font-normal">Married</label>
                                     </div>
                                 </RadioGroup>
                             </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Date of Birth"
+                                    id="date_of_birth"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    {...form.register("date_of_birth")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Date of Joining"
+                                    id="date_of_joining"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    {...form.register("date_of_joining")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 4: last_working_date, probation_end_date, nationality */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Last Working Date"
+                                    id="last_working_date"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    {...form.register("last_working_date")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Probation End Date"
+                                    id="probation_end_date"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    {...form.register("probation_end_date")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Nationality"
+                                    id="nationality"
+                                    placeholder="Nationality"
+                                    icon={GlobeIcon}
+                                    {...form.register("nationality")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 5: blood_group */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div className="space-y-1">
-                                <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700">
-                                    Date of Birth <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="date"
-                                        id="date_of_birth"
-                                        className="pr-10"
-                                        {...form.register('date_of_birth')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="date_of_joining" className="block text-sm font-medium text-gray-700">
-                                    Date of Joining <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="date"
-                                        id="date_of_joining"
-                                        className="pr-10"
-                                        {...form.register('date_of_joining')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="last_working_date" className="block text-sm font-medium text-gray-700">
-                                    Last Working Date
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="date"
-                                        id="last_working_date"
-                                        className="pr-10"
-                                        {...form.register('last_working_date')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="probation_end_date" className="block text-sm font-medium text-gray-700">
-                                    Probation End Date <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="date"
-                                        id="probation_end_date"
-                                        className="pr-10"
-                                        {...form.register('probation_end_date')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="nationality" className="block text-sm font-medium text-gray-700">
-                                    Nationality <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="nationality"
-                                        placeholder="Nationality"
-                                        className="pr-10"
-                                        {...form.register('nationality')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="blood_group" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="blood_group" className="block text-sm font-medium">
                                     Blood Group
                                 </label>
                                 <Select
-                                    value={form.watch('blood_group') ?? ''}
-                                    onValueChange={(value) => form.setValue('blood_group', value as IAdminValues['blood_group'], { shouldValidate: true })}
+                                    value={form.watch("blood_group") ?? ""}
+                                    onValueChange={(value) =>
+                                        form.setValue("blood_group", value as IAdminValues["blood_group"], {
+                                            shouldValidate: true,
+                                        })
+                                    }
                                 >
-                                    <SelectTrigger id="blood_group" className="border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-700">
+                                    <SelectTrigger id="blood_group">
                                         <SelectValue placeholder="Select blood group" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {['a+', 'a-', 'b+', 'b-', 'ab+', 'ab-', 'o+', 'o-'].map(bg => (
-                                            <SelectItem key={bg} value={bg}>{bg.toUpperCase()}</SelectItem>
+                                        {["a+", "a-", "b+", "b-", "ab+", "ab-", "o+", "o-"].map((bg) => (
+                                            <SelectItem key={bg} value={bg}>
+                                                {bg.toUpperCase()}
+                                            </SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Switch
-                                    id="pf_contribution"
-                                    checked={form.watch('pf_contribution') === 1}
-                                    onCheckedChange={(checked) => form.setValue('pf_contribution', checked ? 1 : 0, { shouldValidate: true })}
-                                    className="data-[state=checked]:bg-blue-600"
-                                />
-                                <label htmlFor="pf_contribution" className="text-sm font-medium text-gray-700">
-                                    PF Contribution <span className="text-red-500">*</span>
-                                </label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Switch
-                                    id="abry_contribution"
-                                    checked={form.watch('abry_contribution') === 1}
-                                    onCheckedChange={(checked) => form.setValue('abry_contribution', checked ? 1 : 0, { shouldValidate: true })}
-                                    className="data-[state=checked]:bg-blue-600"
-                                />
-                                <label htmlFor="abry_contribution" className="text-sm font-medium text-gray-700">
-                                    ABRY Contribution <span className="text-red-500">*</span>
-                                </label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Switch
-                                    id="esi_contribution"
-                                    checked={form.watch('esi_contribution') === 1}
-                                    onCheckedChange={(checked) => form.setValue('esi_contribution', checked ? 1 : 0, { shouldValidate: true })}
-                                    className="data-[state=checked]:bg-blue-600"
-                                />
-                                <label htmlFor="esi_contribution" className="text-sm font-medium text-gray-700">
-                                    ESI Contribution <span className="text-red-500">*</span>
-                                </label>
-                            </div>
+                        </div>
+                        {/* Row 6: contributions */}
+                        <div className="flex flex-wrap gap-4">
+                            {(["pf_contribution", "abry_contribution", "esi_contribution"] as const).map((name) => (
+                                <div
+                                    key={name}
+                                    className="flex items-center w-full sm:w-[48%] lg:w-[32%] bg-muted/30 rounded-md px-4 py-2"
+                                >
+                                    <label className="capitalize mr-auto text-sm font-medium">
+                                        {name.split("_")[0].toUpperCase()} Contribution*
+                                    </label>
+                                    <Switch
+                                        checked={form.watch(name) === 1}
+                                        onCheckedChange={(checked) =>
+                                            form.setValue(name, checked ? 1 : 0, { shouldValidate: true })
+                                        }
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     {/* Contact Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">Contact Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Contact Details</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: Residential Address, city, state */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="space-y-1">
-                                <label htmlFor="residential" className="block text-sm font-medium text-gray-700">
-                                    Residential Address <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="residential"
-                                        placeholder="Residential Address"
-                                        className="pr-10"
-                                        {...form.register('residential')}
-                                    />
-                                    <MapPinIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                                    City <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="city"
-                                        placeholder="City"
-                                        className="pr-10"
-                                        {...form.register('city')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                                    State <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="state"
-                                        placeholder="State"
-                                        className="pr-10"
-                                        {...form.register('state')}
-                                    />
-                                    <MapPinIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                                    Country <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="country"
-                                        placeholder="Country"
-                                        className="pr-10"
-                                        {...form.register('country')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="pincode" className="block text-sm font-medium text-gray-700">
-                                    Pincode <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="pincode"
-                                        placeholder="Pincode"
-                                        className="pr-10"
-                                        {...form.register('pincode')}
-                                    />
-                                    <MapPinIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="contact_no" className="block text-sm font-medium text-gray-700">
-                                    Contact Number <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="contact_no"
-                                        placeholder="Contact Number"
-                                        className="pr-10"
-                                        {...form.register('contact_no')}
-                                    />
-                                    <PhoneIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="home" className="block text-sm font-medium text-gray-700">
-                                    Home Contact No <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="home"
-                                        placeholder="Home Contact Number"
-                                        className="pr-10"
-                                        {...form.register('home')}
-                                    />
-                                    <PhoneIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Residential Address"
+                                    id="residential"
+                                    placeholder="Residential Address"
+                                    icon={MapPinIcon}
+                                    {...form.register("residential")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="City"
+                                    id="city"
+                                    placeholder="City"
+                                    icon={GlobeIcon}
+                                    {...form.register("city")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="State"
+                                    id="state"
+                                    placeholder="State"
+                                    icon={MapPinIcon}
+                                    {...form.register("state")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 2: country, pincode, contact_no */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Country"
+                                    id="country"
+                                    placeholder="Country"
+                                    icon={GlobeIcon}
+                                    {...form.register("country")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Pincode"
+                                    id="pincode"
+                                    placeholder="Pincode"
+                                    type="number"
+                                    icon={MapPinIcon}
+                                    {...form.register("pincode")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Contact Number"
+                                    id="personal"
+                                    placeholder="Contact Number"
+                                    type="number"
+                                    icon={PhoneIcon}
+                                    {...form.register("personal")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 3: home */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Home Contact No"
+                                    id="home"
+                                    placeholder="Home Contact Number"
+                                    type="number"
+                                    icon={PhoneIcon}
+                                    {...form.register("home")}
+                                />
+                            </FormControl>
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     {/* Bank Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">Bank Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Bank Details</CardTitle>
+
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: bank_name, account_holder_name, account_no */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="space-y-1">
-                                <label htmlFor="bank_name" className="block text-sm font-medium text-gray-700">
-                                    Bank Name <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="bank_name"
-                                        placeholder="Bank Name"
-                                        className="pr-10"
-                                        {...form.register('bank_name')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="account_holder_name" className="block text-sm font-medium text-gray-700">
-                                    Account Holder Name <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="account_holder_name"
-                                        placeholder="Account Holder Name"
-                                        className="pr-10"
-                                        {...form.register('account_holder_name')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="account_no" className="block text-sm font-medium text-gray-700">
-                                    Account Number <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="account_no"
-                                        placeholder="Account Number"
-                                        className="pr-10"
-                                        {...form.register('account_no')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="branch_name" className="block text-sm font-medium text-gray-700">
-                                    Branch Name <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="branch_name"
-                                        placeholder="Branch Name"
-                                        className="pr-10"
-                                        {...form.register('branch_name')}
-                                    />
-                                    <MapPinIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="ifsc_code" className="block text-sm font-medium text-gray-700">
-                                    IFSC Code <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="ifsc_code"
-                                        placeholder="IFSC Code"
-                                        className="pr-10"
-                                        {...form.register('ifsc_code')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="account_type" className="block text-sm font-medium text-gray-700">
-                                    Account Type <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="account_type"
-                                        placeholder="Account Type"
-                                        className="pr-10"
-                                        {...form.register('account_type')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Bank Name"
+                                    id="bank_name"
+                                    placeholder="Bank Name"
+                                    icon={GlobeIcon}
+                                    {...form.register("bank_name")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Account Holder Name"
+                                    id="account_holder_name"
+                                    placeholder="Account Holder Name"
+                                    icon={UserIcon}
+                                    {...form.register("account_holder_name")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Account Number"
+                                    id="account_no"
+                                    placeholder="Account Number"
+                                    type="number"
+                                    icon={GlobeIcon}
+                                    {...form.register("account_no")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 2: branch_name, ifsc_code, account_type */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Branch Name"
+                                    id="branch_name"
+                                    placeholder="Branch Name"
+                                    icon={MapPinIcon}
+                                    {...form.register("branch_name")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="IFSC Code"
+                                    id="ifsc_code"
+                                    placeholder="IFSC Code"
+                                    icon={GlobeIcon}
+                                    {...form.register("ifsc_code")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Account Type"
+                                    id="account_type"
+                                    placeholder="Account Type"
+                                    icon={GlobeIcon}
+                                    {...form.register("account_type")}
+                                />
+                            </FormControl>
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     {/* Document Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">Document Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Document Details</CardTitle>
+
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: aadhar_card, pan_card */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="space-y-1">
-                                <label htmlFor="aadhar_card" className="block text-sm font-medium text-gray-700">
-                                    Aadhar Card Number
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="aadhar_card"
-                                        placeholder="Aadhar Card Number"
-                                        className="pr-10"
-                                        {...form.register('aadhar_card')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="pan_card" className="block text-sm font-medium text-gray-700">
-                                    PAN Card Number
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="pan_card"
-                                        placeholder="PAN Card Number"
-                                        className="pr-10"
-                                        {...form.register('pan_card')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Aadhar Card Number"
+                                    id="aadhar_card"
+                                    placeholder="Aadhar Card Number"
+                                    icon={GlobeIcon}
+                                    {...form.register("aadhar_card")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="PAN Card Number"
+                                    id="pan_card"
+                                    placeholder="PAN Card Number"
+                                    icon={UserIcon}
+                                    {...form.register("pan_card")}
+                                />
+                            </FormControl>
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     {/* Education Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">Education Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Education Details</CardTitle>
+
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: degree, college_name, designation */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="space-y-1">
-                                <label htmlFor="degree" className="block text-sm font-medium text-gray-700">
-                                    Degree <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="degree"
-                                        placeholder="Degree"
-                                        className="pr-10"
-                                        {...form.register('degree')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="college_name" className="block text-sm font-medium text-gray-700">
-                                    College/University <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="college_name"
-                                        placeholder="College/University"
-                                        className="pr-10"
-                                        {...form.register('college_name')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="designation" className="block text-sm font-medium text-gray-700">
-                                    Designation
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="designation"
-                                        placeholder="Designation"
-                                        className="pr-10"
-                                        {...form.register('designation')}
-                                    />
-                                    <UserIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="start_month_year" className="block text-sm font-medium text-gray-700">
-                                    Start Month/Year <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="month"
-                                        id="start_month_year"
-                                        className="pr-10"
-                                        {...form.register('start_month_year')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="end_month_year" className="block text-sm font-medium text-gray-700">
-                                    End Month/Year <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        type="month"
-                                        id="end_month_year"
-                                        className="pr-10"
-                                        {...form.register('end_month_year')}
-                                    />
-                                    <CalendarIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Degree"
+                                    id="degree"
+                                    placeholder="Degree"
+                                    icon={GlobeIcon}
+                                    {...form.register("degree")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="College/University"
+                                    id="college_name"
+                                    placeholder="College/University"
+                                    icon={GlobeIcon}
+                                    {...form.register("college_name")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Designation"
+                                    id="designation"
+                                    placeholder="Designation"
+                                    icon={UserIcon}
+                                    {...form.register("designation")}
+                                />
+                            </FormControl>
+                        </div>
+                        {/* Row 2: start_month_year, end_month_year */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Start Month/Year"
+                                    id="start_month_year"
+                                    type="month"
+                                    icon={CalendarIcon}
+                                    {...form.register("start_month_year")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="End Month/Year"
+                                    id="end_month_year"
+                                    type="month"
+                                    icon={CalendarIcon}
+                                    {...form.register("end_month_year")}
+                                />
+                            </FormControl>
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     {/* PF A/C, UAN & ESI Details */}
-                    <CardHeader className="my-5">
-                        <CardTitle className="text-xl text-gray-800">PF A/C, UAN & ESI Details</CardTitle>
+                    <CardHeader>
+                        <CardTitle className="text-xl">PF A/C, UAN & ESI Details</CardTitle>
+
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        {/* Row 1: pf_account_no, uan_no, esi_no */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="space-y-1">
-                                <label htmlFor="pf_account_no" className="block text-sm font-medium text-gray-700">
-                                    PF Account Number
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="pf_account_no"
-                                        placeholder="PF Account Number"
-                                        className="pr-10"
-                                        {...form.register('pf_account_no')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="uan_no" className="block text-sm font-medium text-gray-700">
-                                    UAN Number
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="uan_no"
-                                        placeholder="UAN Number"
-                                        className="pr-10"
-                                        {...form.register('uan_no')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label htmlFor="esi_no" className="block text-sm font-medium text-gray-700">
-                                    ESI Number
-                                </label>
-                                <div className="relative">
-                                    <Input
-                                        id="esi_no"
-                                        placeholder="ESI Number"
-                                        className="pr-10"
-                                        {...form.register('esi_no')}
-                                    />
-                                    <GlobeIcon className="absolute inset-y-0 right-0 flex items-center pr-3 h-5 w-5 text-gray-400" />
-                                </div>
-                            </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="PF Account Number"
+                                    id="pf_account_no"
+                                    placeholder="PF Account Number"
+                                    icon={GlobeIcon}
+                                    {...form.register("pf_account_no")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="UAN Number"
+                                    id="uan_no"
+                                    placeholder="UAN Number"
+                                    icon={GlobeIcon}
+                                    {...form.register("uan_no")}
+                                />
+                            </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="ESI Number"
+                                    id="esi_no"
+                                    placeholder="ESI Number"
+                                    icon={GlobeIcon}
+                                    {...form.register("esi_no")}
+                                />
+                            </FormControl>
                         </div>
                     </CardContent>
-                    <Separator className="bg-gray-200 my-4 max-w-[80vw] mx-auto" />
+                    <Separator className="bg-gray-300/50 my-4 !w-[80vw] max-w-[80vw] mx-auto" />
 
                     <CardFooter className="flex justify-end space-x-2 mt-4">
-                        <Button
-                            type="submit"
-                            disabled={form.formState.isSubmitting}
-                            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md"
-                        >
+                        <Button type="button" variant="outline" onClick={() => router.back()}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? "Saving..." : "Save"}
                         </Button>
                     </CardFooter>

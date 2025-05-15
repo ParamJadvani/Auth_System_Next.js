@@ -17,6 +17,7 @@ interface BankInfo {
 
 interface ContactNo {
     home: number;
+    personal: number;
 }
 
 interface EducationInfo {
@@ -45,59 +46,26 @@ interface BaseAdminValues {
     last_working_date: string | null;
 }
 
-export interface ICreateAdminValues extends BaseAdminValues {
-    password: string;
-}
-
 export interface IAdminValues extends BaseAdminValues {
     id: number;
     aadhar_card: string;
     abry_contribution: number;
-    address: Address;
-    city: string;
-    country: string;
-    pincode: number;
-    residential: string;
-    state: string;
-    bank_info: BankInfo;
-    account_holder_name: string;
-    account_no: number;
-    account_type: string;
-    bank_name: string;
-    branch_name: string;
-    ifsc_code: string;
-    company_id: number;
-    contact_no: ContactNo;
-    home: number;
     created_at: string;
     date_of_birth: string;
     date_of_joining: string;
     deleted_at: string | null;
     designation: string;
-    education_info: EducationInfo;
-    college_name: string;
-    degree: string;
-    end_month_year: string;
-    start_month_year: string;
-    email: string;
     email_verified_at: string;
     employee_id: string | null;
-    esi_contribution: number;
     esi_no: string;
     file_size_limit: number;
     hold_paid_at: string | null;
     hold_percentage: number | null;
     is_admin: number;
     is_super_admin: number;
-    last_working_date: string;
-    lastname: string;
-    middlename: string;
-    nationality: string;
     next_increment_date: string | null;
     pan_card: string;
     pf_account_no: string;
-    pf_contribution: number;
-    probation_end_date: string;
     remember_me_token: string | null;
     salary_contract_period: string | null;
     salary_increment_date: string | null;
@@ -105,6 +73,23 @@ export interface IAdminValues extends BaseAdminValues {
     uan_no: string;
     updated_at: string;
     used_size: number;
+    address: Address;
+    bank_info: BankInfo;
+    contact_no: ContactNo;
+    education_info: EducationInfo;
+}
+
+export interface ICreateAdminValues extends BaseAdminValues {
+    password: string;
+}
+
+export interface IUpdateAdminValues
+    extends Omit<IAdminValues, "address" | "bank_info" | "contact_no" | "education_info">,
+        Address,
+        BankInfo,
+        ContactNo,
+        EducationInfo {
+    id: number;
 }
 
 export interface Meta {

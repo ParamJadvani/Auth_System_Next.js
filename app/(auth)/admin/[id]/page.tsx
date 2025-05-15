@@ -1,3 +1,4 @@
+// app/(auth)/admin/[id]/page.tsx
 "use server";
 
 import { AdminEditForm } from '@/app/(auth)/admin/[id]/_adminEditPage';
