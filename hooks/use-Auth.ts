@@ -1,7 +1,12 @@
 "use client";
 
 import API from "@/lib/axios";
-import { ILoginValues, IRegisterValues, IResetPasswordValues } from "@/types/auth";
+import {
+    IChangePasswordValues,
+    ILoginValues,
+    IRegisterValues,
+    IResetPasswordValues,
+} from "@/types/auth";
 import { removeToken, setToken } from "@/lib/cookies";
 import authStore from "@/store/authStore";
 import { IUser } from "@/types/user";
@@ -19,9 +24,9 @@ export default function useAuth() {
         } catch {}
     };
 
-    const login = async (data: ILoginValues): Promise<void> => {
+    const login = async (data?: ILoginValues, url: string = "/auth/login"): Promise<void> => {
         try {
-            const res = await API.post("/auth/login", data);
+            const res = await API.post(url, data);
             await setToken("auth_token", res.data.token);
             await fetchUser();
             router.push(HOME_PAGE);
@@ -77,6 +82,15 @@ export default function useAuth() {
         } catch {}
     };
 
+    const changePassword = async (data: IChangePasswordValues): Promise<boolean> => {
+        try {
+            await API.post("/auth/change-password", data);
+            return false;
+        } catch {
+            return true;
+        }
+    };
+
     return {
         register,
         login,
@@ -85,6 +99,7 @@ export default function useAuth() {
         verifyEmail,
         forgotPassword,
         resetPassword,
+        changePassword,
         resendEmailVerification,
         isLoggedIn: Boolean(authStore.getState().user),
     };

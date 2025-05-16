@@ -1,4 +1,4 @@
-// // app/(auth)/admin/_adminFormDialog.tsx
+// // app/(auth)/admin/_employeeFormDialog.tsx
 
 "use client";
 
@@ -35,29 +35,27 @@ import {
     Calendar as CalendarIcon,
     User as UserIcon,
     Mail as MailIcon,
-    Globe as GlobeIcon,
     Lock as LockIcon,
 } from "lucide-react";
-import { ICreateAdminValues } from "@/types/admin";
 import { IconInput } from "@/components/ui/iconInput";
 import { Separator } from '@/components/ui/separator';
+import { ICreateEmployeeValues } from '@/types/employees';
 
-export function AdminFormDialog({
+export function EmployeeFormDialog({
     onSubmit,
     open,
     setOpen,
 }: {
-    onSubmit: (data: ICreateAdminValues) => void;
+    onSubmit: (data: ICreateEmployeeValues) => void;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
 
-    const form = useForm<ICreateAdminValues>({
+    const form = useForm<ICreateEmployeeValues>({
         defaultValues: {
             firstname: "",
             middlename: "",
             lastname: "",
-            nationality: "",
             email: "",
             password: "",
             gender: "male",
@@ -68,9 +66,14 @@ export function AdminFormDialog({
             probation_end_date: "",
             status: "active",
             last_working_date: "",
-            pf_contribution: 0,
             abry_contribution: 0,
             esi_contribution: 0,
+            pf_contribution: 0,
+            employee_id: "",
+            next_increment_date: "",
+            salary_contract_period: "",
+            salary_increment_date: "",
+            nationality: "",
         },
     });
 
@@ -79,12 +82,12 @@ export function AdminFormDialog({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="default" className='bg-blue-950 hover:bg-blue-950/90 text-white'>
-                    Create New Admin</Button>
+                    Create New Employee</Button>
             </DialogTrigger>
             <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[80vw] xl:max-w-[1200px] max-h-[90vh] overflow-y-auto px-2 sm:px-6 py-4">
                 <Card className="border-0 shadow-none">
                     <CardHeader>
-                        <DialogTitle className='text-2xl'>Create New Admin</DialogTitle>
+                        <DialogTitle className='text-2xl'>Create New Employee</DialogTitle>
                         <Separator className='bg-gray-500/50 ' />
                     </CardHeader>
                     <Form {...form}>
@@ -121,15 +124,15 @@ export function AdminFormDialog({
                                     </FormControl>
                                 </div>
 
-                                {/* Row 2: nationality, email, password */}
+                                {/* Row 2: employee_id, email, password */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <FormControl className='space-y-1'>
                                         <IconInput
                                             label='Nationality'
-                                            id="nationality"
+                                            id="employee_id"
                                             placeholder="Nationality"
-                                            icon={GlobeIcon}
-                                            {...form.register("nationality")}
+                                            icon={UserIcon}
+                                            {...form.register("employee_id")}
                                         />
                                     </FormControl>
                                     <FormControl className='space-y-1'>
@@ -162,7 +165,7 @@ export function AdminFormDialog({
                                         </label>
                                         <RadioGroup
                                             value={form.watch("gender")}
-                                            onValueChange={(value) => form.setValue("gender", value as ICreateAdminValues["gender"], { shouldValidate: true })}
+                                            onValueChange={(value) => form.setValue("gender", value as ICreateEmployeeValues["gender"], { shouldValidate: true })}
                                             className="flex space-x-4"
                                         >
                                             <div className="flex items-center space-x-2">
@@ -185,7 +188,7 @@ export function AdminFormDialog({
                                         </label>
                                         <RadioGroup
                                             value={form.watch("marital_status")}
-                                            onValueChange={(value) => form.setValue("marital_status", value as ICreateAdminValues["marital_status"], { shouldValidate: true })}
+                                            onValueChange={(value) => form.setValue("marital_status", value as ICreateEmployeeValues["marital_status"], { shouldValidate: true })}
                                             className="flex space-x-4"
                                         >
                                             <div className="flex items-center space-x-2">
@@ -234,6 +237,53 @@ export function AdminFormDialog({
                                         />
                                     </FormControl>
                                 </div>
+                                {/* Row 5: salary_increment_date, salary_contract_period, next_increment_date */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <FormControl className='space-y-1'>
+                                        <IconInput
+                                            label='Salary Increment Date'
+                                            id="salary_increment_date"
+                                            type="date"
+                                            icon={CalendarIcon}
+                                            {...form.register("salary_increment_date")}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1">
+                                        <label htmlFor="salary_contract_period" className="block text-sm font-medium">
+                                            Salary Contract Period
+                                        </label>
+                                        <Select
+                                            value={form.watch("salary_contract_period") || ""}
+                                            onValueChange={(value) => {
+                                                const selectedValue = value === "" ? "" : value;
+                                                form.setValue("salary_contract_period", selectedValue, { shouldValidate: true });
+                                            }}
+                                        >
+                                            <SelectTrigger id="salary_contract_period">
+                                                <SelectValue placeholder="Select Contract Period" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="none">Select Contract Period</SelectItem>
+                                                {["3", "6", "8", "12", "15", "18", "24"].map((period) => (
+                                                    <SelectItem key={period} value={period}>
+                                                        {period} Month
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <FormControl className='space-y-1'>
+                                        <IconInput
+                                            label='Next Increment Date'
+                                            id="next_increment_date"
+                                            type="date"
+                                            icon={CalendarIcon}
+                                            {...form.register("next_increment_date")}
+                                            disabled
+                                        />
+                                    </FormControl>
+                                </div>
 
                                 {/* Row 5: blood_group, status, last_working_date */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -245,7 +295,7 @@ export function AdminFormDialog({
                                         <Select
                                             value={form.watch("blood_group") ?? ""}
                                             onValueChange={(value) =>
-                                                form.setValue("blood_group", value as ICreateAdminValues["blood_group"], {
+                                                form.setValue("blood_group", value as ICreateEmployeeValues["blood_group"], {
                                                     shouldValidate: true,
                                                 })
                                             }
@@ -271,7 +321,7 @@ export function AdminFormDialog({
                                         <Select
                                             value={form.watch("status")}
                                             onValueChange={(value) =>
-                                                form.setValue("status", value as ICreateAdminValues["status"], {
+                                                form.setValue("status", value as ICreateEmployeeValues["status"], {
                                                     shouldValidate: true,
                                                 })
                                             }

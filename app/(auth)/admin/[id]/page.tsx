@@ -1,22 +1,29 @@
-// app/(auth)/admin/[id]/page.tsx
-"use server";
+"use client"
+
 
 import { AdminEditForm } from '@/app/(auth)/admin/[id]/_adminEditPage';
-import API from '@/lib/axios';
+import useAdmin from '@/hooks/use-Admin';
 import { IAdminValues } from '@/types/admin';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const AdminEditData = async (id: string): Promise<IAdminValues> => {
-    try {
-        const res = await API.get(`/admins/${id}`);
-        return res.data;
-    } catch { }
-    return {} as IAdminValues;
-};
 
-export default async function AdminEditPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const data = await AdminEditData(id);
+export default function AdminEditPage() {
+    const params = useParams();
+    const [data, setData] = useState<IAdminValues | null>(null);
+    const { getAdminDetails } = useAdmin();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getAdminDetails(Number(params.id));
+                setData(data);
+            } catch { }
+        };
+        fetchData();
+    }, [])
+
     return <div>
-        <AdminEditForm data={data} />
+        {data && <AdminEditForm data={data} />}
     </div>;
 }

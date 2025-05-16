@@ -2,24 +2,25 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { COMPANY_REGISTER_PAGE, LOGIN_PAGE, VERIFY_EMAIL_PAGE } from "@/constants/redirect";
+import { COMPANY_REGISTER_PAGE, CREDENTIALS_PAGE, LOGIN_PAGE, VERIFY_EMAIL_PAGE } from "@/constants/redirect";
 import useAuth from "@/hooks/use-Auth";
 import authStore from "@/store/authStore";
 import Image from "next/image";
 import { useEffect } from "react";
 import { toast } from 'react-toastify';
-import useNavigation from '@/hooks/use-Navigation';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
     const user = authStore.getState().user;
     const { logout } = useAuth();
-    const { pushPath, replacePath } = useNavigation();
+    const router = useRouter();
 
     useEffect(() => {
-        if (!user) return pushPath(LOGIN_PAGE);
-        if (!user.user?.email_verified_at) return pushPath(VERIFY_EMAIL_PAGE);
-        if (!user.company.length) return replacePath(COMPANY_REGISTER_PAGE);
-    }, [user, pushPath, replacePath]);
+        if (!user) return router.push(LOGIN_PAGE);
+        if (!user.user?.email_verified_at) return router.replace(VERIFY_EMAIL_PAGE);
+        if (!user.user.is_admin) return router.replace(CREDENTIALS_PAGE);
+        if (!user.company.length) return router.replace(COMPANY_REGISTER_PAGE);
+    }, [user, router]);
     return (
         <main className="flex items-center justify-center">
             <Card className="w-full max-w-3xl shadow-xl rounded-2xl p-6 sm:p-8 dark:bg-zinc-900">

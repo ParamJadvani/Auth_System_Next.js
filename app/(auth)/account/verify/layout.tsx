@@ -1,19 +1,19 @@
 "use client";
 import { COMPANY_REGISTER_PAGE, HOME_PAGE } from "@/constants/redirect";
-import useNavigation from '@/hooks/use-Navigation';
 import authStore from "@/store/authStore";
+import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
 
 export default function VerifyLayout({ children }: { children: React.ReactNode }) {
-    const pushPath = useNavigation().pushPath;
+    const router = useRouter();
 
     useEffect(() => {
         if (authStore.getState().user?.user?.email_verified_at && authStore.getState().user?.company.length === 0) {
-            pushPath(COMPANY_REGISTER_PAGE);
+            router.push(COMPANY_REGISTER_PAGE);
         }
         if (authStore.getState().user?.user?.email_verified_at) {
-            pushPath(HOME_PAGE);
+            router.push(HOME_PAGE);
         }
-    }, [pushPath]);
+    }, [router]);
     return <div>{children}</div>;
 }

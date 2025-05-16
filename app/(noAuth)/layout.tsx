@@ -2,18 +2,18 @@
 
 import { useEffect } from "react";
 import useAuth from "@/hooks/use-Auth";
-import useNavigation from '@/hooks/use-Navigation';
 import { HOME_PAGE } from '@/constants/redirect';
+import { useRouter } from 'next/navigation';
 
 export default function NoAuthLayout({ children }: { children: React.ReactNode }) {
     const { isLoggedIn } = useAuth();
-    const replacePath = useNavigation().replacePath
+    const router = useRouter()
 
     useEffect(() => {
         if (isLoggedIn) {
-            replacePath(HOME_PAGE);
+            router.replace(HOME_PAGE);
         }
-    }, [isLoggedIn, replacePath]);
+    }, [isLoggedIn, router]);
 
     if (isLoggedIn) {
         return null;

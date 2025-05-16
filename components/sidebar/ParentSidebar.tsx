@@ -15,7 +15,7 @@ export default function ParentSidebar({ children }: { children: React.ReactNode 
         <SidebarProvider>
             <AppSidebar />
             <div className='flex flex-1 flex-col bg-gray-200/50'>
-                <header>
+                <header className='sticky top-0 z-10 flex items-center justify-between bg-white  border-b border-gray-400/50'>
                     <Navbar title={title} />
                 </header>
                 <main className='p-4'>

@@ -9,22 +9,25 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Pencil, Trash, ChevronUp, ChevronDown } from 'lucide-react';
+import { Pencil, Trash, ChevronUp, ChevronDown, UserCircle2Icon } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { AdminsResponse } from '@/types/admin';
+import { EmployeesResponse } from '@/types/employees';
+import { toast } from 'react-toastify';
 
-interface AdminTableProps {
-    data: AdminsResponse | null;
+interface EmployeeTableProps {
+    data: EmployeesResponse | null;
     loading: boolean;
     onClick: (key: string, order: 'asc' | 'desc') => void;
     sort_column: string;
     sort_order: 'asc' | 'desc';
     deleteAdmin: (id: number) => void;
+    copyLoginLink: (id: number) => void;
 }
 
-export function AdminTable({ data, loading, onClick, sort_column, sort_order, deleteAdmin }: AdminTableProps) {
+export function EmployeeTable({ data, loading, onClick, sort_column, sort_order, deleteAdmin, copyLoginLink }: EmployeeTableProps) {
     const columns = [
+        { label: 'Employee ID', key: 'employee_id' },
         { label: 'Name', key: 'firstname' },
         { label: 'Email', key: 'email' },
         { label: 'Salary', key: null },
@@ -91,6 +94,7 @@ export function AdminTable({ data, loading, onClick, sort_column, sort_order, de
                                 className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
                                     } hover:bg-gray-100 transition-colors`}
                             >
+                                <TableCell className="px-4 py-2">{admin.employee_id}</TableCell>
                                 <TableCell className="px-4 py-2">
                                     {admin.firstname} {admin.lastname ?? ''}
                                 </TableCell>
@@ -112,7 +116,19 @@ export function AdminTable({ data, loading, onClick, sort_column, sort_order, de
                                 </TableCell>
                                 <TableCell className="px-4 py-2 text-center">
                                     <div className="flex justify-start items-center gap-3">
-                                        <Link href={`/admin/${admin.id}`} className="text-blue-600 hover:text-blue-800">
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="hover:bg-red-50"
+                                            aria-label="Copy Login Link"
+                                            onClick={() => {
+                                                copyLoginLink(admin.id)
+                                                toast.success("Copied to clipboard");
+                                            }}
+                                        >
+                                            <UserCircle2Icon className="w-4 h-4" />
+                                        </Button>
+                                        <Link href={`/employees/${admin.id}`} className="text-blue-600 hover:text-blue-800">
                                             <Pencil className="w-4 h-4" />
                                         </Link>
                                         <Button

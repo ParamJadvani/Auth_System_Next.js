@@ -32,9 +32,9 @@ import {
 } from "lucide-react";
 import { IconInput } from "@/components/ui/iconInput";
 import { Separator } from '@/components/ui/separator';
-import useAdmin from '@/hooks/use-Admin';
-import { IAdminValues, IUpdateAdminValues } from '@/types/admin';
 import { useRouter } from 'next/navigation';
+import { IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
+import useEmployees from '@/hooks/use-employees';
 
 // Preprocess dates to match input types
 const processDate = (dateStr?: string | null, type: 'date' | 'month' = 'date'): string => {
@@ -45,8 +45,9 @@ const processDate = (dateStr?: string | null, type: 'date' | 'month' = 'date'): 
         : date.toISOString().slice(0, 7); // YYYY-MM
 };
 
-export function AdminEditForm({ data }: { data: IAdminValues }) {
-    const form = useForm<IUpdateAdminValues>({
+
+export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
+    const form = useForm<IUpdateEmployeeValues>({
         defaultValues: {
             ...data,
             middlename: data.middlename ?? '',
@@ -79,15 +80,29 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
             pincode: data.address?.pincode ?? 0,
             home: data.contact_no?.home ?? 0,
             personal: data.contact_no?.personal ?? 0,
+            employee_id: data.employee_id ?? '',
+            salary_contract_period: processDate(data.salary_contract_period, 'month'),
+            salary_increment_date: processDate(data.salary_increment_date, 'date'),
+            next_increment_date: processDate(data.next_increment_date, 'date'),
+            status: data.status ?? '',
+            nationality: data.nationality ?? '',
+            email: data.email ?? '',
+            gender: data.gender ?? '',
+            marital_status: data.marital_status ?? '',
+            esi_contribution: data.esi_contribution ?? 0,
+            pf_contribution: data.pf_contribution ?? 0,
+            abry_contribution: data.abry_contribution ?? 0,
+            hold_percentage: data.hold_percentage ?? 0,
         },
     });
     const router = useRouter();
 
-    const { updateAdmin } = useAdmin();
+    const { updateEmployee } = useEmployees();
 
-    const onSubmit = async (formData: IUpdateAdminValues) => {
 
-        await updateAdmin(data.id, formData);
+
+    const onSubmit = async (formData: IUpdateEmployeeValues) => {
+        await updateEmployee(data.id, formData);
     };
 
     return (
@@ -98,15 +113,16 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                     <CardHeader>
                         <CardTitle className="text-xl">Basic Details</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-8">
-                        {/* Row 1: firstName, middleName, lastName */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CardContent className="space-y-8 mt-4">
+                        {/* Row 1: firstName, middleName, lastName, employee_id */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="First Name"
                                     id="firstname"
                                     placeholder="First Name"
                                     icon={UserIcon}
+                                    className='w-full'
                                     {...form.register("firstname")}
                                 />
                             </FormControl>
@@ -116,6 +132,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="middlename"
                                     placeholder="Middle Name"
                                     icon={UserIcon}
+                                    className='w-full'
                                     {...form.register("middlename")}
                                 />
                             </FormControl>
@@ -125,12 +142,22 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="lastname"
                                     placeholder="Last Name"
                                     icon={UserIcon}
+                                    className='w-full'
                                     {...form.register("lastname")}
                                 />
                             </FormControl>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Employee ID"
+                                    id="employee_id"
+                                    placeholder="Employee ID"
+                                    className='w-full'
+                                    {...form.register("employee_id")}
+                                />
+                            </FormControl>
                         </div>
-                        {/* Row 2: email, status, gender */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {/* Row 2: email, status, gender, marital_status */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Email"
@@ -138,6 +165,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     type="email"
                                     placeholder="Email"
                                     icon={MailIcon}
+                                    className='w-full'
                                     {...form.register("email")}
                                 />
                             </FormControl>
@@ -148,12 +176,12 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                 <Select
                                     value={form.watch("status")}
                                     onValueChange={(value) =>
-                                        form.setValue("status", value as IAdminValues["status"], {
+                                        form.setValue("status", value as IEmployeeValues["status"], {
                                             shouldValidate: true,
                                         })
                                     }
                                 >
-                                    <SelectTrigger id="status">
+                                    <SelectTrigger id="status" className='w-full'>
                                         <SelectValue>{form.watch("status")}</SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
@@ -169,11 +197,11 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                 <RadioGroup
                                     value={form.watch("gender")}
                                     onValueChange={(value) =>
-                                        form.setValue("gender", value as IAdminValues["gender"], {
+                                        form.setValue("gender", value as IEmployeeValues["gender"], {
                                             shouldValidate: true,
                                         })
                                     }
-                                    className="flex space-x-4"
+                                    className="flex space-x-4 w-full"
                                 >
                                     <div className="flex items-center space-x-2">
                                         <RadioGroupItem value="male" id="male" />
@@ -189,9 +217,6 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     </div>
                                 </RadioGroup>
                             </div>
-                        </div>
-                        {/* Row 3: marital_status, DOB, DOJ */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div className="space-y-1">
                                 <label className="block text-sm font-medium">
                                     Marital Status <span className="text-destructive">*</span>
@@ -199,11 +224,11 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                 <RadioGroup
                                     value={form.watch("marital_status")}
                                     onValueChange={(value) =>
-                                        form.setValue("marital_status", value as IAdminValues["marital_status"], {
+                                        form.setValue("marital_status", value as IEmployeeValues["marital_status"], {
                                             shouldValidate: true,
                                         })
                                     }
-                                    className="flex space-x-4"
+                                    className="flex space-x-4 w-full"
                                 >
                                     <div className="flex items-center space-x-2">
                                         <RadioGroupItem value="unmarried" id="unmarried" />
@@ -219,12 +244,17 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     </div>
                                 </RadioGroup>
                             </div>
+                        </div>
+
+                        {/* Row 3: DOB, DOJ ,last_working_date, probation_end_date,*/}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Date of Birth"
                                     id="date_of_birth"
                                     type="date"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("date_of_birth")}
                                 />
                             </FormControl>
@@ -234,18 +264,17 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="date_of_joining"
                                     type="date"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("date_of_joining")}
                                 />
                             </FormControl>
-                        </div>
-                        {/* Row 4: last_working_date, probation_end_date, nationality */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Last Working Date"
                                     id="last_working_date"
                                     type="date"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("last_working_date")}
                                 />
                             </FormControl>
@@ -255,7 +284,57 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="probation_end_date"
                                     type="date"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("probation_end_date")}
+                                />
+                            </FormControl>
+                        </div>
+
+                        {/* Row 4:  Salary_increment_date, salary_contract_period, Next_increment_date, Nationality */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="Salary Increment Date"
+                                    id="salary_increment_date"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    className='w-full'
+                                    {...form.register("salary_increment_date")}
+                                />
+                            </FormControl>
+                            <div className="space-y-1">
+                                <label htmlFor="salary_contract_period" className="block text-sm font-medium">
+                                    Salary Contract Period
+                                </label>
+                                <Select
+                                    value={form.watch("salary_contract_period") || ""}
+                                    onValueChange={(value) => {
+                                        const selectedValue = value === "" ? "" : value;
+                                        form.setValue("salary_contract_period", selectedValue, { shouldValidate: true });
+                                    }}
+                                >
+                                    <SelectTrigger id="salary_contract_period" className='w-full'>
+                                        <SelectValue placeholder="Select Contract Period" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">Select Contract Period</SelectItem>
+                                        {["3", "6", "8", "12", "15", "18", "24"].map((period) => (
+                                            <SelectItem key={period} value={period}>
+                                                {period} Month
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <FormControl className='space-y-1'>
+                                <IconInput
+                                    label='Next Increment Date'
+                                    id="next_increment_date"
+                                    type="date"
+                                    icon={CalendarIcon}
+                                    className='w-full'
+                                    {...form.register("next_increment_date")}
+                                    disabled
                                 />
                             </FormControl>
                             <FormControl className="space-y-1">
@@ -264,12 +343,13 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="nationality"
                                     placeholder="Nationality"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("nationality")}
                                 />
                             </FormControl>
                         </div>
-                        {/* Row 5: blood_group */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {/* Row 5: blood_group, designation , hold percentage */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="space-y-1">
                                 <label htmlFor="blood_group" className="block text-sm font-medium">
                                     Blood Group
@@ -277,12 +357,12 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                 <Select
                                     value={form.watch("blood_group") ?? ""}
                                     onValueChange={(value) =>
-                                        form.setValue("blood_group", value as IAdminValues["blood_group"], {
+                                        form.setValue("blood_group", value as IEmployeeValues["blood_group"], {
                                             shouldValidate: true,
                                         })
                                     }
                                 >
-                                    <SelectTrigger id="blood_group">
+                                    <SelectTrigger id="blood_group" className='w-full'>
                                         <SelectValue placeholder="Select blood group" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -294,13 +374,49 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <FormControl className="space-y-1">
+                                <IconInput
+                                    label="designation"
+                                    id="designation"
+                                    type="text"
+                                    placeholder="designation"
+                                    className='w-full'
+                                    {...form.register("designation")}
+                                />
+                            </FormControl>
+                            <div className="space-y-1">
+                                <label htmlFor="hold_percentage" className="block text-sm font-medium">
+                                    Hold Percentage
+                                </label>
+                                <Select
+                                    value={form.watch("hold_percentage")?.toString() ?? "none"}
+                                    onValueChange={(value) => {
+                                        const num = value === "none" ? 0 : parseInt(value, 10);
+                                        form.setValue("hold_percentage", num, {
+                                            shouldValidate: true,
+                                        });
+                                    }}
+                                >
+                                    <SelectTrigger id="hold_percentage" className='w-full'>
+                                        <SelectValue placeholder="Select Hold Percentage" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">Select Hold Percentage</SelectItem>
+                                        {["30", "50", "100"].map((pct) => (
+                                            <SelectItem key={pct} value={pct}>
+                                                {pct} %
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                         {/* Row 6: contributions */}
-                        <div className="flex flex-wrap gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             {(["pf_contribution", "abry_contribution", "esi_contribution"] as const).map((name) => (
                                 <div
                                     key={name}
-                                    className="flex items-center w-full sm:w-[48%] lg:w-[32%] bg-muted/30 rounded-md px-4 py-2"
+                                    className="flex items-center w-full bg-muted/30 rounded-md px-4 py-2"
                                 >
                                     <label className="capitalize mr-auto text-sm font-medium">
                                         {name.split("_")[0].toUpperCase()} Contribution*
@@ -321,15 +437,16 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                     <CardHeader>
                         <CardTitle className="text-xl">Contact Details</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-8">
-                        {/* Row 1: Residential Address, city, state */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CardContent className="space-y-8 mt-4">
+                        {/* Row 1: Residential Address, city, state, country, */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Residential Address"
                                     id="residential"
                                     placeholder="Residential Address"
                                     icon={MapPinIcon}
+                                    className='w-full'
                                     {...form.register("residential")}
                                 />
                             </FormControl>
@@ -339,6 +456,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="city"
                                     placeholder="City"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("city")}
                                 />
                             </FormControl>
@@ -348,21 +466,24 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="state"
                                     placeholder="State"
                                     icon={MapPinIcon}
+                                    className='w-full'
                                     {...form.register("state")}
                                 />
                             </FormControl>
-                        </div>
-                        {/* Row 2: country, pincode, contact_no */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Country"
                                     id="country"
                                     placeholder="Country"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("country")}
                                 />
                             </FormControl>
+                        </div>
+                        {/* Row 2:  pincode, contact_no ,home*/}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Pincode"
@@ -370,6 +491,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     placeholder="Pincode"
                                     type="number"
                                     icon={MapPinIcon}
+                                    className='w-full'
                                     {...form.register("pincode")}
                                 />
                             </FormControl>
@@ -380,12 +502,10 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     placeholder="Contact Number"
                                     type="number"
                                     icon={PhoneIcon}
+                                    className='w-full'
                                     {...form.register("personal")}
                                 />
                             </FormControl>
-                        </div>
-                        {/* Row 3: home */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Home Contact No"
@@ -393,6 +513,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     placeholder="Home Contact Number"
                                     type="number"
                                     icon={PhoneIcon}
+                                    className='w-full'
                                     {...form.register("home")}
                                 />
                             </FormControl>
@@ -405,15 +526,16 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                         <CardTitle className="text-xl">Bank Details</CardTitle>
 
                     </CardHeader>
-                    <CardContent className="space-y-8">
-                        {/* Row 1: bank_name, account_holder_name, account_no */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CardContent className="space-y-8 mt-4">
+                        {/* Row 1: bank_name, account_holder_name, account_no ,branch_name */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Bank Name"
                                     id="bank_name"
                                     placeholder="Bank Name"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("bank_name")}
                                 />
                             </FormControl>
@@ -423,6 +545,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="account_holder_name"
                                     placeholder="Account Holder Name"
                                     icon={UserIcon}
+                                    className='w-full'
                                     {...form.register("account_holder_name")}
                                 />
                             </FormControl>
@@ -433,27 +556,30 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     placeholder="Account Number"
                                     type="number"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("account_no")}
                                 />
                             </FormControl>
-                        </div>
-                        {/* Row 2: branch_name, ifsc_code, account_type */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Branch Name"
                                     id="branch_name"
                                     placeholder="Branch Name"
                                     icon={MapPinIcon}
+                                    className='w-full'
                                     {...form.register("branch_name")}
                                 />
                             </FormControl>
+                        </div>
+                        {/* Row 2: ifsc_code, account_type */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="IFSC Code"
                                     id="ifsc_code"
                                     placeholder="IFSC Code"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("ifsc_code")}
                                 />
                             </FormControl>
@@ -492,9 +618,9 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                         <CardTitle className="text-xl">Document Details</CardTitle>
 
                     </CardHeader>
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 mt-4">
                         {/* Row 1: aadhar_card, pan_card */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Aadhar Card Number"
@@ -522,15 +648,16 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                         <CardTitle className="text-xl">Education Details</CardTitle>
 
                     </CardHeader>
-                    <CardContent className="space-y-8">
-                        {/* Row 1: degree, college_name, designation */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <CardContent className="space-y-8 mt-4">
+                        {/* Row 1: degree, college_name, designation, start_month_year */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Degree"
                                     id="degree"
                                     placeholder="Degree"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("degree")}
                                 />
                             </FormControl>
@@ -540,6 +667,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="college_name"
                                     placeholder="College/University"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("college_name")}
                                 />
                             </FormControl>
@@ -549,27 +677,30 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="designation"
                                     placeholder="Designation"
                                     icon={UserIcon}
+                                    className='w-full'
                                     {...form.register("designation")}
                                 />
                             </FormControl>
-                        </div>
-                        {/* Row 2: start_month_year, end_month_year */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="Start Month/Year"
                                     id="start_month_year"
                                     type="month"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("start_month_year")}
                                 />
                             </FormControl>
+                        </div>
+                        {/* Row 2:  end_month_year */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="End Month/Year"
                                     id="end_month_year"
                                     type="month"
                                     icon={CalendarIcon}
+                                    className='w-full'
                                     {...form.register("end_month_year")}
                                 />
                             </FormControl>
@@ -580,17 +711,17 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                     {/* PF A/C, UAN & ESI Details */}
                     <CardHeader>
                         <CardTitle className="text-xl">PF A/C, UAN & ESI Details</CardTitle>
-
                     </CardHeader>
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 mt-4">
                         {/* Row 1: pf_account_no, uan_no, esi_no */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl className="space-y-1">
                                 <IconInput
                                     label="PF Account Number"
                                     id="pf_account_no"
                                     placeholder="PF Account Number"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("pf_account_no")}
                                 />
                             </FormControl>
@@ -600,6 +731,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="uan_no"
                                     placeholder="UAN Number"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("uan_no")}
                                 />
                             </FormControl>
@@ -609,6 +741,7 @@ export function AdminEditForm({ data }: { data: IAdminValues }) {
                                     id="esi_no"
                                     placeholder="ESI Number"
                                     icon={GlobeIcon}
+                                    className='w-full'
                                     {...form.register("esi_no")}
                                 />
                             </FormControl>

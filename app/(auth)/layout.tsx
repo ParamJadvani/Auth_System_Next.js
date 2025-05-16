@@ -4,19 +4,19 @@
 import { useEffect } from "react";
 import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from '@/constants/redirect';
-import useNavigation from '@/hooks/use-Navigation';
 import ParentSidebar from '@/components/sidebar/ParentSidebar';
+import { useRouter } from 'next/navigation';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     const { isLoggedIn } = useAuth();
-    const replacePath = useNavigation().replacePath;
+    const router = useRouter();
 
 
     useEffect(() => {
         if (!isLoggedIn) {
-            replacePath(LOGIN_PAGE);
+            router.replace(LOGIN_PAGE);
         }
-    }, [isLoggedIn, replacePath]);
+    }, [isLoggedIn, router]);
 
     if (!isLoggedIn) {
         return null;
