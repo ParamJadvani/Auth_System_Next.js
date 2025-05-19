@@ -108,7 +108,7 @@ export default function AdminPage() {
     return (
         <div className="space-y-4 p-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
                     <IconInput
                         label="Date of Joining"
                         id="date_of_joining"
@@ -206,33 +206,35 @@ export default function AdminPage() {
                         </Button>
                     </div>
                 )}
+                {
+                    data && data.meta.total > 10 && <div className="flex items-center space-x-6 mr-5">
+                        {data && (
+                            <span className="text-sm font-medium">
+                                {`${(currentPage - 1) * data.meta.per_page + 1} - ${Math.min(
+                                    currentPage * data.meta.per_page,
+                                    data.meta.total
+                                )} of ${data.meta.total} records`}
+                            </span>
+                        )}
 
-                <div className="flex items-center space-x-6 mr-5">
-                    {data && (
-                        <span className="text-sm font-medium">
-                            {`${(currentPage - 1) * data.meta.per_page + 1} - ${Math.min(
-                                currentPage * data.meta.per_page,
-                                data.meta.total
-                            )} of ${data.meta.total} records`}
-                        </span>
-                    )}
+                        <Select
+                            value={filters.limit.toString()}
+                            onValueChange={(value) => handleFilterChange('limit', value)}
+                        >
+                            <SelectTrigger id="limit">
+                                <SelectValue placeholder="Per page" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {['5', '10', '50', '100'].map((pageLimit) => (
+                                    <SelectItem key={pageLimit} value={pageLimit}>
+                                        {pageLimit}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                }
 
-                    <Select
-                        value={filters.limit.toString()}
-                        onValueChange={(value) => handleFilterChange('limit', value)}
-                    >
-                        <SelectTrigger id="limit">
-                            <SelectValue placeholder="Per page" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {['5', '10', '50', '100'].map((pageLimit) => (
-                                <SelectItem key={pageLimit} value={pageLimit}>
-                                    {pageLimit}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
             </div>
         </div>
     );

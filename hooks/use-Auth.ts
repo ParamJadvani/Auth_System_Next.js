@@ -9,7 +9,6 @@ import {
 } from "@/types/auth";
 import { removeToken, setToken } from "@/lib/cookies";
 import authStore from "@/store/authStore";
-import { IUser } from "@/types/user";
 import { HOME_PAGE, LOGIN_PAGE } from "@/constants/redirect";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +19,7 @@ export default function useAuth() {
     const register = async (data: IRegisterValues): Promise<void> => {
         try {
             await API.post("/auth/register", data);
-            login(data);
+            await login(data);
         } catch {}
     };
 
@@ -33,14 +32,11 @@ export default function useAuth() {
         } catch {}
     };
 
-    const fetchUser = async (): Promise<IUser | null> => {
+    const fetchUser = async (): Promise<void> => {
         try {
             const res = await API.get("/auth/user");
             setUserInStore(res.data);
-            return res.data.user;
-        } catch {
-            return null;
-        }
+        } catch {}
     };
 
     const logout = async (): Promise<void> => {
@@ -54,10 +50,7 @@ export default function useAuth() {
 
     const resendEmailVerification = async (): Promise<void> => {
         try {
-            await API.request({
-                method: "POST",
-                url: "/auth/email/verify/resend",
-            });
+            await API.post("/auth/email/verify/resend");
         } catch {}
     };
 

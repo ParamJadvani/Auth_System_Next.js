@@ -6,14 +6,15 @@ import { useEffect } from "react";
 
 export default function VerifyLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
+    const user = authStore((state) => state.user);
 
     useEffect(() => {
-        if (authStore.getState().user?.user?.email_verified_at && authStore.getState().user?.company.length === 0) {
+        if (user?.user && user.user?.email_verified_at && user.company.length === 0) {
             router.push(COMPANY_REGISTER_PAGE);
         }
-        if (authStore.getState().user?.user?.email_verified_at) {
+        if (user?.user && user.user?.email_verified_at) {
             router.push(HOME_PAGE);
         }
-    }, [router]);
+    }, [router, user]);
     return <div>{children}</div>;
 }

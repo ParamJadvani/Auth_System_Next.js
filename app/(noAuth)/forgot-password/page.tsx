@@ -1,21 +1,14 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/iconInput";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+import { CardContent } from "@/components/ui/card";
 import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";
 import { ILoginValues } from '@/types/auth';
+import { AuthForm } from '@/components/auth/AuthForm';
+import { AuthFooter } from '@/components/auth/AuthFooter';
 
 export default function ForgotPasswordPage() {
     const form = useForm<ILoginValues>({
@@ -24,7 +17,6 @@ export default function ForgotPasswordPage() {
             password: "",
         },
     });
-    const { errors, isLoading } = form.formState;
     const { forgotPassword } = useAuth();
 
     const onSubmit = async (data: ILoginValues) => {
@@ -33,10 +25,10 @@ export default function ForgotPasswordPage() {
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Forgot Password</CardTitle>
-                </CardHeader>
+            <AuthForm
+                title="Forgot Password"
+                description=""
+            >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
@@ -47,33 +39,19 @@ export default function ForgotPasswordPage() {
                                     type="email"
                                     placeholder='Enter your email'
                                     {...form.register("email")}
-                                    error={errors.email?.message}
                                 />
                             </FormControl>
                         </CardContent>
-                        <CardFooter className="flex flex-col space-y-4 mt-5">
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Processing...
-                                    </>
-                                ) : (
-                                    "Forgot Password"
-                                )}
-                            </Button>
-                            <p className="text-sm text-center text-muted-foreground">
-                                <Link
-                                    href={LOGIN_PAGE}
-                                    className="text-primary hover:underline"
-                                >
-                                    Login
-                                </Link>
-                            </p>
-                        </CardFooter>
+                        <AuthFooter
+                            isLoading={form.formState.isLoading}
+                            buttonText="Send Email"
+                            redirectText="Back to Login"
+                            redirectLinkText="Login"
+                            redirectHref={LOGIN_PAGE}
+                        />
                     </form>
                 </Form>
-            </Card>
+            </AuthForm>
         </div>
     );
 }

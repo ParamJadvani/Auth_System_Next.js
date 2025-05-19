@@ -1,24 +1,16 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/iconInput";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+import { CardContent, } from "@/components/ui/card";
 import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { IResetPasswordValues } from '@/types/auth';
-import { useRouter } from 'next/router';
+import { AuthForm } from '@/components/auth/AuthForm';
+import { AuthFooter } from '@/components/auth/AuthFooter';
 
 
 export default function PasswordResetComponent() {
@@ -28,7 +20,6 @@ export default function PasswordResetComponent() {
             password_confirmation: "",
         },
     });
-    const { isLoading } = form.formState;
     const { resetPassword } = useAuth();
     const searchParams = useSearchParams();
     const url = searchParams.get("token");
@@ -48,10 +39,10 @@ export default function PasswordResetComponent() {
     }, [url, router]);
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Forgot Password</CardTitle>
-                </CardHeader>
+            <AuthForm
+                title="Forgot Password"
+                description=""
+            >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
@@ -63,7 +54,6 @@ export default function PasswordResetComponent() {
                                     {...form.register("password")}
                                 />
                             </FormControl>
-
                             <FormControl>
                                 <IconInput
                                     id="password_confirmation"
@@ -73,30 +63,16 @@ export default function PasswordResetComponent() {
                                 />
                             </FormControl>
                         </CardContent>
-                        <CardFooter className="flex flex-col space-y-4 mt-5">
-                            <Button type="submit" className="w-full" disabled={isLoading}>
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Processing...
-                                    </>
-                                ) : (
-                                    "Forgot Password"
-                                )}
-                            </Button>
-                            <p className="text-sm text-center text-muted-foreground">
-
-                                <Link
-                                    href={LOGIN_PAGE}
-                                    className="text-primary hover:underline"
-                                >
-                                    Login
-                                </Link>
-                            </p>
-                        </CardFooter>
+                        <AuthFooter
+                            isLoading={form.formState.isLoading}
+                            buttonText="Send Email"
+                            redirectText="Back to Login"
+                            redirectLinkText="Login"
+                            redirectHref={LOGIN_PAGE}
+                        />
                     </form>
                 </Form>
-            </Card>
+            </AuthForm>
         </div>
     );
 }

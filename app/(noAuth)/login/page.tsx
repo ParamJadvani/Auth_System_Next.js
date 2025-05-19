@@ -1,10 +1,11 @@
 "use client";
 import LoginForm from '@/app/(noAuth)/login/_LoginForm';
+import Loading from '@/app/loading';
 import { Suspense } from 'react';
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-100">Loading...</div>}>
+        <Suspense fallback={<Loading />}>
             <LoginForm />
         </Suspense>
     )

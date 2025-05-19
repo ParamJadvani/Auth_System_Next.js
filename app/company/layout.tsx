@@ -1,25 +1,27 @@
 "use client";
 
-import { HOME_PAGE, LOGIN_PAGE } from '@/constants/redirect';
-import useAuth from '@/hooks/use-Auth';
-import { useRouter } from 'next/navigation';
-import authStore from '@/store/authStore';
-import { useEffect } from 'react';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { HOME_PAGE, LOGIN_PAGE } from "@/constants/redirect";
+import useAuth from "@/hooks/use-Auth";
+import authStore from "@/store/authStore";
 
 export default function CompanyAccountLayout({ children }: { children: React.ReactNode }) {
-    const user = authStore.getState().user;
     const router = useRouter();
     const { isLoggedIn } = useAuth();
+    const user = authStore((state) => state.user);
 
     useEffect(() => {
         if (!isLoggedIn) {
             router.replace(LOGIN_PAGE);
+            return;
         }
-        if (user && user.company.length > 0 && Boolean(user.user?.is_admin)) {
-            router.replace(HOME_PAGE)
+
+        if (user && user?.company?.length > 0 && user?.user?.is_admin) {
+            router.replace(HOME_PAGE);
+            return;
         }
-    }, [user, isLoggedIn, router]);
+    }, [isLoggedIn, user, router]);
 
-    return <>{children}</>
-
+    return <>{children}</>;
 }

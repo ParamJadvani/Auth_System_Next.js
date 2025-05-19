@@ -4,9 +4,10 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Loader2Icon, MailIcon } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import useAuth from "@/hooks/use-Auth";
 import { toast } from 'react-toastify';
+import Loading from '@/app/loading';
 
 export default function VerifyPage() {
     const searchParams = useSearchParams();
@@ -70,13 +71,5 @@ export default function VerifyPage() {
         );
     }
 
-
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="flex flex-col items-center space-y-4">
-                <Loader2Icon className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Loading...</p>
-            </div>
-        </div>
-    );
+    return <Loading />
 }

@@ -1,7 +1,7 @@
-// components/ui/iconInput.tsx
+// components/ui/IconInput.tsx
 "use client";
 
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Eye, EyeOff, LucideIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,61 +15,67 @@ interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: string;
 }
 
-export const IconInput = forwardRef<HTMLInputElement, IconInputProps>(
-    (
-        { id, label, icon: Icon, type = "text", error, className = "", ...props },
-        ref // 2️⃣ ref now refers to the <Input> element
-    ) => {
-        const [showPassword, setShowPassword] = useState(false);
-        const isPassword = type === "password";
-        const inputType = isPassword && showPassword ? "text" : type;
+export const IconInput = ({
+    id,
+    label,
+    icon: Icon,
+    type = "text",
+    error,
+    className = "",
+    ...props
+}: IconInputProps) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === "password";
+    const inputType = isPassword && showPassword ? "text" : type;
 
-        const iconElement = useMemo(
-            () =>
-                Icon ? <Icon size={18} className="text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" /> : null,
-            [Icon]
-        );
-
-        return (
-            <div className="space-y-2">
-                <Label htmlFor={id}>{label}</Label>
-                <div className="relative">
-                    {iconElement}
-                    {/* 3️⃣ Attach the forwarded ref here */}
-                    <Input
-                        id={id}
-                        type={inputType}
-                        ref={ref}
-                        className={`
-                            ${Icon ? "pl-10" : ""}
-                            ${isPassword ? "pr-10" : ""}
-                            ${error ? "border-destructive" : "focus:border-primary"}
-                            ${className}
-                          `}
-                        {...props}
-                        aria-invalid={!!error}
-                    />
-                    {isPassword && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
-                            onClick={() => setShowPassword(!showPassword)}
-                            aria-label={showPassword ? "Hide password" : "Show password"}
-                        >
-                            {showPassword ? (
-                                <EyeOff className="h-4 w-4" />
-                            ) : (
-                                <Eye className="h-4 w-4" />
-                            )}
-                        </Button>
-                    )}
+    const iconElement = useMemo(
+        () =>
+            Icon ? (
+                <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <Icon size={20} />
                 </div>
-                {error && <FormMessage>{error}</FormMessage>}
-            </div>
-        );
-    }
-);
+            ) : null,
+        [Icon]
+    );
 
-IconInput.displayName = "IconInput";
+    return (
+        <div className="space-y-1">
+            <Label htmlFor={id} className="font-medium text-sm text-gray-700">
+                {label}
+            </Label>
+            <div className="relative">
+                {iconElement}
+                <Input
+                    id={id}
+                    type={inputType}
+                    className={`
+            block w-full rounded-lg border 
+            ${Icon ? "pl-10" : "pl-4"} ${isPassword ? "pr-10" : "pr-4"} 
+            py-2 transition-shadow focus:shadow-outline 
+            ${error ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-indigo-500"} 
+            ${className}
+          `}
+                    {...props}
+                    aria-invalid={!!error}
+                />
+                {isPassword && (
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 transition-colors"
+                        onClick={() => setShowPassword((v) => !v)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                        {showPassword ? <EyeOff className="w-4 h-4 text-gray-600" /> : <Eye className="w-4 h-4 text-gray-600" />}
+                    </Button>
+                )}
+            </div>
+            {error && (
+                <FormMessage className="mt-1 text-sm text-red-600">
+                    {error}
+                </FormMessage>
+            )}
+        </div>
+    );
+};

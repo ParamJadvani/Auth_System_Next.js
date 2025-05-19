@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import useCompany from "@/hooks/use-Company";
 import {
@@ -16,12 +16,14 @@ import {
     Globe, Hash, MapIcon, LucideUploadCloud
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import  useAuth  from '@/hooks/use-Auth';
-import { toast } from 'react-toastify';
-import { ICompanyDataValues } from '@/types/company';
+import useAuth from "@/hooks/use-Auth";
+import { toast } from "react-toastify";
+import { ICompanyDataValues } from "@/types/company";
 
 export default function CompanyRegisterPage() {
     const [logoPreview, setLogoPreview] = useState<string>();
+    const { registerCompany } = useCompany();
+    const { logout } = useAuth();
 
     const form = useForm<ICompanyDataValues>({
         defaultValues: {
@@ -37,17 +39,17 @@ export default function CompanyRegisterPage() {
         },
     });
 
-    const {
-        register,
-        handleSubmit,
-        formState: { isSubmitting },
-    } = form;
-
-    const { registerCompany } = useCompany();
-    const { logout: logoutCompany } = useAuth();
+    const { register, handleSubmit, formState: { isSubmitting } } = form;
 
     const onSubmit = async (data: ICompanyDataValues) => {
         await registerCompany(data);
+    };
+
+    const handleLogoChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setLogoPreview(URL.createObjectURL(file));
+        }
     };
 
     return (
@@ -61,11 +63,12 @@ export default function CompanyRegisterPage() {
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
+
                             <FormControl>
                                 <IconInput
                                     id="company_name"
                                     label="Company Name"
-                                    placeholder='company name...'
+                                    placeholder="company name..."
                                     icon={Building2}
                                     {...register("company_name")}
                                 />
@@ -76,7 +79,7 @@ export default function CompanyRegisterPage() {
                                     id="email"
                                     label="Email"
                                     type="email"
-                                    placeholder='email address...'
+                                    placeholder="email address..."
                                     icon={Mail}
                                     {...register("email")}
                                 />
@@ -86,8 +89,8 @@ export default function CompanyRegisterPage() {
                                 <IconInput
                                     id="contact_no"
                                     label="Contact Number"
-                                    placeholder='contact number...'
                                     type="tel"
+                                    placeholder="contact number..."
                                     icon={Phone}
                                     {...register("contact_no")}
                                 />
@@ -98,7 +101,7 @@ export default function CompanyRegisterPage() {
                                     <IconInput
                                         id="city"
                                         label="City"
-                                        placeholder='city...'
+                                        placeholder="city..."
                                         icon={MapPin}
                                         {...register("city")}
                                     />
@@ -107,7 +110,7 @@ export default function CompanyRegisterPage() {
                                     <IconInput
                                         id="state"
                                         label="State"
-                                        placeholder='state...'
+                                        placeholder="state..."
                                         icon={Landmark}
                                         {...register("state")}
                                     />
@@ -119,7 +122,7 @@ export default function CompanyRegisterPage() {
                                     <IconInput
                                         id="country"
                                         label="Country"
-                                        placeholder='country...'
+                                        placeholder="country..."
                                         icon={Globe}
                                         {...register("country")}
                                     />
@@ -128,7 +131,7 @@ export default function CompanyRegisterPage() {
                                     <IconInput
                                         id="pincode"
                                         label="Pincode"
-                                        placeholder='pincode...'
+                                        placeholder="pincode..."
                                         icon={Hash}
                                         {...register("pincode")}
                                     />
@@ -139,7 +142,7 @@ export default function CompanyRegisterPage() {
                                 <IconInput
                                     id="address"
                                     label="Address"
-                                    placeholder='address...'
+                                    placeholder="address..."
                                     icon={MapIcon}
                                     {...register("address")}
                                 />
@@ -148,9 +151,7 @@ export default function CompanyRegisterPage() {
                             {/* Logo Upload */}
                             <FormControl>
                                 <div>
-                                    <label htmlFor="logo" className="block mb-1 font-medium">
-                                        Company Logo
-                                    </label>
+                                    <label htmlFor="logo" className="block mb-1 font-medium">Company Logo</label>
                                     <div className="flex items-center space-x-4">
                                         <Avatar className="h-16 w-16">
                                             {logoPreview ? (
@@ -165,31 +166,32 @@ export default function CompanyRegisterPage() {
                                             id="logo"
                                             type="file"
                                             accept="image/*"
-                                            placeholder='company logo...'
-                                            {...register("logo")}
-                                            onChange={(e) => {
-                                                const file = e.target.files?.[0];
-                                                if (file) setLogoPreview(URL.createObjectURL(file));
-                                            }}
                                             className="cursor-pointer"
+                                            {...register("logo")}
+                                            onChange={handleLogoChange}
                                         />
                                     </div>
                                 </div>
                             </FormControl>
+
                         </CardContent>
 
                         <CardFooter className="flex flex-col space-y-2 mt-4">
-                            <Button type="submit" disabled={isSubmitting} className="w-full rounded-full flex items-center justify-center hover:border-transparent font-medium text-sm sm:text-base h-8 sm:h-10 px-4 sm:px-5">
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full rounded-full text-sm sm:text-base h-10"
+                            >
                                 {isSubmitting ? "Submitting..." : "Register Company"}
                             </Button>
                             <Button
-                                variant="outline"
                                 type="button"
+                                variant="outline"
                                 onClick={async () => {
-                                    await logoutCompany()
+                                    await logout();
                                     toast.success("Logout Successful");
                                 }}
-                                className="rounded-full flex items-center justify-center font-medium text-sm sm:text-base h-8 sm:h-10 px-4 sm:px-5 w-full sm:w-auto md:w-[158px] mt-2"
+                                className="w-full sm:w-auto md:w-[158px] mt-2 rounded-full text-sm sm:text-base h-10"
                             >
                                 Logout
                             </Button>
