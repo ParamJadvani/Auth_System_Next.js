@@ -13,6 +13,7 @@ interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string;
     icon?: LucideIcon;
     error?: string;
+    ref?: React.Ref<HTMLInputElement>;
 }
 
 export const IconInput = ({
@@ -22,6 +23,7 @@ export const IconInput = ({
     type = "text",
     error,
     className = "",
+    ref,
     ...props
 }: IconInputProps) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +49,7 @@ export const IconInput = ({
                 {iconElement}
                 <Input
                     id={id}
+                    ref={ref}
                     type={inputType}
                     className={`
             block w-full rounded-lg border 

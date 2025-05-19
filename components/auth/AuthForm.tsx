@@ -26,19 +26,6 @@ export function AuthForm({
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
             {children}
-            {/* {footerLinks && (
-                <CardFooter className="flex justify-center space-x-4">
-                    {footerLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="text-sm text-blue-600 hover:underline"
-                        >
-                            {link.text}
-                        </Link>
-                    ))}
-                </CardFooter>
-            )} */}
         </Card>
     );
 }

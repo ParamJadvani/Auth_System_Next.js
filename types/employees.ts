@@ -1,34 +1,6 @@
+// /types/employees.ts
 import { Meta } from "@/types/admin";
-
-// Nested helpers
-interface Address {
-    city: string;
-    state: string;
-    country: string;
-    pincode: number;
-    residential: string;
-}
-
-interface BankInfo {
-    bank_name: string;
-    ifsc_code: string;
-    account_no: string;
-    branch_name: string;
-    account_holder_name: string;
-    account_type: string;
-}
-
-interface ContactNo {
-    home: number;
-    personal: number;
-}
-
-interface EducationInfo {
-    degree: string;
-    college_name: string;
-    end_month_year: string;
-    start_month_year: string;
-}
+import { Address, BankInfo, ContactNo, EducationInfo } from "./shared";
 
 interface BaseEmployeeValues {
     firstname: string;
@@ -53,52 +25,36 @@ interface BaseEmployeeValues {
     esi_contribution: number;
 }
 
-export interface ICreateEmployeeValues extends BaseEmployeeValues {
-    password: string;
-}
-
 export interface IEmployeeValues extends BaseEmployeeValues {
-    aadhar_card: string;
-
-    address: Address;
-
-    bank_info: BankInfo;
-
-    company_id: number;
-
-    contact_no: ContactNo;
-
-    created_at: string;
-    deleted_at: string | null;
-    designation: string | null;
-
-    education_info: EducationInfo;
-
-    email_verified_at: string;
-
-    esi_no: string;
-
-    file_size_limit: number;
-
-    hold_paid_at: string | null;
-    hold_percentage: number;
-
     id: number;
-    is_admin: number;
-    is_super_admin: number;
-
+    aadhar_card: string;
     pan_card: string;
     pf_account_no: string;
-
-    remember_me_token: string | null;
-
-    two_factor_secret: string | null;
     uan_no: string;
-
-    updated_at: string;
+    esi_no: string;
+    file_size_limit: number;
     used_size: number;
+    is_admin: number;
+    is_super_admin: number;
+    designation: string | null;
+    email_verified_at: string;
+    remember_me_token: string | null;
+    two_factor_secret: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    company_id: number;
+
+    address: Address;
+    bank_info: BankInfo;
+    contact_no: ContactNo;
+    education_info: EducationInfo;
 
     userSalary: unknown | null;
+}
+
+export interface ICreateEmployeeValues extends BaseEmployeeValues {
+    password: string;
 }
 
 export interface IUpdateEmployeeValues

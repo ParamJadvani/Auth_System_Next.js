@@ -2,6 +2,7 @@ import { EMPLOYEE_PAGE } from "@/constants/redirect";
 import API from "@/lib/axios";
 import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from "@/types/employees";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 export default function useEmployees() {
     const router = useRouter();
@@ -49,29 +50,32 @@ export default function useEmployees() {
         }
     };
 
-    const getEmployee = async ({
-        filter = "",
-        date_of_joining = "",
-        from_date_of_joining = "",
-        to_date_of_joining = "",
-        last_working_month = "",
-        next_increment_month = "",
-        designation = "",
-        status = "",
-        page = 1,
-        limit = 10,
-        sort_column = "employee_id",
-        sort_order = "desc",
-    }): Promise<EmployeesResponse | null> => {
-        // /users?filter=&date_of_joining=&from_date_of_joining=&to_date_of_joining=&last_working_month=&next_increment_month=&page=1&limit=10&status=&sort_column=employee_id&sort_order=desc&designation=
-        const defaultURL = `/users?filter=${filter}&date_of_joining=${date_of_joining}&from_date_of_joining=${from_date_of_joining}&to_date_of_joining=${to_date_of_joining}&last_working_month=${last_working_month}&next_increment_month=${next_increment_month}&page=${page}&limit=${limit}&status=${status}&sort_column=${sort_column}&sort_order=${sort_order}&designation=${designation}`;
-        try {
-            const res = await API.get(defaultURL);
-            return res.data;
-        } catch {
-            return null;
-        }
-    };
+    const getEmployee = useCallback(
+        async ({
+            filter = "",
+            date_of_joining = "",
+            from_date_of_joining = "",
+            to_date_of_joining = "",
+            last_working_month = "",
+            next_increment_month = "",
+            designation = "",
+            status = "",
+            page = 1,
+            limit = 10,
+            sort_column = "employee_id",
+            sort_order = "desc",
+        }): Promise<EmployeesResponse | null> => {
+            // /users?filter=&date_of_joining=&from_date_of_joining=&to_date_of_joining=&last_working_month=&next_increment_month=&page=1&limit=10&status=&sort_column=employee_id&sort_order=desc&designation=
+            const defaultURL = `/users?filter=${filter}&date_of_joining=${date_of_joining}&from_date_of_joining=${from_date_of_joining}&to_date_of_joining=${to_date_of_joining}&last_working_month=${last_working_month}&next_increment_month=${next_increment_month}&page=${page}&limit=${limit}&status=${status}&sort_column=${sort_column}&sort_order=${sort_order}&designation=${designation}`;
+            try {
+                const res = await API.get(defaultURL);
+                return res.data;
+            } catch {
+                return null;
+            }
+        },
+        []
+    );
 
     return {
         getEmployee,

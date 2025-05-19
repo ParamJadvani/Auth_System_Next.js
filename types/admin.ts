@@ -1,31 +1,5 @@
-interface Address {
-    city: string;
-    state: string;
-    country: string;
-    pincode: number;
-    residential: string;
-}
-
-interface BankInfo {
-    bank_name: string;
-    ifsc_code: string;
-    account_no: number;
-    branch_name: string;
-    account_holder_name: string;
-    account_type: string;
-}
-
-interface ContactNo {
-    home: number;
-    personal: number;
-}
-
-interface EducationInfo {
-    degree: string;
-    college_name: string;
-    end_month_year: string;
-    start_month_year: string;
-}
+// /types/admin.ts
+import { Address, BankInfo, ContactNo, EducationInfo } from "@/types/shared";
 
 interface BaseAdminValues {
     firstname: string;
@@ -49,34 +23,36 @@ interface BaseAdminValues {
 export interface IAdminValues extends BaseAdminValues {
     id: number;
     aadhar_card: string;
-    abry_contribution: number;
-    created_at: string;
-    date_of_birth: string;
-    date_of_joining: string;
-    deleted_at: string | null;
     designation: string;
-    email_verified_at: string;
     employee_id: string | null;
-    esi_no: string;
-    file_size_limit: number;
-    hold_paid_at: string | null;
-    hold_percentage: number | null;
-    is_admin: number;
-    is_super_admin: number;
-    next_increment_date: string | null;
     pan_card: string;
     pf_account_no: string;
-    remember_me_token: string | null;
-    salary_contract_period: string | null;
-    salary_increment_date: string | null;
-    two_factor_secret: string | null;
+    esi_no: string;
     uan_no: string;
-    updated_at: string;
+    is_admin: number;
+    is_super_admin: number;
+    email_verified_at: string;
+    file_size_limit: number;
     used_size: number;
+    // timestamps
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+
+    // nested
     address: Address;
     bank_info: BankInfo;
     contact_no: ContactNo;
     education_info: EducationInfo;
+
+    // contributions, hold, etc.
+    hold_percentage: number | null;
+    hold_paid_at: string | null;
+    next_increment_date: string | null;
+    salary_contract_period: string | null;
+    salary_increment_date: string | null;
+    remember_me_token: string | null;
+    two_factor_secret: string | null;
 }
 
 export interface ICreateAdminValues extends BaseAdminValues {

@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { AdminsResponse, ICreateAdminValues } from '@/types/admin';
-import useAdmin from '@/hooks/use-Admin';
-import { AdminTable } from '@/components/admin/table';
-import { AdminFormDialog } from '@/app/(auth)/admin/_adminFormDialog';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDebounce } from 'use-debounce';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -13,229 +11,187 @@ import {
     SelectContent,
     SelectItem,
 } from '@/components/ui/select';
+import useAdmin from '@/hooks/use-Admin';
+import { AdminsResponse, ICreateAdminValues, Meta } from '@/types/admin';
+import { AdminFormDialog } from '@/app/(auth)/admin/_adminFormDialog';
+import { AdminTable } from '@/components/admin/table';
 import { IconInput } from '@/components/ui/iconInput';
+import { Pagination } from '@/components/ui/pagination';
+import { useQueryParams } from '@/hooks/use-query-params';
+
+type FilterForm = {
+    status: string;
+    filter: string;
+    date_of_joining: string;
+    last_working_date: string;
+    sort_column: string;
+    sort_order: 'asc' | 'desc';
+    limit: number;
+};
 
 export default function AdminPage() {
-
     const [data, setData] = useState<AdminsResponse | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [filters, setFilters] = useState({
-        status: '',
-        filter: '',
-        date_of_joining: '',
-        last_working_date: '',
-        sort_column: 'employee_id',
-        sort_order: 'desc' as 'asc' | 'desc',
-        limit: 10
-    });
+    const pageRef = useRef(1);
 
-    const { deleteAdmin, createAdmin, getAdmins } = useAdmin()
+    const { deleteAdmin, createAdmin, getAdmins } = useAdmin();
+    const { getParams, setParams, removeParams } = useQueryParams();
 
-    const searchRef = useRef<HTMLInputElement>(null);
-    const dojRef = useRef<HTMLInputElement>(null);
-    const lwdRef = useRef<HTMLInputElement>(null);
-    const pageNumberRef = useRef<number>(1);
-
-    const fetchAdmins = async (filtersOverride = {}) => {
-        try {
-            setLoading(true);
-            const res = await getAdmins({
-                ...filters,
-                ...filtersOverride,
-                page: pageNumberRef.current,
-            });
-            setData(res);
-            setError(null);
-        } catch {
-            setError('Failed to fetch admins. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchAdmins();
-    }, []);
-
-    const handleFilterChange = (key: keyof typeof filters, value: string) => {
-        const newFilters = { ...filters, [key]: value };
-        setFilters(newFilters);
-        pageNumberRef.current = 1;
-        fetchAdmins({ ...newFilters, page: 1 });
-    };
-
-    const resetFilters = () => {
-        const cleared = {
+    const filterForm = useForm<FilterForm>({
+        defaultValues: {
             status: '',
             filter: '',
             date_of_joining: '',
             last_working_date: '',
             sort_column: 'employee_id',
-            sort_order: 'desc' as 'asc' | 'desc',
-            limit: filters.limit,
-        };
-        setFilters(cleared);
-        pageNumberRef.current = 1;
-        fetchAdmins({ ...cleared, page: 1 });
+            sort_order: 'desc',
+            limit: 10,
+        },
+    });
 
-        if (searchRef.current) searchRef.current.value = '';
-        if (dojRef.current) dojRef.current.value = '';
-        if (lwdRef.current) lwdRef.current.value = '';
+    const [debouncedSearch] = useDebounce(filterForm.watch('filter'), 500);
+
+    const fetchAdmins = useCallback(async (override = {}) => {
+        setLoading(true);
+        const filters = { ...filterForm.getValues(), ...override, page: pageRef.current };
+        const res = await getAdmins(filters);
+        setData(res);
+        setLoading(false);
+    }, [getAdmins, filterForm]);
+
+    const handleFilterSubmit = filterForm.handleSubmit((data) => {
+        pageRef.current = 1;
+        fetchAdmins({ ...data, page: 1 });
+    });
+
+    const handleReset = () => {
+        filterForm.reset();
+        pageRef.current = 1;
+        fetchAdmins({ page: 1 });
+        removeParams("s")
     };
 
     const handleSort = (key: string, order: 'asc' | 'desc') => {
-        const newFilters = { ...filters, sort_column: key, sort_order: order };
-        setFilters(newFilters);
-        fetchAdmins({ ...newFilters });
+        filterForm.setValue('sort_column', key);
+        filterForm.setValue('sort_order', order);
+        fetchAdmins({ sort_column: key, sort_order: order });
     };
 
-    const deleteAdminAccount = async (id: number) => {
-        await deleteAdmin(id)
-        fetchAdmins({ ...filters })
-    }
-
-    const createAdminAccount = async (data: ICreateAdminValues) => {
-        setOpenDialog(await createAdmin(data));
-        resetFilters();
+    const handleDelete = async (id: number) => {
+        await deleteAdmin(id);
+        fetchAdmins();
     };
 
-    const totalPages = data ? data.meta.last_page : 1;
-    const currentPage = data ? pageNumberRef.current : 1;
-    const hasMore = Boolean(totalPages - currentPage)
+    const handleCreate = async (admin: ICreateAdminValues) => {
+        const shouldStayOpen = await createAdmin(admin);
+        setOpenDialog(shouldStayOpen);
+        if (!shouldStayOpen) handleReset();
+    };
+
+    useEffect(() => {
+        if (debouncedSearch == undefined) return;
+        pageRef.current = 1;
+        setParams('s', debouncedSearch);
+        fetchAdmins({ filter: debouncedSearch, page: 1 });
+    }, [debouncedSearch, setParams, fetchAdmins]);
+
+    useEffect(() => {
+        const initialSearch = getParams('s') || '';
+        filterForm.setValue('filter', initialSearch);
+        pageRef.current = 1;
+        fetchAdmins({ filter: initialSearch, page: 1 });
+    }, [fetchAdmins, getParams, filterForm]);
 
     return (
-        <div className="space-y-4 p-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full">
-                    <IconInput
-                        label="Date of Joining"
-                        id="date_of_joining"
-                        type="date"
-                        ref={dojRef}
-                        className="w-full"
-                        onChange={(e) => handleFilterChange('date_of_joining', e.target.value)}
-                    />
+        <div className="space-y-6 p-4">
+            <AdminFormDialog onSubmit={handleCreate} open={openDialog} setOpen={setOpenDialog} />
 
-                    <IconInput
-                        label="Last Working Date"
-                        id="last_working_date"
-                        type="date"
-                        ref={lwdRef}
-                        className="w-full"
-                        onChange={(e) => handleFilterChange('last_working_date', e.target.value)}
-                    />
-
-                    <div className="space-y-1">
-                        <label htmlFor="status" className="text-sm font-medium">Status</label>
-                        <Select
-                            onValueChange={(value) => handleFilterChange('status', value === 'all' ? '' : value)}
-                            value={filters.status || 'all'}
-                        >
-                            <SelectTrigger className="w-full" id="status">
-                                <SelectValue placeholder="Filter by status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {['all', 'active', 'inactive'].map((status) => (
-                                    <SelectItem key={status} value={status}>
-                                        {status.toUpperCase()}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <IconInput
-                        label="Search by Name"
-                        id="search"
-                        placeholder="Search"
-                        className="w-full"
-                        ref={searchRef}
-                        onChange={(e) => handleFilterChange('filter', e.target.value)}
-                    />
-
-                    <div className="flex items-end">
-                        <Button variant="outline" onClick={resetFilters} className="w-full">
-                            Reset Filters
-                        </Button>
-                    </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+                <IconInput
+                    label="Date of Joining"
+                    id="date_of_joining"
+                    type="date"
+                    className="w-full"
+                    {...filterForm.register('date_of_joining')}
+                    onChange={(e) => {
+                        filterForm.setValue('date_of_joining', e.target.value, { shouldDirty: true });
+                        fetchAdmins({ date_of_joining: e.target.value, page: 1 });
+                        pageRef.current = 1;
+                    }}
+                />
+                <IconInput
+                    label="Last Working Date"
+                    id="last_working_date"
+                    type="date"
+                    className="w-full"
+                    {...filterForm.register('last_working_date')}
+                    onChange={(e) => {
+                        filterForm.setValue('last_working_date', e.target.value, { shouldDirty: true });
+                        fetchAdmins({ last_working_date: e.target.value, page: 1 });
+                        pageRef.current = 1;
+                    }}
+                />
+                <div>
+                    <label htmlFor="status" className="text-sm font-medium mb-1 block">Status</label>
+                    <Select
+                        value={filterForm.watch('status') || 'all'}
+                        onValueChange={(value) => {
+                            const status = value === 'all' ? '' : value;
+                            filterForm.setValue('status', status, { shouldDirty: true });
+                            fetchAdmins({ status, page: 1 });
+                            pageRef.current = 1;
+                        }}
+                    >
+                        <SelectTrigger id="status" className="w-full">
+                            <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {['all', 'active', 'inactive'].map((status) => (
+                                <SelectItem key={status} value={status}>
+                                    {status.toUpperCase()}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
-
-                <AdminFormDialog onSubmit={createAdminAccount} open={openDialog} setOpen={setOpenDialog} />
+                <IconInput
+                    label="Search"
+                    id="search"
+                    placeholder="Search"
+                    className="w-full"
+                    {...filterForm.register('filter')}
+                />
+                <div className="mt-4 flex justify-between items-center">
+                    <Button type="button" variant="outline" onClick={handleReset} className="w-full md:w-auto">
+                        Reset Filters
+                    </Button>
+                </div>
             </div>
 
             <main className="flex-1">
-                {error && <p className="text-red-500">{error}</p>}
                 <AdminTable
                     data={data}
                     loading={loading}
                     onClick={handleSort}
-                    sort_column={filters.sort_column}
-                    sort_order={filters.sort_order}
-                    deleteAdmin={deleteAdminAccount}
+                    sort_column={filterForm.watch('sort_column')}
+                    sort_order={filterForm.watch('sort_order')}
+                    deleteAdmin={handleDelete}
                 />
             </main>
 
-            {/* Pagination & Record Count */}
-            <div className="mt-4 flex justify-between items-center gap-4">
-                {data && data.meta.total > 10 && (
-                    <div className="flex justify-center items-center gap-4">
-                        <Button
-                            onClick={() => {
-                                const newPage = Math.max(currentPage - 1, 1);
-                                pageNumberRef.current = newPage;
-                                fetchAdmins({ page: newPage });
-                            }}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </Button>
-
-                        <span>Page {currentPage}</span>
-
-                        <Button
-                            onClick={() => {
-                                const newPage = currentPage + 1;
-                                pageNumberRef.current = newPage;
-                                fetchAdmins({ page: newPage });
-                            }}
-                            disabled={!hasMore}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                )}
-                {
-                    data && data.meta.total > 10 && <div className="flex items-center space-x-6 mr-5">
-                        {data && (
-                            <span className="text-sm font-medium">
-                                {`${(currentPage - 1) * data.meta.per_page + 1} - ${Math.min(
-                                    currentPage * data.meta.per_page,
-                                    data.meta.total
-                                )} of ${data.meta.total} records`}
-                            </span>
-                        )}
-
-                        <Select
-                            value={filters.limit.toString()}
-                            onValueChange={(value) => handleFilterChange('limit', value)}
-                        >
-                            <SelectTrigger id="limit">
-                                <SelectValue placeholder="Per page" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {['5', '10', '50', '100'].map((pageLimit) => (
-                                    <SelectItem key={pageLimit} value={pageLimit}>
-                                        {pageLimit}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                }
-
-            </div>
+            <Pagination
+                data={data?.meta as Meta}
+                currentPage={pageRef.current}
+                onPageChange={(newPage) => {
+                    pageRef.current = newPage;
+                    fetchAdmins({ page: newPage });
+                }}
+                onLimitChange={(limit) => {
+                    filterForm.setValue('limit', Number(limit));
+                    handleFilterSubmit();
+                }}
+            />
         </div>
     );
 }
