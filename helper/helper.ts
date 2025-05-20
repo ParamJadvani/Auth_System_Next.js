@@ -8,6 +8,7 @@ export const contributionList = [
     "abry_contribution",
     "esi_contribution",
 ] as const;
+export const salary_Contract_Period = ["3", "6", "8", "12", "15", "18", "24"];
 
 export const processDate = (dateStr?: string | null, type: "date" | "month" = "date"): string => {
     if (!dateStr) return "";
