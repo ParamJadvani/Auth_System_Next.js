@@ -1,264 +1,161 @@
-'use client';
+// /app/(auth)/employees/page.tsx
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDebounce } from 'use-debounce';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import {
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectItem,
-} from '@/components/ui/select';
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { useSearchParams } from "next/navigation";
+import { IconInput } from "@/components/ui/icon-Input";
+import { Pagination } from "@/components/ui/pagination";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { Search } from "@/components/search/Search";
+import { Label } from '@radix-ui/react-label';
+import { Separator } from '@/components/ui/separator';
 import useEmployees from '@/hooks/use-employees';
-import { EmployeesResponse, ICreateEmployeeValues } from '@/types/employees';
-import { EmployeeFormDialog } from '@/app/(auth)/employees/_EmployeeFormDialog';
+import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 import { EmployeeTable } from '@/components/employee/table';
-import { IconInput } from '@/components/ui/icon-Input';
-import { Pagination } from '@/components/ui/pagination';
-import { Meta } from '@/types/admin';
-import { useQueryParams } from '@/hooks/use-query-params';
+import { EmployeeForm } from '@/app/(auth)/employees/_EmployeeForm';
 
-type FilterForm = {
-    status: string;
-    filter: string;
-    date_of_joining: string;
-    from_date_of_joining: string;
-    to_date_of_joining: string;
-    last_working_month: string;   // YYYY-MM for the input
-    next_increment_month: string; // YYYY-MM for the input
-    designation: string;
-    sort_column: string;
-    sort_order: 'asc' | 'desc';
-    limit: number;
-};
+const filterConfigs = [
+    { key: "date_of_joining", label: "Date of Joining", type: "date" },
+    { key: "last_working_date", label: "Last Working Date", type: "date" },
+    { key: "status", label: "Status", type: "select", options: ["all", "active", "inactive"] },
+];
 
-export default function EmployeePage() {
+export default function EmployeesPage() {
     const [data, setData] = useState<EmployeesResponse | null>(null);
-    const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(true);
-    const pageRef = useRef(1);
+    const [open, setOpen] = useState(false);
+    const prevParamsRef = useRef<string>("");
+    const isInitialRender = useRef(true);
 
-    const { deleteEmployee, createEmployee, getEmployee, getEmployeeLoginURL } =
-        useEmployees();
-    const { getParams} = useQueryParams();
+    const { deleteEmployee, getEmployee, createEmployee, getEmployeeLoginURL } = useEmployees();
+    const { getAllParams, applyFilters, resetAll } = useQueryParams();
+    const searchParams = useSearchParams();
 
-    const form = useForm<FilterForm>({
-        defaultValues: {
-            status: 'all',
-            filter: '',
-            date_of_joining: '',
-            from_date_of_joining: '',
-            to_date_of_joining: '',
-            last_working_month: '',
-            next_increment_month: '',
-            designation: '',
-            sort_column: 'employee_id',
-            sort_order: 'desc',
-            limit: 10,
-        },
-    });
-
-    const [debouncedSearch] = useDebounce(form.watch('filter'), 500);
-
-    const formatMonth = (raw: string) => {
-        const [year, month] = raw.split('-');
-        return month && year ? `${month}-${year}` : '';
-    };
-
-    const fetchEmployees = useCallback(
-        async (overrides: Partial<FilterForm & { page: number }> = {}) => {
-            setLoading(true);
-
-            // start with all current form values
-            const filters: Partial<FilterForm & { page: number }> = {
-                ...form.getValues(),
-                ...overrides,
-            };
-
-            // API wants empty string instead of 'all'
-            if (filters.status === 'all') filters.status = '';
-
-            // convert any month fields in overrides
-            if (overrides.last_working_month) {
-                filters.last_working_month = formatMonth(overrides.last_working_month);
-            }
-            if (overrides.next_increment_month) {
-                filters.next_increment_month = formatMonth(overrides.next_increment_month);
-            }
-
-            filters.page = overrides.page ?? pageRef.current;
-
-            const res = await getEmployee(filters);
-            setData(res);
-            setLoading(false);
-        },
-        [form, getEmployee]
+    const getParamsObject = useCallback(
+        () => Object.fromEntries(getAllParams().map(({ key, value }) => [key, value || ""])),
+        [getAllParams]
     );
 
-    const resetAll = () => {
-        form.reset({
-            status: 'all',
-            filter: '',
-            date_of_joining: '',
-            from_date_of_joining: '',
-            to_date_of_joining: '',
-            last_working_month: '',
-            next_increment_month: '',
-            designation: '',
-            sort_column: 'employee_id',
-            sort_order: 'desc',
-            limit: 10,
-        });
-        pageRef.current = 1;
-        fetchEmployees({ page: 1 });
-    };
+    const fetchEmployee = useCallback(async () => {
+        const params = getParamsObject();
+        const paramString = new URLSearchParams(params).toString();
+        if (isInitialRender.current || paramString !== prevParamsRef.current) {
+            setLoading(true);
+            const res = await getEmployee(params);
+            if (res) {
+                setData(res);
+                if (res.meta.current_page !== Number(params.page || 1) && res.meta.total > 0) {
+                    applyFilters({ page: res.meta.current_page.toString() });
+                }
+            }
+            prevParamsRef.current = paramString;
+            setLoading(false);
+            isInitialRender.current = false;
+        } else {
+            setLoading(false);
+        }
+    }, [getParamsObject, getEmployee, applyFilters]);
 
-    const handleSort = (col: string, order: 'asc' | 'desc') => {
-        form.setValue('sort_column', col);
-        form.setValue('sort_order', order);
-        fetchEmployees({ sort_column: col, sort_order: order });
-    };
+    useEffect(() => {
+        fetchEmployee();
+    }, [searchParams, fetchEmployee]);
+
+    const applyFilter = useCallback(
+        (key: string, value: string | null) => {
+            applyFilters({ [key]: value === "all" ? null : value, page: "1" });
+        },
+        [applyFilters]
+    );
 
     const handleDelete = async (id: number) => {
         await deleteEmployee(id);
-        fetchEmployees();
+        fetchEmployee();
     };
 
-    const handleCreate = async (vals: ICreateEmployeeValues) => {
-        const stayOpen = await createEmployee(vals);
-        setOpenDialog(stayOpen);
-        if (!stayOpen) resetAll();
+    const handleCreate = async (formData: ICreateEmployeeValues | IUpdateEmployeeValues) => {
+        const shouldStayOpen = await createEmployee(formData as ICreateEmployeeValues);
+        setOpen(shouldStayOpen);
+        if (!shouldStayOpen) {
+            applyFilters({ page: "1" });
+        }
     };
 
-    useEffect(() => {
-        if (debouncedSearch === undefined) return;
-        pageRef.current = 1;
-        fetchEmployees({ filter: debouncedSearch, page: 1 });
-    }, [debouncedSearch, fetchEmployees]);
-
-    useEffect(() => {
-        const initial = getParams('s') || '';
-        form.setValue('filter', initial);
-        pageRef.current = 1;
-        fetchEmployees({ filter: initial, page: 1 });
-    }, [form, fetchEmployees, getParams]);
+    const params = getParamsObject();
 
     return (
-        <div className="space-y-6 p-4">
-            <EmployeeFormDialog
-                onSubmit={handleCreate}
-                open={openDialog}
-                setOpen={setOpenDialog}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {[
-                    { label: 'Date of Joining', id: 'date_of_joining', type: 'date' },
-                    { label: 'From DOJoining', id: 'from_date_of_joining', type: 'date' },
-                    { label: 'To DOJoining', id: 'to_date_of_joining', type: 'date' },
-                    { label: 'Last Working Month', id: 'last_working_month', type: 'month' },
-                    { label: 'Next Increment Month', id: 'next_increment_month', type: 'month' },
-                ].map(({ label, id, type }) => (
-                    <IconInput
-                        key={id}
-                        label={label}
-                        id={id}
-                        type={type}
-                        className="w-full"
-                        {...form.register(id as keyof FilterForm)}
-                        value={form.watch(id as keyof FilterForm)}
-                        onChange={(e) => {
-                            const raw = e.target.value;
-                            form.setValue(id as keyof FilterForm, raw);
-                            pageRef.current = 1;
-                            fetchEmployees({ [id]: raw, page: 1 });
-                        }}
-                    />
-                ))}
-
-                <div className="space-y-1">
-                    <label htmlFor="status" className="text-sm font-medium">
-                        Status
-                    </label>
-                    <Select
-                        value={form.watch('status')}
-                        onValueChange={(v) => {
-                            form.setValue('status', v);
-                            pageRef.current = 1;
-                            fetchEmployees({ status: v, page: 1 });
-                        }}
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+                {filterConfigs.map(({ key, label, type, options }) =>
+                    type === "date" ? (
+                        <IconInput
+                            key={key}
+                            label={label}
+                            id={key}
+                            type="date"
+                            className="w-full rounded-md border-gray-300 focus:ring-blue-500"
+                            value={params[key] || ""}
+                            onChange={(e) => applyFilter(key, e.target.value || null)}
+                        />
+                    ) : (
+                        <div key={key}>
+                            <Label htmlFor={key} className="mb-1 block text-sm font-medium text-gray-700">
+                                {label}
+                            </Label>
+                            <Select value={params[key] || "all"} onValueChange={(value) => applyFilter(key, value)}>
+                                <SelectTrigger id={key} className="w-full rounded-md border-gray-300">
+                                    <SelectValue placeholder={`Filter by ${label.toLowerCase()}`} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {options!.map((option) => (
+                                        <SelectItem key={option} value={option}>
+                                            {option.toUpperCase()}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )
+                )}
+                <Search />
+                <div className="mt-6 flex items-center justify-between">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => resetAll()}
+                        className="w-full md:w-auto rounded-md border-blue-500 text-blue-500 hover:bg-blue-50 "
                     >
-                        <SelectTrigger id="status" className="w-full">
-                            <SelectValue placeholder="All" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {['all', 'active', 'inactive'].map((s) => (
-                                <SelectItem key={s} value={s}>
-                                    {s.toUpperCase()}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        Reset Filters
+                    </Button>
+                    <Dialog open={open} onOpenChange={setOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="default" className="bg-blue-950 hover:bg-blue-950/90 text-white">
+                                Create New Employee
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[80vw] xl:max-w-[1200px] max-h-[90vh] overflow-y-auto px-2 sm:px-6 py-4">
+                            <DialogTitle className="text-2xl">Create New Employee</DialogTitle>
+                            <Separator className="bg-gray-500/50" />
+                            <EmployeeForm isEditing={false} onSubmit={handleCreate} />
+                        </DialogContent>
+                    </Dialog>
                 </div>
-
-                <IconInput
-                    label="Designation"
-                    id="designation"
-                    type="text"
-                    placeholder="Designation"
-                    className="w-full"
-                    {...form.register('designation')}
-                    value={form.watch('designation')}
-                    onChange={(e) => {
-                        form.setValue('designation', e.target.value);
-                        pageRef.current = 1;
-                        fetchEmployees({ designation: e.target.value, page: 1 });
-                    }}
-                />
-
-                <IconInput
-                    label="Search   "
-                    id="filter"
-                    placeholder="Search"
-                    className="w-full"
-                    {...form.register('filter')}
-                    value={form.watch('filter')}
-                    onChange={(e) => form.setValue('filter', e.target.value)}
-                />
-
-                <Button
-                    variant="outline"
-                    onClick={resetAll}
-                    className="w-full col-span-full md:col-auto"
-                >
-                    Reset Filters
-                </Button>
             </div>
-
-            <EmployeeTable
-                data={data}
-                loading={loading}
-                onClick={handleSort}
-                sort_column={form.watch('sort_column')}
-                sort_order={form.watch('sort_order')}
-                deleteAdmin={handleDelete}
-                copyLoginLink={getEmployeeLoginURL}
-            />
-
+            <main>
+                <EmployeeTable data={data} onDelete={handleDelete} loading={loading} onCopyLoginLink={getEmployeeLoginURL} />
+            </main>
             <Pagination
-                data={(data?.meta as Meta) ?? {}}
-                currentPage={pageRef.current}
-                onPageChange={(num) => {
-                    pageRef.current = num;
-                    fetchEmployees({ page: num });
-                }}
-                onLimitChange={(lim) => {
-                    form.setValue('limit', Number(lim));
-                    pageRef.current = 1;
-                    fetchEmployees({ limit: Number(lim), page: 1 });
-                }}
+                data={data?.meta}
+                currentPage={Number(params.page) || 1}
+                onPageChange={(newPage) => applyFilters({ page: newPage.toString() })}
+                onLimitChange={(limit) => applyFilters({ limit, page: "1" })}
             />
         </div>
     );

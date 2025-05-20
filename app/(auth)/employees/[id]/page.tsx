@@ -1,29 +1,36 @@
-"use client"
+// /app/(auth)/employees/[id]/page.tsx
+"use client";
 
-
-import { EmployeeEditForm } from '@/app/(auth)/employees/[id]/_EmployeeEditForm';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { ICreateEmployeeValues, IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 import useEmployees from '@/hooks/use-employees';
-import { IEmployeeValues } from '@/types/employees';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { EmployeeForm } from '@/app/(auth)/employees/_EmployeeForm';
 
 
-export default function EmployeeEditPage() {
+export default function EmployeeDetailPage() {
     const params = useParams();
     const [data, setData] = useState<IEmployeeValues | null>(null);
-    const { getEmployeeDetails } = useEmployees();
+    const { getEmployeeDetails, updateEmployee } = useEmployees();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getEmployeeDetails(Number(params.id));
-                setData(data);
+                const adminData = await getEmployeeDetails(Number(params.id));
+                setData(adminData);
             } catch { }
         };
         fetchData();
-    }, [])
+    }, [getEmployeeDetails, params]);
 
-    return <div>
-        {data && <EmployeeEditForm data={data} />}
-    </div>;
+    const handleUpdate = async (formData: ICreateEmployeeValues | IUpdateEmployeeValues) => {
+        const updateData = formData as IUpdateEmployeeValues;
+        await updateEmployee(updateData.id, updateData);
+    };
+
+    return (
+        <div>
+            {data && <EmployeeForm isEditing={true} data={data} onSubmit={handleUpdate} />}
+        </div>
+    );
 }

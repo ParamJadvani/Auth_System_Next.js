@@ -28,12 +28,12 @@ import {
     LucideIcon,
 } from "lucide-react";
 import { IconInput } from "@/components/ui/icon-Input";
-import { IAdminValues, ICreateAdminValues, IUpdateAdminValues } from '@/types/admin';
 import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, statusList } from '@/helper/helper';
 import { Label } from '@/components/ui/label';
 import { DialogClose } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
+import { ICreateEmployeeValues, IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 
 const basicFields = [
     { id: "firstname", label: "First Name", icon: UserIcon, type: "text", placeholder: "Enter first name" },
@@ -86,23 +86,23 @@ const pfFields = [
     { id: "esi_no", label: "ESI Number", icon: GlobeIcon, type: "text", placeholder: "Enter ESI number" },
 ];
 
-interface AdminFormProps {
-    data?: IAdminValues;
+interface EmployeeFormProps {
+    data?: IEmployeeValues;
     isEditing: boolean;
-    onSubmit: (data: ICreateAdminValues | IUpdateAdminValues) => Promise<void>;
+    onSubmit: (data: ICreateEmployeeValues | IUpdateEmployeeValues) => Promise<void>;
 }
 
-export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
+export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
     const router = useRouter();
 
-    const getDefaultValues = (): ICreateAdminValues | IUpdateAdminValues => {
+    const getDefaultValues = (): ICreateEmployeeValues | IUpdateEmployeeValues => {
         if (!isEditing) {
             return {
                 firstname: "",
                 middlename: "",
                 lastname: "",
-                nationality: "",
                 email: "",
+                password: "",
                 gender: "male",
                 marital_status: "unmarried",
                 blood_group: "",
@@ -111,10 +111,14 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                 probation_end_date: "",
                 status: "active",
                 last_working_date: "",
-                pf_contribution: 0,
                 abry_contribution: 0,
                 esi_contribution: 0,
-                password: "",
+                pf_contribution: 0,
+                employee_id: "",
+                next_increment_date: "",
+                salary_contract_period: "",
+                salary_increment_date: "",
+                nationality: "",
             };
         } else if (data) {
             return {
@@ -146,15 +150,28 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                 probation_end_date: processDate(data.probation_end_date, 'date'),
                 start_month_year: processDate(data.education_info?.start_month_year, 'month'),
                 end_month_year: processDate(data.education_info?.end_month_year, 'month'),
-                pincode: data.address?.pincode ?? null,
-                home: data.contact_no?.home ?? null,
-                personal: data.contact_no?.personal ?? null,
+                pincode: data.address?.pincode ?? 0,
+                home: data.contact_no?.home ?? 0,
+                personal: data.contact_no?.personal ?? 0,
+                employee_id: data.employee_id ?? '',
+                salary_contract_period: processDate(data.salary_contract_period, 'month'),
+                salary_increment_date: processDate(data.salary_increment_date, 'date'),
+                next_increment_date: processDate(data.next_increment_date, 'date'),
+                status: data.status ?? '',
+                nationality: data.nationality ?? '',
+                email: data.email ?? '',
+                gender: data.gender ?? '',
+                marital_status: data.marital_status ?? '',
+                esi_contribution: data.esi_contribution ?? 0,
+                pf_contribution: data.pf_contribution ?? 0,
+                abry_contribution: data.abry_contribution ?? 0,
+                hold_percentage: data.hold_percentage ?? 0,
             };
         }
-        return {} as ICreateAdminValues | IUpdateAdminValues;
+        return {} as ICreateEmployeeValues | IUpdateEmployeeValues;
     };
 
-    const form = useForm<ICreateAdminValues | IUpdateAdminValues>({
+    const form = useForm<ICreateEmployeeValues | IUpdateEmployeeValues>({
         defaultValues: getDefaultValues(),
     });
 
@@ -178,7 +195,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                         type={field.type}
                         icon={field.icon}
                         placeholder={field.placeholder}
-                        {...form.register(field.id as keyof ICreateAdminValues)}
+                        {...form.register(field.id as keyof ICreateEmployeeValues)}
                         className="border-gray-300"
                     />
                 </FormControl>
@@ -214,7 +231,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                             </Label>
                             <RadioGroup
                                 value={form.watch("gender")}
-                                onValueChange={(value) => form.setValue("gender", value as IAdminValues["gender"])}
+                                onValueChange={(value) => form.setValue("gender", value as IEmployeeValues["gender"])}
                                 className="flex flex-wrap gap-4"
                                 aria-label="Gender"
                             >
@@ -232,7 +249,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                             </Label>
                             <RadioGroup
                                 value={form.watch("marital_status")}
-                                onValueChange={(value) => form.setValue("marital_status", value as IAdminValues["marital_status"])}
+                                onValueChange={(value) => form.setValue("marital_status", value as IEmployeeValues["marital_status"])}
                                 className="flex flex-wrap gap-4"
                                 aria-label="Marital Status"
                             >
@@ -253,7 +270,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                             </Label>
                             <Select
                                 value={form.watch("status")}
-                                onValueChange={(value) => form.setValue("status", value as IAdminValues["status"])}
+                                onValueChange={(value) => form.setValue("status", value as IEmployeeValues["status"])}
                                 aria-label="Status"
                             >
                                 <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full">
@@ -283,7 +300,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                             <Label className="text-sm font-medium text-gray-700">Blood Group</Label>
                             <Select
                                 value={form.watch("blood_group") ?? ""}
-                                onValueChange={(value) => form.setValue("blood_group", value as IAdminValues["blood_group"])}
+                                onValueChange={(value) => form.setValue("blood_group", value as IEmployeeValues["blood_group"])}
                                 aria-label="Blood Group"
                             >
                                 <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full">
@@ -334,7 +351,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                                             type={field.type}
                                             icon={field.icon}
                                             placeholder={field.placeholder}
-                                            {...form.register(field.id as keyof ICreateAdminValues)}
+                                            {...form.register(field.id as keyof ICreateEmployeeValues)}
                                             className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                         />
                                     </FormControl>

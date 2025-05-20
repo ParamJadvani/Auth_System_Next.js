@@ -8,7 +8,7 @@ import { IAdminValues, ICreateAdminValues, IUpdateAdminValues } from "@/types/ad
 import { AdminForm } from "@/app/(auth)/admin/_AdminForm";
 
 
-export default function AdminEditPage() {
+export default function AdminDetailPage() {
     const params = useParams();
     const [data, setData] = useState<IAdminValues | null>(null);
     const { getAdminDetails, updateAdmin } = useAdmin();
