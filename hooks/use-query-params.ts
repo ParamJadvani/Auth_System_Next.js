@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export function useQueryParams() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const pathname = usePathname();
 
     const getParams = useCallback(
         (key: string): string | null => {
@@ -14,25 +15,44 @@ export function useQueryParams() {
         [searchParams]
     );
 
-    const setParams = useCallback(
-        (key: string, value: string | null) => {
+    const getAllParams = useCallback((): { key: string; value: string | null }[] => {
+        return Array.from(searchParams.entries()).map(([key, value]) => ({
+            key,
+            value,
+        }));
+    }, [searchParams]);
+
+    const applyFilters = useCallback(
+        (filters: Record<string, string | null | undefined>) => {
             const params = new URLSearchParams(searchParams.toString());
-            if (value === null || value === "") {
-                params.delete(key);
-            } else {
-                params.set(key, value);
+
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value === null || value === undefined || value === "") {
+                    params.delete(key);
+                } else {
+                    params.set(key, value);
+                }
+            });
+
+            const newQueryString = params.toString();
+            const currentQueryString = searchParams.toString();
+
+            if (newQueryString === currentQueryString) {
+                return;
             }
-            router.replace(`?${params.toString()}`);
+
+            router.replace(`${pathname}?${newQueryString}`);
         },
-        [router, searchParams]
+        [router, searchParams, pathname]
     );
 
-    const removeParams = useCallback(
-        (key: string) => {
-            setParams(key, null);
-        },
-        [setParams]
-    );
+    const resetAll = useCallback(() => {
+        if (!searchParams.toString()) {
+            return;
+        }
 
-    return { getParams, setParams, removeParams };
+        router.replace(pathname);
+    }, [router, searchParams, pathname]);
+
+    return { getParams, applyFilters, getAllParams, resetAll };
 }

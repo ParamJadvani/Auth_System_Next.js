@@ -1,3 +1,4 @@
+// /components/ui/pagination.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -11,14 +12,14 @@ import {
 import { Meta } from '@/types/admin';
 
 interface PaginationProps {
-    data: Meta | null;
+    data: Meta | undefined;
     currentPage: number;
     onPageChange: (newPage: number) => void;
     onLimitChange: (limit: string) => void;
 }
 
 export function Pagination({ data, currentPage, onPageChange, onLimitChange }: PaginationProps) {
-    if (!data || data.total <= 10) return null;
+    if (!data || data.total <= data.per_page) return null;
 
     const totalPages = data.last_page;
     const hasMore = currentPage < totalPages;
@@ -48,7 +49,7 @@ export function Pagination({ data, currentPage, onPageChange, onLimitChange }: P
                     )} of ${data.total} records`}
                 </span>
                 <Select
-                    value={data?.per_page?.toString()}
+                    value={data.per_page.toString()}
                     onValueChange={onLimitChange}
                 >
                     <SelectTrigger id="limit">
