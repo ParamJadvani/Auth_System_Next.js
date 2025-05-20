@@ -15,7 +15,7 @@ import useEmployees from '@/hooks/use-employees';
 import { EmployeesResponse, ICreateEmployeeValues } from '@/types/employees';
 import { EmployeeFormDialog } from '@/app/(auth)/employees/_EmployeeFormDialog';
 import { EmployeeTable } from '@/components/employee/table';
-import { IconInput } from '@/components/ui/iconInput';
+import { IconInput } from '@/components/ui/icon-Input';
 import { Pagination } from '@/components/ui/pagination';
 import { Meta } from '@/types/admin';
 import { useQueryParams } from '@/hooks/use-query-params';
@@ -42,7 +42,7 @@ export default function EmployeePage() {
 
     const { deleteEmployee, createEmployee, getEmployee, getEmployeeLoginURL } =
         useEmployees();
-    const { getParams, setParams, removeParams } = useQueryParams();
+    const { getParams} = useQueryParams();
 
     const form = useForm<FilterForm>({
         defaultValues: {
@@ -112,7 +112,6 @@ export default function EmployeePage() {
             limit: 10,
         });
         pageRef.current = 1;
-        removeParams('s');
         fetchEmployees({ page: 1 });
     };
 
@@ -136,9 +135,8 @@ export default function EmployeePage() {
     useEffect(() => {
         if (debouncedSearch === undefined) return;
         pageRef.current = 1;
-        setParams('s', debouncedSearch);
         fetchEmployees({ filter: debouncedSearch, page: 1 });
-    }, [debouncedSearch, setParams, fetchEmployees]);
+    }, [debouncedSearch, fetchEmployees]);
 
     useEffect(() => {
         const initial = getParams('s') || '';

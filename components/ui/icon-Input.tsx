@@ -42,7 +42,7 @@ export const IconInput = ({
 
     return (
         <div className="space-y-1">
-            <Label htmlFor={id} className="font-medium text-sm text-gray-700">
+            <Label htmlFor={id} className="font-medium text-sm">
                 {label}
             </Label>
             <div className="relative">

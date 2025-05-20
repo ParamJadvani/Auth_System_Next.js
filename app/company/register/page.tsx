@@ -10,7 +10,7 @@ import {
 import { Form, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import {
     Building2, Mail, Phone, MapPin, Landmark,
     Globe, Hash, MapIcon, LucideUploadCloud

@@ -30,11 +30,12 @@ import {
     Phone as PhoneIcon,
     MapPin as MapPinIcon,
 } from "lucide-react";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import { IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 import useEmployees from '@/hooks/use-employees';
+import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, statusList } from '@/helper/helper';
 
 // Preprocess dates to match input types
 const processDate = (dateStr?: string | null, type: 'date' | 'month' = 'date'): string => {
@@ -185,8 +186,11 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                                         <SelectValue>{form.watch("status")}</SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                        {statusList.map((status) => (
+                                            <SelectItem key={status} value={status}>
+                                                {status}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -203,18 +207,12 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                                     }
                                     className="flex space-x-4 w-full"
                                 >
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="male" id="male" />
-                                        <label htmlFor="male" className="font-normal">Male</label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="female" id="female" />
-                                        <label htmlFor="female" className="font-normal">Female</label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="other" id="other" />
-                                        <label htmlFor="other" className="font-normal">Other</label>
-                                    </div>
+                                    {genderList.map((gender) => (
+                                        <div key={gender} className="flex items-center space-x-2">
+                                            <RadioGroupItem value={gender} id={gender} />
+                                            <label htmlFor={gender} className="font-normal">{gender}</label>
+                                        </div>
+                                    ))}
                                 </RadioGroup>
                             </div>
                             <div className="space-y-1">
@@ -230,18 +228,14 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                                     }
                                     className="flex space-x-4 w-full"
                                 >
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="unmarried" id="unmarried" />
-                                        <label htmlFor="unmarried" className="font-normal">Unmarried</label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="engaged" id="engaged" />
-                                        <label htmlFor="engaged" className="font-normal">Engaged</label>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value="married" id="married" />
-                                        <label htmlFor="married" className="font-normal">Married</label>
-                                    </div>
+                                    {maritalStatusList.map((maritalStatus) => (
+                                        <div key={maritalStatus} className="flex items-center space-x-2">
+                                            <RadioGroupItem value={maritalStatus} id={maritalStatus} />
+                                            <label htmlFor={maritalStatus} className="font-normal">
+                                                {maritalStatus}
+                                            </label>
+                                        </div>
+                                    ))}
                                 </RadioGroup>
                             </div>
                         </div>
@@ -366,7 +360,7 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                                         <SelectValue placeholder="Select blood group" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {["a+", "a-", "b+", "b-", "ab+", "ab-", "o+", "o-"].map((bg) => (
+                                        {bloodGroupList.map((bg) => (
                                             <SelectItem key={bg} value={bg}>
                                                 {bg.toUpperCase()}
                                             </SelectItem>
@@ -413,7 +407,7 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                         </div>
                         {/* Row 6: contributions */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {(["pf_contribution", "abry_contribution", "esi_contribution"] as const).map((name) => (
+                            {(contributionList).map((name) => (
                                 <div
                                     key={name}
                                     className="flex items-center w-full bg-muted/30 rounded-md px-4 py-2"
@@ -601,7 +595,7 @@ export function EmployeeEditForm({ data }: { data: IEmployeeValues }) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="none">Select Hold Percentage</SelectItem>
-                                        {["saving", "current", "salary"].map((pct) => (
+                                        {accountType.map((pct) => (
                                             <SelectItem key={pct} value={pct}>
                                                 {pct[0].toUpperCase() + pct.slice(1)}
                                             </SelectItem>

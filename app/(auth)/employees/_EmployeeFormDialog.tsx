@@ -37,7 +37,7 @@ import {
     Mail as MailIcon,
     Lock as LockIcon,
 } from "lucide-react";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import { Separator } from '@/components/ui/separator';
 import { ICreateEmployeeValues } from '@/types/employees';
 

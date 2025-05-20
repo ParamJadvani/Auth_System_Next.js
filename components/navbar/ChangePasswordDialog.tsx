@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Form, FormControl } from "@/components/ui/form";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import { Separator } from "@/components/ui/separator";
 import { IChangePasswordValues } from "@/types/auth";
 

@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { FormControl } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import { CardContent, } from "@/components/ui/card";
 import useAuth from "@/hooks/use-Auth";
 import { LOGIN_PAGE } from "@/constants/redirect";

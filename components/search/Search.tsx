@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { IconInput } from "@/components/ui/iconInput";
+import { IconInput } from "@/components/ui/icon-Input";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { useDebouncedCallback } from 'use-debounce';
 

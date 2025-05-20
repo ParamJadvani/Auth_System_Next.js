@@ -14,26 +14,35 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { AdminsResponse } from "@/types/admin";
 import { SkeletonTable } from "@/components/ui/table-skeleton";
+import { useQueryParams } from "@/hooks/use-query-params";
 
 interface AdminTableProps {
     data: AdminsResponse | null;
     loading: boolean;
-    onSort: (key: string, order: "asc" | "desc") => void;
-    sort_column: string;
-    sort_order: "asc" | "desc" | string;
     onDelete: (id: number) => Promise<void>;
 }
 
-export function AdminTable({ data, loading, onSort, sort_column, sort_order, onDelete }: AdminTableProps) {
+export function AdminTable({ data, loading, onDelete }: AdminTableProps) {
+    const { getParams, applyFilters } = useQueryParams();
+    const sort_column = getParams("sort_column") || "employee_id";
+    const sort_order = getParams("sort_order") || "desc";
+
     const columns = [
         { label: "Name", key: "firstname", sortable: true, width: "20%" },
         { label: "Email", key: "email", sortable: true, width: "25%" },
-        { label: "Salary", key: null, sortable: false, width: "10%" },
+        { label: "Salary", key: null, sortable: false, width: "12%" },
         { label: "Designation", key: null, sortable: false, width: "15%" },
         { label: "Joining Date", key: "date_of_joining", sortable: true, width: "15%" },
-        { label: "Status", key: null, sortable: false, width: "10%" },
-        { label: "Action", key: null, sortable: false, width: "15%" },
+        { label: "Status", key: null, sortable: false, width: "12%" },
+        { label: "Action", key: null, sortable: false, width: "10%" },
     ];
+
+    const handleSort = (key: string) => {
+        applyFilters({
+            sort_column: key,
+            sort_order: sort_column === key && sort_order === "asc" ? "desc" : "asc",
+        });
+    };
 
     return (
         <div className="rounded-md border bg-white shadow-sm overflow-x-auto">
@@ -49,9 +58,7 @@ export function AdminTable({ data, loading, onSort, sort_column, sort_order, onD
                             >
                                 {col.sortable && col.key ? (
                                     <span
-                                        onClick={() =>
-                                            onSort(col.key!, sort_order === "asc" ? "desc" : "asc")
-                                        }
+                                        onClick={() => handleSort(col.key!)}
                                         className="flex items-center gap-1"
                                     >
                                         {col.label}
@@ -101,8 +108,8 @@ export function AdminTable({ data, loading, onSort, sort_column, sort_order, onD
                                     <TableCell className="px-4 py-2">
                                         <span
                                             className={`px-2 py-1 text-xs rounded font-medium inline-block ${admin.status === "active"
-                                                    ? "bg-blue-100 text-blue-700"
-                                                    : "bg-red-100 text-red-700"
+                                                ? "bg-blue-100 text-blue-700"
+                                                : "bg-red-100 text-red-700"
                                                 }`}
                                         >
                                             {admin.status}
