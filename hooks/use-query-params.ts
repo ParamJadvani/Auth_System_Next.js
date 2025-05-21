@@ -15,11 +15,8 @@ export function useQueryParams() {
         [searchParams]
     );
 
-    const getAllParams = useCallback((): { key: string; value: string | null }[] => {
-        return Array.from(searchParams.entries()).map(([key, value]) => ({
-            key,
-            value,
-        }));
+    const getAllParams = useCallback((): Record<string, string> => {
+        return Object.fromEntries(searchParams.entries());
     }, [searchParams]);
 
     const applyFilters = useCallback(

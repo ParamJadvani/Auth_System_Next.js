@@ -1,39 +1,31 @@
 "use client"
 import { FormControl } from '@/components/ui/form';
 import { IconInput } from '@/components/ui/icon-Input';
-import { LucideIcon } from 'lucide-react';
 import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 
 interface FieldConfig<T> {
     id: Path<T>;
     label: string;
-    icon: LucideIcon;
     type: string;
     placeholder: string;
     required?: boolean;
 }
 
-export function InputGroup<T extends FieldValues>({ fields, register, classname = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" }: { fields: FieldConfig<T>[]; register: UseFormRegister<T>; classname?: string }) {
-    return <div className={classname}>
-        {fields.map((field) => (
-            <FormControl key={field.id}>
-                <IconInput
-                    label={field.label}
-                    id={field.id}
-                    type={field.type}
-                    icon={field.icon}
-                    placeholder={field.placeholder}
-                    {...register(field.id)}
-                    className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                    aria-required={field.required ?? false}
-                />
-            </FormControl>
-        ))}
-    </div>
+export function InputGroup<T extends FieldValues>({ fields, register }: { fields: FieldConfig<T>[]; register: UseFormRegister<T> }) {
+    return fields.map((field) => (
+        <FormControl key={field.id} className='w-full'>
+            <IconInput
+                label={field.label}
+                id={field.id}
+                type={field.type}
+                placeholder={field.placeholder}
+                {...register(field.id)}
+                aria-required={field.required ?? false}
+            />
+        </FormControl>
+    ))
 }
-
-export default InputGroup;
 
 /*
 1). Type 'T' does not satisfy the constraint 'FieldValues'.ts(2344)

@@ -1,5 +1,9 @@
 import { TableHead } from "@/components/ui/table";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import {
+    ChevronUpIcon,
+    ChevronDownIcon,
+    ChevronsUpDownIcon,
+} from "lucide-react";
 
 interface TableSortProps {
     label: string;
@@ -18,35 +22,27 @@ export function TableSort({
     sort_column,
     sort_order,
     handleSort,
-    className,
+    className = "",
 }: TableSortProps) {
+
     return (
         <TableHead
-            className={`text-white whitespace-nowrap px-4 py-2 text-sm font-semibold ${key ? "cursor-pointer" : ""} ${className || ""}`}
+            className={`whitespace-nowrap px-4 py-2 text-sm font-semibold text-white ${key ? "cursor-pointer hover:bg-white/10 transition-colors" : ""} ${className}`}
             style={{ width }}
+            onClick={key ? () => handleSort(key) : undefined}
         >
-            <span
-                className="flex items-center gap-1"
-                onClick={key ? () => handleSort(key) : undefined}
-            >
-                {label}
+            <div className="flex items-center gap-2">
+                <span>{label}</span>
                 {key && (
-                    <span className="flex flex-col items-center">
-                        {sort_column === key ? (
-                            sort_order === "asc" ? (
-                                <ArrowUp className="w-4 h-4 text-white" />
-                            ) : (
-                                <ArrowDown className="w-4 h-4 text-white" />
-                            )
+                    <span className="flex items-center justify-center">
+                        {!(sort_column === key) ? <ChevronsUpDownIcon className="w-4 h-4 text-gray-400 transition-all" /> : sort_order === "asc" ? (
+                            <ChevronUpIcon className="w-4 h-4 text-blue-500 transition-all" />
                         ) : (
-                            <span className='flex '>
-                                <ArrowUp className="w-4 h-4 text-gray-400" />
-                                <ArrowDown className="w-4 h-4 text-gray-400" />
-                            </span>
+                            <ChevronDownIcon className="w-4 h-4 text-blue-500 transition-all" />
                         )}
                     </span>
                 )}
-            </span>
+            </div>
         </TableHead>
     );
 }

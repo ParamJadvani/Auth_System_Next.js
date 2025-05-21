@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ICreateEmployeeValues, IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 import useEmployees from '@/hooks/use-employees';
-import { EmployeeForm } from '@/app/(auth)/employees/_EmployeeForm';
+import { EmployeeForm } from '@/components/employee/form';
 
 
 export default function EmployeeDetailPage() {
@@ -30,7 +30,7 @@ export default function EmployeeDetailPage() {
 
     return (
         <div>
-            {data && <EmployeeForm isEditing={true} data={data} onSubmit={handleUpdate} />}
+            {data && <EmployeeForm editing={true} data={data} onSubmit={handleUpdate} />}
         </div>
     );
 }

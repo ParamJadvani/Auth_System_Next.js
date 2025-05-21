@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import useAdmin from "@/hooks/use-Admin";
 import { IAdminValues, ICreateAdminValues, IUpdateAdminValues } from "@/types/admin";
-import { AdminForm } from "@/app/(auth)/admin/_AdminForm";
+import { AdminForm } from "@/components/admin/form";
 
 
 export default function AdminDetailPage() {

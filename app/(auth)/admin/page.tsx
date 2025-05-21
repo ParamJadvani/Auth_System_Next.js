@@ -1,7 +1,7 @@
 // /app/(auth)/admin/page.tsx
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -19,7 +19,7 @@ import { useQueryParams } from "@/hooks/use-query-params";
 import { Search } from "@/components/ui/search";
 import { Label } from '@radix-ui/react-label';
 import { Separator } from '@/components/ui/separator';
-import { AdminForm } from '@/app/(auth)/admin/_AdminForm';
+import { AdminForm } from '@/components/admin/form';
 import { TableDisplay } from '@/components/ui/table/table-display';
 
 const filterConfigs = [
@@ -32,41 +32,25 @@ export default function AdminPage() {
     const [data, setData] = useState<AdminsResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
-    const prevParamsRef = useRef<string>("");
-    const isInitialRender = useRef(true);
 
     const { deleteAdmin, getAdmins, createAdmin } = useAdmin();
     const { getAllParams, applyFilters, resetAll } = useQueryParams();
     const searchParams = useSearchParams();
-
-    const getParamsObject = useCallback(
-        () => Object.fromEntries(getAllParams().map(({ key, value }) => [key, value || ""])),
-        [getAllParams]
-    );
+    const params = getAllParams();
 
     const fetchAdmins = useCallback(async () => {
-        const params = getParamsObject();
-        const paramString = new URLSearchParams(params).toString();
-        if (isInitialRender.current || paramString !== prevParamsRef.current) {
-            setLoading(true);
-            const res = await getAdmins(params);
-            if (res) {
-                setData(res);
-                if (res.meta.current_page !== Number(params.page || 1) && res.meta.total > 0) {
-                    applyFilters({ page: res.meta.current_page.toString() });
-                }
+        setLoading(true);
+        const params = getAllParams();
+        const res = await getAdmins(params);
+        if (res) {
+            setData(res);
+            if (res.meta.current_page !== Number(params.page || 1) && res.meta.total > 0) {
+                applyFilters({ page: res.meta.current_page.toString() });
             }
-            prevParamsRef.current = paramString;
-            setLoading(false);
-            isInitialRender.current = false;
-        } else {
-            setLoading(false);
         }
-    }, [getParamsObject, getAdmins, applyFilters]);
+        setLoading(false);
+    }, [getAllParams, getAdmins, applyFilters]);
 
-    useEffect(() => {
-        fetchAdmins();
-    }, [searchParams, fetchAdmins]);
 
     const applyFilter = useCallback(
         (key: string, value: string | null) => {
@@ -75,20 +59,22 @@ export default function AdminPage() {
         [applyFilters]
     );
 
+    const handleCreate = async (formData: ICreateAdminValues | IUpdateAdminValues) => {
+        const res = await createAdmin(formData as ICreateAdminValues);
+        setOpen(res);
+        if (!res) {
+            applyFilters({ page: "1" });
+        }
+    };
+
     const handleDelete = async (id: number) => {
         await deleteAdmin(id);
         fetchAdmins();
     };
 
-    const handleCreate = async (formData: ICreateAdminValues | IUpdateAdminValues) => {
-        const shouldStayOpen = await createAdmin(formData as ICreateAdminValues);
-        setOpen(shouldStayOpen);
-        if (!shouldStayOpen) {
-            applyFilters({ page: "1" });
-        }
-    };
-
-    const params = getParamsObject();
+    useEffect(() => {
+        fetchAdmins();
+    }, [searchParams, fetchAdmins]);
 
     return (
         <div className="space-y-6">
@@ -129,7 +115,11 @@ export default function AdminPage() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => resetAll()}
+                        onClick={() => {
+                            if (!(searchParams.toString().trim() === "")) {
+                                resetAll();
+                            }
+                        }}
                         className="w-full md:w-auto rounded-md border-blue-500 text-blue-500 hover:bg-blue-50 "
                     >
                         Reset Filters

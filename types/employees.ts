@@ -51,7 +51,7 @@ export interface IEmployeeValues extends BaseEmployeeValues {
     education_info: EducationInfo;
 
     userSalary: unknown | null;
-    hold_percentage: number;
+    hold_percentage: number | string;
 }
 
 export interface ICreateEmployeeValues extends BaseEmployeeValues {

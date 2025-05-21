@@ -1,228 +1,238 @@
 import { ICreateAdminValues, IUpdateAdminValues } from "@/types/admin";
 import { ICreateEmployeeValues, IUpdateEmployeeValues } from "@/types/employees";
 import { FieldConfig } from "@/types/shared";
-import { LucideIcon } from "lucide-react";
-import { CalendarIcon, GlobeIcon, MapPinIcon, MailIcon, UserIcon, PhoneIcon } from "lucide-react";
 
-function createFieldConfig<T>(
-    id: keyof T,
-    label: string,
-    icon: LucideIcon,
-    type: string,
-    placeholder: string
-): FieldConfig<T> {
-    return { id, label, icon, type, placeholder };
-}
-
-const basicFieldsEmployee: FieldConfig<ICreateEmployeeValues | IUpdateEmployeeValues>[] = [
-    createFieldConfig("firstname", "First Name", UserIcon, "text", "Enter first name"),
-    createFieldConfig("middlename", "Middle Name", UserIcon, "text", "Enter middle name"),
-    createFieldConfig("lastname", "Last Name", UserIcon, "text", "Enter last name"),
-    createFieldConfig("employee_id", "Employee ID", UserIcon, "text", "Enter employee ID"),
-    createFieldConfig("nationality", "Nationality", GlobeIcon, "text", "Enter nationality"),
-    createFieldConfig("email", "Email", MailIcon, "email", "Enter email"),
-];
-
-const dateFieldsEmployee: FieldConfig<ICreateEmployeeValues | IUpdateEmployeeValues>[] = [
-    createFieldConfig("date_of_birth", "Date of Birth", CalendarIcon, "date", "Select date"),
-    createFieldConfig("date_of_joining", "Date of Joining", CalendarIcon, "date", "Select date"),
-    createFieldConfig(
-        "probation_end_date",
-        "Probation End Date",
-        CalendarIcon,
-        "date",
-        "Select date"
-    ),
-    createFieldConfig(
-        "salary_increment_date",
-        "Salary Increment Date",
-        CalendarIcon,
-        "date",
-        "Select date"
-    ),
-    createFieldConfig(
-        "next_increment_date",
-        "Next Increment Date",
-        CalendarIcon,
-        "date",
-        "Select date"
-    ),
-    createFieldConfig(
-        "last_working_date",
-        "Last Working Date",
-        CalendarIcon,
-        "date",
-        "Select date"
-    ),
-];
-
-const contactFieldsEmployee: FieldConfig<IUpdateEmployeeValues>[] = [
-    createFieldConfig("residential", "Residential Address", MapPinIcon, "text", "Enter address"),
-    createFieldConfig("city", "City", GlobeIcon, "text", "Enter city"),
-    createFieldConfig("state", "State", MapPinIcon, "text", "Enter state"),
-    createFieldConfig("country", "Country", GlobeIcon, "text", "Enter country"),
-    createFieldConfig("pincode", "Pincode", MapPinIcon, "number", "Enter pincode"),
-    createFieldConfig("personal", "Personal Contact", PhoneIcon, "number", "Enter contact number"),
-    createFieldConfig("home", "Home Contact", PhoneIcon, "number", "Enter contact number"),
-];
-
-const bankFieldsEmployee: FieldConfig<IUpdateEmployeeValues>[] = [
-    createFieldConfig("bank_name", "Bank Name", GlobeIcon, "text", "Enter bank name"),
-    createFieldConfig(
-        "account_holder_name",
-        "Account Holder Name",
-        UserIcon,
-        "text",
-        "Enter account holder name"
-    ),
-    createFieldConfig("account_no", "Account Number", GlobeIcon, "number", "Enter account number"),
-    createFieldConfig("branch_name", "Branch Name", MapPinIcon, "text", "Enter branch name"),
-    createFieldConfig("ifsc_code", "IFSC Code", GlobeIcon, "text", "Enter IFSC code"),
-];
-
-const documentFieldsEmployee: FieldConfig<IUpdateEmployeeValues>[] = [
-    createFieldConfig(
-        "aadhar_card",
-        "Aadhar Card Number",
-        GlobeIcon,
-        "text",
-        "Enter Aadhar number"
-    ),
-    createFieldConfig("pan_card", "PAN Card Number", UserIcon, "text", "Enter PAN number"),
-];
-
-const educationFieldsEmployee: FieldConfig<IUpdateEmployeeValues>[] = [
-    createFieldConfig("degree", "Degree", GlobeIcon, "text", "Enter degree"),
-    createFieldConfig(
-        "college_name",
-        "College/University",
-        GlobeIcon,
-        "text",
-        "Enter college/university"
-    ),
-    createFieldConfig("designation", "Designation", UserIcon, "text", "Enter designation"),
-    createFieldConfig(
-        "start_month_year",
-        "Start Month/Year",
-        CalendarIcon,
-        "month",
-        "Select month/year"
-    ),
-    createFieldConfig(
-        "end_month_year",
-        "End Month/Year",
-        CalendarIcon,
-        "month",
-        "Select month/year"
-    ),
-];
-
-const pfFieldsEmployee: FieldConfig<IUpdateEmployeeValues>[] = [
-    createFieldConfig(
-        "pf_account_no",
-        "PF Account Number",
-        GlobeIcon,
-        "text",
-        "Enter PF account number"
-    ),
-    createFieldConfig("uan_no", "UAN Number", GlobeIcon, "text", "Enter UAN number"),
-    createFieldConfig("esi_no", "ESI Number", GlobeIcon, "text", "Enter ESI number"),
-];
-
-const basicFieldsAdmin: FieldConfig<ICreateAdminValues | IUpdateAdminValues>[] = [
-    createFieldConfig("firstname", "First Name", UserIcon, "text", "Enter first name"),
-    createFieldConfig("lastname", "Last Name", UserIcon, "text", "Enter last name"),
-    createFieldConfig("email", "Email", MailIcon, "email", "Enter email"),
-];
-
-const dateFieldsAdmin: FieldConfig<ICreateAdminValues | IUpdateAdminValues>[] = [
-    createFieldConfig("date_of_birth", "Date of Birth", CalendarIcon, "date", "Select date"),
-    createFieldConfig("date_of_joining", "Date of Joining", CalendarIcon, "date", "Select date"),
-];
-
-const contactFieldsAdmin: FieldConfig<IUpdateAdminValues>[] = [
-    createFieldConfig("residential", "Residential Address", MapPinIcon, "text", "Enter address"),
-    createFieldConfig("city", "City", GlobeIcon, "text", "Enter city"),
-];
-
-const bankFieldsAdmin: FieldConfig<IUpdateAdminValues>[] = [
-    createFieldConfig("bank_name", "Bank Name", GlobeIcon, "text", "Enter bank name"),
-    createFieldConfig(
-        "account_holder_name",
-        "Account Holder Name",
-        UserIcon,
-        "text",
-        "Enter account holder name"
-    ),
-];
-
-const documentFieldsAdmin: FieldConfig<IUpdateAdminValues>[] = [
-    createFieldConfig(
-        "aadhar_card",
-        "Aadhar Card Number",
-        GlobeIcon,
-        "text",
-        "Enter Aadhar number"
-    ),
-    createFieldConfig("pan_card", "PAN Card Number", UserIcon, "text", "Enter PAN number"),
-];
-
-const educationFieldsAdmin: FieldConfig<IUpdateAdminValues>[] = [
-    createFieldConfig("degree", "Degree", GlobeIcon, "text", "Enter degree"),
-    createFieldConfig(
-        "college_name",
-        "College/University",
-        GlobeIcon,
-        "text",
-        "Enter college/university"
-    ),
-    createFieldConfig("designation", "Designation", UserIcon, "text", "Enter designation"),
-    createFieldConfig(
-        "start_month_year",
-        "Start Month/Year",
-        CalendarIcon,
-        "month",
-        "Select month/year"
-    ),
-    createFieldConfig(
-        "end_month_year",
-        "End Month/Year",
-        CalendarIcon,
-        "month",
-        "Select month/year"
-    ),
-];
-
-const pfFieldsAdmin: FieldConfig<IUpdateAdminValues>[] = [
-    createFieldConfig(
-        "pf_account_no",
-        "PF Account Number",
-        GlobeIcon,
-        "text",
-        "Enter PF account number"
-    ),
-    createFieldConfig("uan_no", "UAN Number", GlobeIcon, "text", "Enter UAN number"),
-    createFieldConfig("esi_no", "ESI Number", GlobeIcon, "text", "Enter ESI number"),
-];
+const commonFields = {
+    basic: [
+        {
+            id: "firstname",
+            label: "First Name",
+            type: "text",
+            placeholder: "Enter first name",
+        },
+        {
+            id: "middlename",
+            label: "Middle Name",
+            type: "text",
+            placeholder: "Enter middle name",
+        },
+        {
+            id: "lastname",
+            label: "Last Name",
+            type: "text",
+            placeholder: "Enter last name",
+        },
+        {
+            id: "employee_id",
+            label: "Employee ID",
+            type: "text",
+            placeholder: "Enter employee ID",
+        },
+        { id: "email", label: "Email", type: "email", placeholder: "Enter email" },
+        {
+            id: "nationality",
+            label: "Nationality",
+            type: "text",
+            placeholder: "Enter nationality",
+        },
+        {
+            id: "designation",
+            label: "Designation",
+            type: "text",
+            placeholder: "Enter designation",
+        },
+    ],
+    date: [
+        {
+            id: "date_of_birth",
+            label: "Date of Birth",
+            type: "date",
+            placeholder: "Select date",
+        },
+        {
+            id: "date_of_joining",
+            label: "Date of Joining",
+            type: "date",
+            placeholder: "Select date",
+        },
+        {
+            id: "last_working_date",
+            label: "Last Working Date",
+            type: "date",
+            placeholder: "Select date",
+        },
+        {
+            id: "probation_end_date",
+            label: "Probation End Date",
+            type: "date",
+            placeholder: "Select date",
+        },
+        {
+            id: "salary_increment_date",
+            label: "Salary Increment Date",
+            type: "date",
+            placeholder: "Select date",
+        },
+    ],
+    contact: [
+        {
+            id: "residential",
+            label: "Residential Address",
+            type: "text",
+            placeholder: "Enter address",
+        },
+        { id: "city", label: "City", type: "text", placeholder: "Enter city" },
+        { id: "state", label: "State", type: "text", placeholder: "Enter state" },
+        {
+            id: "country",
+            label: "Country",
+            type: "text",
+            placeholder: "Enter country",
+        },
+        {
+            id: "pincode",
+            label: "Pincode",
+            type: "number",
+            placeholder: "Enter pincode",
+        },
+        {
+            id: "personal",
+            label: "Personal Contact",
+            type: "number",
+            placeholder: "Enter contact number",
+        },
+        {
+            id: "home",
+            label: "Home Contact",
+            type: "number",
+            placeholder: "Enter contact number",
+        },
+    ],
+    bank: [
+        {
+            id: "bank_name",
+            label: "Bank Name",
+            type: "text",
+            placeholder: "Enter bank name",
+        },
+        {
+            id: "account_holder_name",
+            label: "Account Holder Name",
+            type: "text",
+            placeholder: "Enter account holder name",
+        },
+        {
+            id: "account_no",
+            label: "Account Number",
+            type: "number",
+            placeholder: "Enter account number",
+        },
+        {
+            id: "branch_name",
+            label: "Branch Name",
+            type: "text",
+            placeholder: "Enter branch name",
+        },
+        {
+            id: "ifsc_code",
+            label: "IFSC Code",
+            type: "text",
+            placeholder: "Enter IFSC code",
+        },
+    ],
+    document: [
+        {
+            id: "aadhar_card",
+            label: "Aadhar Card Number",
+            type: "text",
+            placeholder: "Enter Aadhar number",
+        },
+        {
+            id: "pan_card",
+            label: "PAN Card Number",
+            type: "text",
+            placeholder: "Enter PAN number",
+        },
+    ],
+    education: [
+        {
+            id: "degree",
+            label: "Degree",
+            type: "text",
+            placeholder: "Enter degree",
+        },
+        {
+            id: "college_name",
+            label: "College/University",
+            type: "text",
+            placeholder: "Enter college/university",
+        },
+        {
+            id: "designation",
+            label: "Designation",
+            type: "text",
+            placeholder: "Enter designation",
+        },
+        {
+            id: "start_month_year",
+            label: "Start Month/Year",
+            type: "month",
+            placeholder: "Select month/year",
+        },
+        {
+            id: "end_month_year",
+            label: "End Month/Year",
+            type: "month",
+            placeholder: "Select month/year",
+        },
+    ],
+    pf: [
+        {
+            id: "pf_account_no",
+            label: "PF Account Number",
+            type: "text",
+            placeholder: "Enter PF account number",
+        },
+        {
+            id: "uan_no",
+            label: "UAN Number",
+            type: "text",
+            placeholder: "Enter UAN number",
+        },
+        {
+            id: "esi_no",
+            label: "ESI Number",
+            type: "text",
+            placeholder: "Enter ESI number",
+        },
+    ],
+};
+const createFields = <T>(field: keyof typeof commonFields): FieldConfig<T>[] =>
+    commonFields[field].map((f) => ({
+        id: f.id as keyof T,
+        label: f.label,
+        type: f.type,
+        placeholder: f.placeholder,
+    }));
 
 const employeeFields = {
-    basic: basicFieldsEmployee,
-    date: dateFieldsEmployee,
-    contact: contactFieldsEmployee,
-    bank: bankFieldsEmployee,
-    document: documentFieldsEmployee,
-    education: educationFieldsEmployee,
-    pf: pfFieldsEmployee,
+    basic: createFields<ICreateEmployeeValues | IUpdateEmployeeValues>("basic"),
+    date: createFields<ICreateEmployeeValues | IUpdateEmployeeValues>("date"),
+    contact: createFields<IUpdateEmployeeValues>("contact"),
+    bank: createFields<IUpdateEmployeeValues>("bank"),
+    document: createFields<IUpdateEmployeeValues>("document"),
+    education: createFields<IUpdateEmployeeValues>("education"),
+    pf: createFields<IUpdateEmployeeValues>("pf"),
 };
 
 const adminFields = {
-    basic: basicFieldsAdmin,
-    date: dateFieldsAdmin,
-    contact: contactFieldsAdmin,
-    bank: bankFieldsAdmin,
-    document: documentFieldsAdmin,
-    education: educationFieldsAdmin,
-    pf: pfFieldsAdmin,
+    basic: createFields<ICreateAdminValues | IUpdateAdminValues>("basic"),
+    date: createFields<ICreateAdminValues | IUpdateAdminValues>("date"),
+    contact: createFields<IUpdateAdminValues>("contact"),
+    bank: createFields<IUpdateAdminValues>("bank"),
+    document: createFields<IUpdateAdminValues>("document"),
+    education: createFields<IUpdateAdminValues>("education"),
+    pf: createFields<IUpdateAdminValues>("pf"),
 };
 
 export { employeeFields, adminFields };

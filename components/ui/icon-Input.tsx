@@ -32,8 +32,8 @@ export const IconInput = ({
     );
 
     return (
-        <div className="space-y-1">
-            <Label htmlFor={id} className="font-medium text-sm">
+        <div className="space-y-2">
+            <Label htmlFor={id} className="font-medium text-sm" aria-label={label}>
                 {label}
             </Label>
             <div className="relative">
@@ -43,7 +43,7 @@ export const IconInput = ({
                     ref={ref}
                     type={type}
                     className={`
-                        block w-full rounded-lg border 
+                        block w-full rounded-sm border 
                         ${Icon ? "pl-10" : "pl-4"} pr-4 
                         py-2 transition-shadow focus:shadow-outline 
                         ${className}

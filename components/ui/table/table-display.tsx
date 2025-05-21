@@ -68,72 +68,73 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                         ))}
                     </TableRow>
                 </TableHeader>
+
                 {loading ? (
                     <SkeletonTable rows={5} columns={columns} />
+                ) : !data?.data || data.data.length === 0 ? (
+                    <TableNotFound colSpan={columns.length} />
                 ) : (
                     <TableBody>
-                        {!data?.data || data.data.length === 0 ? (
-                            <TableNotFound colSpan={columns.length} />
-                        ) : (
-                            data.data.map((obj, index) => (
-                                <TableRow
-                                    key={obj.id}
-                                    className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100 transition-colors`}
-                                >
-                                    {!admin && <TableCell className="px-4 py-2">{obj.employee_id ?? "-"}</TableCell>}
-                                    <TableCell className="px-4 py-2">
-                                        {obj.firstname} {obj.lastname ?? ""}
-                                    </TableCell>
-                                    <TableCell className="px-4 py-2">{obj.email}</TableCell>
-                                    <TableCell className="px-4 py-2">₹0.00</TableCell>
-                                    <TableCell className="px-4 py-2">{obj.designation ?? "-"}</TableCell>
-                                    <TableCell className="px-4 py-2">
-                                        {format(new Date(obj.date_of_joining), "dd MMM yyyy")}
-                                    </TableCell>
-                                    <TableCell className="px-4 py-2">
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded font-medium inline-block ${obj.status === "active" ? "bg-blue-100 text-blue-700" : "bg-red-100 text-red-700"
-                                                }`}
-                                        >
-                                            {obj.status}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell className="px-4 py-2 text-center">
-                                        <div className="flex justify-start items-center gap-3">
-                                            {!admin && onCopyLoginLink && (
-                                                <Button
-                                                    size="icon"
-                                                    variant="ghost"
-                                                    className="hover:bg-blue-50"
-                                                    aria-label="Copy Login Link"
-                                                    onClick={() => {
-                                                        onCopyLoginLink(obj.id);
-                                                        toast.success("Copied to clipboard");
-                                                    }}
-                                                >
-                                                    <UserCircle2Icon className="w-4 h-4 text-blue-600" />
-                                                </Button>
-                                            )}
-                                            <Link
-                                                href={`/${admin ? "admin" : "employees"}/${obj.id}`}
-                                                className="text-blue-600 hover:text-blue-800"
-                                            >
-                                                <Pencil className="w-4 h-4" />
-                                            </Link>
+                        {data.data.map((obj, index) => (
+                            <TableRow
+                                key={obj.id}
+                                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100 transition-colors`}
+                            >
+                                {!admin && <TableCell className="px-4 py-2">{obj.employee_id ?? "-"}</TableCell>}
+                                <TableCell className="px-4 py-2">
+                                    {obj.firstname} {obj.lastname ?? ""}
+                                </TableCell>
+                                <TableCell className="px-4 py-2">{obj.email}</TableCell>
+                                <TableCell className="px-4 py-2">₹0.00</TableCell>
+                                <TableCell className="px-4 py-2">{obj.designation ?? "-"}</TableCell>
+                                <TableCell className="px-4 py-2">
+                                    {format(new Date(obj.date_of_joining), "dd MMM yyyy")}
+                                </TableCell>
+                                <TableCell className="px-4 py-2">
+                                    <span
+                                        className={`px-2 py-1 text-xs rounded font-medium inline-block ${obj.status === "active"
+                                            ? "bg-blue-100 text-blue-700"
+                                            : "bg-red-100 text-red-700"
+                                            }`}
+                                    >
+                                        {obj.status}
+                                    </span>
+                                </TableCell>
+                                <TableCell className="px-4 py-2 text-center">
+                                    <div className="flex justify-start items-center gap-3">
+                                        {!admin && onCopyLoginLink && (
                                             <Button
                                                 size="icon"
                                                 variant="ghost"
-                                                className="hover:bg-red-50"
-                                                aria-label="Delete"
-                                                onClick={() => onDelete(obj.id)}
+                                                className="hover:bg-blue-50"
+                                                aria-label="Copy Login Link"
+                                                onClick={() => {
+                                                    onCopyLoginLink(obj.id);
+                                                    toast.success("Copied to clipboard");
+                                                }}
                                             >
-                                                <Trash className="w-4 h-4 text-red-600" />
+                                                <UserCircle2Icon className="w-4 h-4 text-blue-600" />
                                             </Button>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
+                                        )}
+                                        <Link
+                                            href={`/${admin ? "admin" : "employees"}/${obj.id}`}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            <Pencil className="w-4 h-4" />
+                                        </Link>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            className="hover:bg-red-50"
+                                            aria-label="Delete"
+                                            onClick={() => onDelete(obj.id)}
+                                        >
+                                            <Trash className="w-4 h-4 text-red-600" />
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 )}
             </Table>
