@@ -1,12 +1,4 @@
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardHeader,
-    CardContent,
-    CardFooter,
-    CardTitle,
-} from "@/components/ui/card";
 import { Form, FormControl } from "@/components/ui/form";
 import {
     Select,
@@ -17,74 +9,15 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import {
-    Calendar as CalendarIcon,
-    User as UserIcon,
-    Mail as MailIcon,
-    Globe as GlobeIcon,
-    Lock as LockIcon,
-    Phone as PhoneIcon,
-    MapPin as MapPinIcon,
-    LucideIcon,
-} from "lucide-react";
 import { IconInput } from "@/components/ui/icon-Input";
 import { IAdminValues, ICreateAdminValues, IUpdateAdminValues } from '@/types/admin';
 import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, statusList } from '@/helper/helper';
 import { Label } from '@/components/ui/label';
-import { DialogClose } from '@/components/ui/dialog';
-import { useRouter } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
-
-const basicFields = [
-    { id: "firstname", label: "First Name", icon: UserIcon, type: "text", placeholder: "Enter first name" },
-    { id: "middlename", label: "Middle Name", icon: UserIcon, type: "text", placeholder: "Enter middle name" },
-    { id: "lastname", label: "Last Name", icon: UserIcon, type: "text", placeholder: "Enter last name" },
-    { id: "nationality", label: "Nationality", icon: GlobeIcon, type: "text", placeholder: "Enter nationality" },
-    { id: "email", label: "Email", icon: MailIcon, type: "email", placeholder: "Enter email" },
-];
-
-const dateFields = [
-    { id: "date_of_birth", label: "Date of Birth", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-    { id: "date_of_joining", label: "Date of Joining", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-    { id: "probation_end_date", label: "Probation End Date", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-];
-
-const contactFields = [
-    { id: "residential", label: "Residential Address", icon: MapPinIcon, type: "text", placeholder: "Enter address" },
-    { id: "city", label: "City", icon: GlobeIcon, type: "text", placeholder: "Enter city" },
-    { id: "state", label: "State", icon: MapPinIcon, type: "text", placeholder: "Enter state" },
-    { id: "country", label: "Country", icon: GlobeIcon, type: "text", placeholder: "Enter country" },
-    { id: "pincode", label: "Pincode", icon: MapPinIcon, type: "number", placeholder: "Enter pincode" },
-    { id: "personal", label: "Personal Contact", icon: PhoneIcon, type: "number", placeholder: "Enter contact number" },
-    { id: "home", label: "Home Contact", icon: PhoneIcon, type: "number", placeholder: "Enter contact number" },
-];
-
-const bankFields = [
-    { id: "bank_name", label: "Bank Name", icon: GlobeIcon, type: "text", placeholder: "Enter bank name" },
-    { id: "account_holder_name", label: "Account Holder Name", icon: UserIcon, type: "text", placeholder: "Enter account holder name" },
-    { id: "account_no", label: "Account Number", icon: GlobeIcon, type: "number", placeholder: "Enter account number" },
-    { id: "branch_name", label: "Branch Name", icon: MapPinIcon, type: "text", placeholder: "Enter branch name" },
-    { id: "ifsc_code", label: "IFSC Code", icon: GlobeIcon, type: "text", placeholder: "Enter IFSC code" },
-];
-
-const documentFields = [
-    { id: "aadhar_card", label: "Aadhar Card Number", icon: GlobeIcon, type: "text", placeholder: "Enter Aadhar number" },
-    { id: "pan_card", label: "PAN Card Number", icon: UserIcon, type: "text", placeholder: "Enter PAN number" },
-];
-
-const educationFields = [
-    { id: "degree", label: "Degree", icon: GlobeIcon, type: "text", placeholder: "Enter degree" },
-    { id: "college_name", label: "College/University", icon: GlobeIcon, type: "text", placeholder: "Enter college/university" },
-    { id: "designation", label: "Designation", icon: UserIcon, type: "text", placeholder: "Enter designation" },
-    { id: "start_month_year", label: "Start Month/Year", icon: CalendarIcon, type: "month", placeholder: "Select month/year" },
-    { id: "end_month_year", label: "End Month/Year", icon: CalendarIcon, type: "month", placeholder: "Select month/year" },
-];
-
-const pfFields = [
-    { id: "pf_account_no", label: "PF Account Number", icon: GlobeIcon, type: "text", placeholder: "Enter PF account number" },
-    { id: "uan_no", label: "UAN Number", icon: GlobeIcon, type: "text", placeholder: "Enter UAN number" },
-    { id: "esi_no", label: "ESI Number", icon: GlobeIcon, type: "text", placeholder: "Enter ESI number" },
-];
+import InputGroup from '@/components/ui/form/input-group';
+import { FormFooter } from '@/components/ui/form/form-footer';
+import { FormSection } from '@/components/ui/form/form-section';
+import { adminFields } from '@/constants/fields';
+import { CalendarIcon, LockIcon } from 'lucide-react';
 
 interface AdminFormProps {
     data?: IAdminValues;
@@ -93,8 +26,6 @@ interface AdminFormProps {
 }
 
 export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
-    const router = useRouter();
-
     const getDefaultValues = (): ICreateAdminValues | IUpdateAdminValues => {
         if (!isEditing) {
             return {
@@ -134,7 +65,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                 country: data.address?.country ?? '',
                 bank_name: data.bank_info?.bank_name ?? '',
                 account_holder_name: data.bank_info?.account_holder_name ?? '',
-                account_no: data.bank_info?.account_no ?? 0,
+                account_no: data.bank_info?.account_no ?? null,
                 branch_name: data.bank_info?.branch_name ?? '',
                 ifsc_code: data.bank_info?.ifsc_code ?? '',
                 account_type: data.bank_info?.account_type ?? '',
@@ -158,39 +89,13 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
         defaultValues: getDefaultValues(),
     });
 
-    const FormSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-        <Card className="border-0 shadow-none bg-transparent">
-            <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-800">{title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 p-6">{children}</CardContent>
-            <Separator className="bg-gray-500/50 sm:max-w-[80vw] xl:max-w-[86vw] mx-auto" />
-        </Card>
-    );
 
-    const InputGroup = ({ fields }: { fields: { id: string; label: string; icon: LucideIcon; type: string; placeholder: string }[] }) => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {fields.map((field) => (
-                <FormControl key={field.id}>
-                    <IconInput
-                        label={field.label}
-                        id={field.id}
-                        type={field.type}
-                        icon={field.icon}
-                        placeholder={field.placeholder}
-                        {...form.register(field.id as keyof ICreateAdminValues)}
-                        className="border-gray-300"
-                    />
-                </FormControl>
-            ))}
-        </div>
-    );
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mx-auto bg-white">
                 <FormSection title="Basic Details">
-                    <InputGroup fields={basicFields} />
+                    <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.basic} register={form.register} />
                     {!isEditing && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <FormControl>
@@ -245,7 +150,7 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                             </RadioGroup>
                         </div>
                     </div>
-                    <InputGroup fields={dateFields.filter((f) => f)} />
+                    <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.date} register={form.register} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
@@ -318,27 +223,13 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                 {isEditing && (
                     <>
                         <FormSection title="Contact Details">
-                            <InputGroup fields={contactFields.slice(0, 3)} />
-                            <InputGroup fields={contactFields.slice(3, 6)} />
-                            <InputGroup fields={contactFields.slice(6)} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.contact.slice(0, 2)} register={form.register} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.contact.slice(2)} register={form.register} />
                         </FormSection>
 
                         <FormSection title="Bank Details">
-                            <InputGroup fields={bankFields.slice(0, 3)} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.bank} register={form.register} />
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {bankFields.slice(3, 5).map((field) => (
-                                    <FormControl key={field.id}>
-                                        <IconInput
-                                            label={field.label}
-                                            id={field.id}
-                                            type={field.type}
-                                            icon={field.icon}
-                                            placeholder={field.placeholder}
-                                            {...form.register(field.id as keyof ICreateAdminValues)}
-                                            className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                    </FormControl>
-                                ))}
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700">Account Type</Label>
                                     <Select
@@ -362,56 +253,21 @@ export function AdminForm({ data, isEditing, onSubmit }: AdminFormProps) {
                         </FormSection>
 
                         <FormSection title="Document Details">
-                            <InputGroup fields={documentFields} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.document} register={form.register} />
                         </FormSection>
 
                         <FormSection title="Education Details">
-                            <InputGroup fields={educationFields.slice(0, 3)} />
-                            <InputGroup fields={educationFields.slice(3)} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.education.slice(0, 3)} register={form.register} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.education.slice(3)} register={form.register} />
                         </FormSection>
 
                         <FormSection title="PF A/C, UAN & ESI Details">
-                            <InputGroup fields={pfFields} />
+                            <InputGroup<ICreateAdminValues | IUpdateAdminValues> fields={adminFields.pf} register={form.register} />
                         </FormSection>
                     </>
                 )}
 
-                <CardFooter
-                    className={`${isEditing ? "fixed bottom-0 left-0 right-0" : "sticky bottom-0"} z-50 py-3 sm:py-4 border-gray-200`}
-                >
-                    <div className="flex justify-end space-x-2 sm:space-x-3 mx-auto w-full px-4 sm:px-6">
-                        {isEditing ? (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.back()}
-                                className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                                disabled={form.formState.isSubmitting}
-                            >
-                                Cancel
-                            </Button>
-                        ) : (
-                            <DialogClose asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                                    disabled={form.formState.isSubmitting}
-                                >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                        )}
-                        <Button
-                            type="submit"
-                            disabled={form.formState.isSubmitting}
-                            loading={form.formState.isSubmitting}
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                        >
-                            Save
-                        </Button>
-                    </div>
-                </CardFooter>
+                <FormFooter editing={isEditing} submitting={form.formState.isSubmitting} />
             </form>
         </Form>
     );

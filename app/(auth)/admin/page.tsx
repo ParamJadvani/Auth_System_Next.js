@@ -31,7 +31,7 @@ const filterConfigs = [
 export default function AdminPage() {
     const [data, setData] = useState<AdminsResponse | null>(null);
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = useState(false); // For Dialog
+    const [open, setOpen] = useState(false);
     const prevParamsRef = useRef<string>("");
     const isInitialRender = useRef(true);
 

@@ -1,12 +1,4 @@
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardHeader,
-    CardContent,
-    CardFooter,
-    CardTitle,
-} from "@/components/ui/card";
 import { Form, FormControl } from "@/components/ui/form";
 import {
     Select,
@@ -17,89 +9,15 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import {
-    Calendar as CalendarIcon,
-    User as UserIcon,
-    Mail as MailIcon,
-    Globe as GlobeIcon,
-    Lock as LockIcon,
-    Phone as PhoneIcon,
-    MapPin as MapPinIcon,
-    LucideIcon,
-} from "lucide-react";
 import { IconInput } from "@/components/ui/icon-Input";
 import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, salary_Contract_Period, statusList } from '@/helper/helper';
 import { Label } from '@/components/ui/label';
-import { DialogClose } from '@/components/ui/dialog';
-import { useRouter } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
 import { ICreateEmployeeValues, IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
-
-// Field Configuration Interface
-interface FieldConfig {
-    id: string;
-    label: string;
-    icon: LucideIcon;
-    type: string;
-    placeholder: string;
-    required?: boolean;
-}
-
-// Centralized Field Configurations
-const basicFields: FieldConfig[] = [
-    { id: "firstname", label: "First Name", icon: UserIcon, type: "text", placeholder: "Enter first name", required: true },
-    { id: "middlename", label: "Middle Name", icon: UserIcon, type: "text", placeholder: "Enter middle name" },
-    { id: "lastname", label: "Last Name", icon: UserIcon, type: "text", placeholder: "Enter last name", required: true },
-    { id: "employee_id", label: "Employee ID", icon: UserIcon, type: "text", placeholder: "Enter employee ID" },
-    { id: "nationality", label: "Nationality", icon: GlobeIcon, type: "text", placeholder: "Enter nationality", required: true },
-    { id: "email", label: "Email", icon: MailIcon, type: "email", placeholder: "Enter email", required: true },
-];
-
-const dateFields: FieldConfig[] = [
-    { id: "date_of_birth", label: "Date of Birth", icon: CalendarIcon, type: "date", placeholder: "Select date", required: true },
-    { id: "date_of_joining", label: "Date of Joining", icon: CalendarIcon, type: "date", placeholder: "Select date", required: true },
-    { id: "probation_end_date", label: "Probation End Date", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-    { id: "salary_increment_date", label: "Salary Increment Date", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-    { id: "next_increment_date", label: "Next Increment Date", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-    { id: "last_working_date", label: "Last Working Date", icon: CalendarIcon, type: "date", placeholder: "Select date" },
-];
-
-const contactFields: FieldConfig[] = [
-    { id: "residential", label: "Residential Address", icon: MapPinIcon, type: "text", placeholder: "Enter address", required: true },
-    { id: "city", label: "City", icon: GlobeIcon, type: "text", placeholder: "Enter city", required: true },
-    { id: "state", label: "State", icon: MapPinIcon, type: "text", placeholder: "Enter state", required: true },
-    { id: "country", label: "Country", icon: GlobeIcon, type: "text", placeholder: "Enter country", required: true },
-    { id: "pincode", label: "Pincode", icon: MapPinIcon, type: "number", placeholder: "Enter pincode", required: true },
-    { id: "personal", label: "Personal Contact", icon: PhoneIcon, type: "number", placeholder: "Enter contact number", required: true },
-    { id: "home", label: "Home Contact", icon: PhoneIcon, type: "number", placeholder: "Enter contact number" },
-];
-
-const bankFields: FieldConfig[] = [
-    { id: "bank_name", label: "Bank Name", icon: GlobeIcon, type: "text", placeholder: "Enter bank name", required: true },
-    { id: "account_holder_name", label: "Account Holder Name", icon: UserIcon, type: "text", placeholder: "Enter account holder name", required: true },
-    { id: "account_no", label: "Account Number", icon: GlobeIcon, type: "number", placeholder: "Enter account number", required: true },
-    { id: "branch_name", label: "Branch Name", icon: MapPinIcon, type: "text", placeholder: "Enter branch name", required: true },
-    { id: "ifsc_code", label: "IFSC Code", icon: GlobeIcon, type: "text", placeholder: "Enter IFSC code", required: true },
-];
-
-const documentFields: FieldConfig[] = [
-    { id: "aadhar_card", label: "Aadhar Card Number", icon: GlobeIcon, type: "text", placeholder: "Enter Aadhar number", required: true },
-    { id: "pan_card", label: "PAN Card Number", icon: UserIcon, type: "text", placeholder: "Enter PAN number", required: true },
-];
-
-const educationFields: FieldConfig[] = [
-    { id: "degree", label: "Degree", icon: GlobeIcon, type: "text", placeholder: "Enter degree", required: true },
-    { id: "college_name", label: "College/University", icon: GlobeIcon, type: "text", placeholder: "Enter college/university", required: true },
-    { id: "designation", label: "Designation", icon: UserIcon, type: "text", placeholder: "Enter designation" },
-    { id: "start_month_year", label: "Start Month/Year", icon: CalendarIcon, type: "month", placeholder: "Select month/year", required: true },
-    { id: "end_month_year", label: "End Month/Year", icon: CalendarIcon, type: "month", placeholder: "Select month/year" },
-];
-
-const pfFields: FieldConfig[] = [
-    { id: "pf_account_no", label: "PF Account Number", icon: GlobeIcon, type: "text", placeholder: "Enter PF account number" },
-    { id: "uan_no", label: "UAN Number", icon: GlobeIcon, type: "text", placeholder: "Enter UAN number" },
-    { id: "esi_no", label: "ESI Number", icon: GlobeIcon, type: "text", placeholder: "Enter ESI number" },
-];
+import InputGroup from '@/components/ui/form/input-group';
+import { FormSection } from '@/components/ui/form/form-section';
+import { FormFooter } from '@/components/ui/form/form-footer';
+import { employeeFields } from '@/constants/fields';
+import { LockIcon } from 'lucide-react';
 
 interface EmployeeFormProps {
     data?: IEmployeeValues;
@@ -108,8 +26,6 @@ interface EmployeeFormProps {
 }
 
 export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
-    const router = useRouter();
-
     const getDefaultValues = (): ICreateEmployeeValues | IUpdateEmployeeValues => {
         if (!isEditing) {
             return {
@@ -154,7 +70,7 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                 country: data.address?.country ?? '',
                 bank_name: data.bank_info?.bank_name ?? '',
                 account_holder_name: data.bank_info?.account_holder_name ?? '',
-                account_no: data.bank_info?.account_no ?? 0,
+                account_no: data.bank_info?.account_no ?? null,
                 branch_name: data.bank_info?.branch_name ?? '',
                 ifsc_code: data.bank_info?.ifsc_code ?? '',
                 account_type: data.bank_info?.account_type ?? '',
@@ -166,11 +82,11 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                 probation_end_date: processDate(data.probation_end_date, 'date'),
                 start_month_year: processDate(data.education_info?.start_month_year, 'month'),
                 end_month_year: processDate(data.education_info?.end_month_year, 'month'),
-                pincode: data.address?.pincode ?? 0,
-                home: data.contact_no?.home ?? 0,
-                personal: data.contact_no?.personal ?? 0,
+                pincode: data.address?.pincode ?? null,
+                home: data.contact_no?.home ?? null,
+                personal: data.contact_no?.personal ?? null,
                 employee_id: data.employee_id ?? '',
-                salary_contract_period: data.salary_contract_period || null,
+                salary_contract_period: data.salary_contract_period || '',
                 salary_increment_date: processDate(data.salary_increment_date, 'date'),
                 next_increment_date: processDate(data.next_increment_date, 'date'),
                 status: data.status ?? '',
@@ -191,40 +107,15 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
         defaultValues: getDefaultValues(),
     });
 
-    const FormSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-        <Card className="border-0 shadow-none bg-transparent">
-            <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-800">{title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 p-6">{children}</CardContent>
-            <Separator className="bg-gray-500/50 sm:max-w-[80vw] xl:max-w-[86vw] mx-auto" />
-        </Card>
-    );
-
-    const InputGroup = ({ fields }: { fields: FieldConfig[] }) => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {fields.map((field) => (
-                <FormControl key={field.id}>
-                    <IconInput
-                        label={field.label}
-                        id={field.id}
-                        type={field.type}
-                        icon={field.icon}
-                        placeholder={field.placeholder}
-                        {...form.register(field.id as keyof ICreateEmployeeValues)}
-                        className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                        aria-required={field.required}
-                    />
-                </FormControl>
-            ))}
-        </div>
-    );
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mx-auto bg-white rounded-md">
                 <FormSection title="Basic Details">
-                    <InputGroup fields={basicFields.slice(0, 4)} />
+                    <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                        fields={employeeFields.basic}
+                        register={form.register}
+                        classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                    />
                     {!isEditing && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <FormControl>
@@ -242,22 +133,6 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                         </div>
                     )}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {
-                            basicFields.slice(4).map((field) => (
-                                <FormControl key={field.id}>
-                                    <IconInput
-                                        label={field.label}
-                                        id={field.id}
-                                        type={field.type}
-                                        icon={field.icon}
-                                        placeholder={field.placeholder}
-                                        {...form.register(field.id as keyof IUpdateEmployeeValues)}
-                                        className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                        aria-required={field.required}
-                                    />
-                                </FormControl>
-                            ))
-                        }
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
                                 Gender <span className="text-red-500">*</span>
@@ -295,7 +170,11 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                             </RadioGroup>
                         </div>
                     </div>
-                    <InputGroup fields={dateFields.slice(0, 4)} />
+                    <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                        fields={employeeFields.date}
+                        register={form.register}
+                        classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                    />
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
@@ -341,14 +220,12 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                             <Label className="text-sm font-medium text-gray-700">Salary Contract Period</Label>
                             <Select
                                 value={form.watch("salary_contract_period") || ""}
-                                onValueChange={(value) => {
-                                    form.setValue("salary_contract_period", value);
-                                }}
+                                onValueChange={(value) => form.setValue("salary_contract_period", value)}
                                 aria-label="Salary Contract Period"
                             >
                                 <SelectTrigger className="border-gray-300 focus:ring-blue-500">
-                                    <SelectValue placeholder="Select Contract Period" >
-                                        {form.watch("salary_contract_period")?.toString() ?? "Select Contract Period"}
+                                    <SelectValue placeholder="Select Contract Period">
+                                        {form.watch("salary_contract_period") || "Select Contract Period"}
                                     </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
@@ -366,12 +243,11 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                                 aria-label="Hold Percentage"
                             >
                                 <SelectTrigger className="border-gray-300 focus:ring-blue-500">
-                                    <SelectValue placeholder="Select percentage" >
+                                    <SelectValue placeholder="Select percentage">
                                         {form.watch("hold_percentage")?.toString() ?? "Select Percentage"}
                                     </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {/* <SelectItem value="none">Select percentage</SelectItem> */}
                                     {["30", "50", "100"].map((pct) => (
                                         <SelectItem key={pct} value={pct}>{pct}%</SelectItem>
                                     ))}
@@ -398,25 +274,20 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                 {isEditing && (
                     <>
                         <FormSection title="Contact Details">
-                            <InputGroup fields={contactFields.slice(0, 4)} />
-                            <InputGroup fields={contactFields.slice(4)} />
+                            <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                                fields={employeeFields.contact}
+                                register={form.register}
+                                classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                            />
                         </FormSection>
 
                         <FormSection title="Bank Details">
-                            <InputGroup fields={bankFields.slice(0, 4)} />
+                            <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                                fields={employeeFields.bank}
+                                register={form.register}
+                                classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                            />
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <FormControl>
-                                    <IconInput
-                                        label="IFSC Code"
-                                        id="ifsc_code"
-                                        type="text"
-                                        icon={GlobeIcon}
-                                        placeholder="Enter IFSC code"
-                                        {...form.register("ifsc_code")}
-                                        className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                        aria-required
-                                    />
-                                </FormControl>
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700">Account Type</Label>
                                     <Select
@@ -440,55 +311,31 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
                         </FormSection>
 
                         <FormSection title="Document Details">
-                            <InputGroup fields={documentFields} />
+                            <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                                fields={employeeFields.document}
+                                register={form.register}
+                                classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                            />
                         </FormSection>
 
                         <FormSection title="Education Details">
-                            <InputGroup fields={educationFields} />
+                            <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                                fields={employeeFields.education}
+                                register={form.register}
+                                classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                            />
                         </FormSection>
 
                         <FormSection title="PF A/C, UAN & ESI Details">
-                            <InputGroup fields={pfFields} />
+                            <InputGroup<ICreateEmployeeValues | IUpdateEmployeeValues>
+                                fields={employeeFields.pf}
+                                register={form.register}
+                                classname="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                            />
                         </FormSection>
                     </>
                 )}
-
-                <CardFooter
-                    className={`${isEditing ? "fixed bottom-0 left-0 right-0" : "sticky bottom-0"} z-50 py-3 sm:py-4 border-gray-200`}
-                >
-                    <div className="flex justify-end space-x-2 sm:space-x-3 mx-auto w-full px-4 sm:px-6">
-                        {isEditing ? (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.back()}
-                                className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                                disabled={form.formState.isSubmitting}
-                            >
-                                Cancel
-                            </Button>
-                        ) : (
-                            <DialogClose asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                                    disabled={form.formState.isSubmitting}
-                                >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                        )}
-                        <Button
-                            type="submit"
-                            disabled={form.formState.isSubmitting}
-                            loading={form.formState.isSubmitting}
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
-                        >
-                            Save
-                        </Button>
-                    </div>
-                </CardFooter>
+                <FormFooter editing={isEditing} submitting={form.formState.isSubmitting} />
             </form>
         </Form>
     );

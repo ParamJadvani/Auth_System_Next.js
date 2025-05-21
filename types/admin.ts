@@ -1,5 +1,6 @@
 // /types/admin.ts
 import { Address, BankInfo, ContactNo, EducationInfo } from "@/types/shared";
+import { LucideIcon } from "lucide-react";
 
 interface BaseAdminValues {
     firstname: string;

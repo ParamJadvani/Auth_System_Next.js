@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 // /types/shared.ts
 export interface Address {
     city: string;
@@ -26,4 +28,13 @@ export interface EducationInfo {
     college_name: string;
     start_month_year: string;
     end_month_year: string;
+}
+
+export interface FieldConfig<T> {
+    id: keyof T;
+    label: string;
+    icon: LucideIcon;
+    type: string;
+    placeholder: string;
+    required?: boolean;
 }
