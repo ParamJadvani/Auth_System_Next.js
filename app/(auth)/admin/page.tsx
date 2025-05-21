@@ -13,14 +13,14 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useSearchParams } from "next/navigation";
 import useAdmin from "@/hooks/use-Admin";
 import { AdminsResponse, ICreateAdminValues, IUpdateAdminValues } from "@/types/admin";
-import { AdminTable } from "@/components/admin/table";
 import { IconInput } from "@/components/ui/icon-Input";
 import { Pagination } from "@/components/ui/pagination";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { Search } from "@/components/search/Search";
+import { Search } from "@/components/ui/search";
 import { Label } from '@radix-ui/react-label';
 import { Separator } from '@/components/ui/separator';
 import { AdminForm } from '@/app/(auth)/admin/_AdminForm';
+import { TableDisplay } from '@/components/ui/table/table-display';
 
 const filterConfigs = [
     { key: "date_of_joining", label: "Date of Joining", type: "date" },
@@ -149,7 +149,7 @@ export default function AdminPage() {
                 </div>
             </div>
             <main>
-                <AdminTable data={data} onDelete={handleDelete} loading={loading} />
+                <TableDisplay data={data} onDelete={handleDelete} loading={loading} />
             </main>
             <Pagination
                 data={data?.meta}

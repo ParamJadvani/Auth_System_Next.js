@@ -1,17 +1,9 @@
 "use client";
-
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-
-interface ColumnConfig {
-    label: string;
-    key: string | null;
-    sortable: boolean;
-    width: string;
-}
 
 interface SkeletonTableProps {
     rows: number;
-    columns: ColumnConfig[];
+    columns: { width: string; }[];
 }
 
 export function SkeletonTable({ rows, columns }: SkeletonTableProps) {

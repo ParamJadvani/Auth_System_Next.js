@@ -13,7 +13,7 @@ import { Pencil, Trash, ChevronUp, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { AdminsResponse } from "@/types/admin";
-import { SkeletonTable } from "@/components/ui/table-skeleton";
+import { SkeletonTable } from "@/components/ui/table/table-skeleton";
 import { useQueryParams } from "@/hooks/use-query-params";
 
 interface AdminTableProps {

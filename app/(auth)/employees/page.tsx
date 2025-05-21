@@ -14,13 +14,13 @@ import { useSearchParams } from "next/navigation";
 import { IconInput } from "@/components/ui/icon-Input";
 import { Pagination } from "@/components/ui/pagination";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { Search } from "@/components/search/Search";
+import { Search } from "@/components/ui/search";
 import { Label } from '@radix-ui/react-label';
 import { Separator } from '@/components/ui/separator';
 import useEmployees from '@/hooks/use-employees';
 import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
-import { EmployeeTable } from '@/components/employee/table';
 import { EmployeeForm } from '@/app/(auth)/employees/_EmployeeForm';
+import { TableDisplay } from '@/components/ui/table/table-display';
 
 const filterConfigs = [
     { key: "date_of_joining", label: "Date of Joining", type: "date" },
@@ -143,13 +143,13 @@ export default function EmployeesPage() {
                         <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[80vw] xl:max-w-[1200px] max-h-[90vh] overflow-y-auto px-2 sm:px-6 py-4">
                             <DialogTitle className="text-2xl">Create New Employee</DialogTitle>
                             <Separator className="bg-gray-500/50" />
-                            <EmployeeForm isEditing={false} onSubmit={handleCreate} />
+                            <EmployeeForm onSubmit={handleCreate} />
                         </DialogContent>
                     </Dialog>
                 </div>
             </div>
             <main>
-                <EmployeeTable data={data} onDelete={handleDelete} loading={loading} onCopyLoginLink={getEmployeeLoginURL} />
+                <TableDisplay data={data} onDelete={handleDelete} admin={false} loading={loading} onCopyLoginLink={getEmployeeLoginURL} />
             </main>
             <Pagination
                 data={data?.meta}

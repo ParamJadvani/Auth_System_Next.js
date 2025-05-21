@@ -21,11 +21,11 @@ import { LockIcon } from 'lucide-react';
 
 interface EmployeeFormProps {
     data?: IEmployeeValues;
-    isEditing: boolean;
+    isEditing?: boolean;
     onSubmit: (data: ICreateEmployeeValues | IUpdateEmployeeValues) => Promise<void>;
 }
 
-export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
+export function EmployeeForm({ data, isEditing = false, onSubmit }: EmployeeFormProps) {
     const getDefaultValues = (): ICreateEmployeeValues | IUpdateEmployeeValues => {
         if (!isEditing) {
             return {
@@ -55,49 +55,49 @@ export function EmployeeForm({ data, isEditing, onSubmit }: EmployeeFormProps) {
         } else if (data) {
             return {
                 ...data,
-                middlename: data.middlename ?? '',
-                lastname: data.lastname ?? '',
-                designation: data.designation ?? '',
-                aadhar_card: data.aadhar_card ?? '',
-                pan_card: data.pan_card ?? '',
-                pf_account_no: data.pf_account_no ?? '',
-                uan_no: data.uan_no ?? '',
-                esi_no: data.esi_no ?? '',
-                blood_group: data.blood_group ?? '',
-                residential: data.address?.residential ?? '',
-                city: data.address?.city ?? '',
-                state: data.address?.state ?? '',
-                country: data.address?.country ?? '',
-                bank_name: data.bank_info?.bank_name ?? '',
-                account_holder_name: data.bank_info?.account_holder_name ?? '',
-                account_no: data.bank_info?.account_no ?? null,
-                branch_name: data.bank_info?.branch_name ?? '',
-                ifsc_code: data.bank_info?.ifsc_code ?? '',
-                account_type: data.bank_info?.account_type ?? '',
-                degree: data.education_info?.degree ?? '',
-                college_name: data.education_info?.college_name ?? '',
+                middlename: data.middlename,
+                lastname: data.lastname,
+                designation: data.designation,
+                aadhar_card: data.aadhar_card,
+                pan_card: data.pan_card,
+                pf_account_no: data.pf_account_no,
+                uan_no: data.uan_no,
+                esi_no: data.esi_no,
+                blood_group: data.blood_group,
+                residential: data.address?.residential,
+                city: data.address?.city,
+                state: data.address?.state,
+                country: data.address?.country,
+                bank_name: data.bank_info?.bank_name,
+                account_holder_name: data.bank_info?.account_holder_name,
+                account_no: data.bank_info?.account_no,
+                branch_name: data.bank_info?.branch_name,
+                ifsc_code: data.bank_info?.ifsc_code,
+                account_type: data.bank_info?.account_type,
+                degree: data.education_info?.degree,
+                college_name: data.education_info?.college_name,
                 date_of_birth: processDate(data.date_of_birth, 'date'),
                 last_working_date: processDate(data.last_working_date, 'date'),
                 date_of_joining: processDate(data.date_of_joining, 'date'),
                 probation_end_date: processDate(data.probation_end_date, 'date'),
                 start_month_year: processDate(data.education_info?.start_month_year, 'month'),
                 end_month_year: processDate(data.education_info?.end_month_year, 'month'),
-                pincode: data.address?.pincode ?? null,
-                home: data.contact_no?.home ?? null,
-                personal: data.contact_no?.personal ?? null,
-                employee_id: data.employee_id ?? '',
-                salary_contract_period: data.salary_contract_period || '',
+                pincode: data.address?.pincode,
+                home: data.contact_no?.home,
+                personal: data.contact_no?.personal,
+                employee_id: data.employee_id,
+                salary_contract_period: data.salary_contract_period,
                 salary_increment_date: processDate(data.salary_increment_date, 'date'),
                 next_increment_date: processDate(data.next_increment_date, 'date'),
-                status: data.status ?? '',
-                nationality: data.nationality ?? '',
-                email: data.email ?? '',
-                gender: data.gender ?? '',
-                marital_status: data.marital_status ?? '',
-                esi_contribution: data.esi_contribution ?? null,
-                pf_contribution: data.pf_contribution ?? null,
-                abry_contribution: data.abry_contribution ?? null,
-                hold_percentage: data.hold_percentage ?? null,
+                status: data.status,
+                nationality: data.nationality,
+                email: data.email,
+                gender: data.gender,
+                marital_status: data.marital_status,
+                esi_contribution: data.esi_contribution,
+                pf_contribution: data.pf_contribution,
+                abry_contribution: data.abry_contribution,
+                hold_percentage: data.hold_percentage,
             };
         }
         return {} as ICreateEmployeeValues | IUpdateEmployeeValues;

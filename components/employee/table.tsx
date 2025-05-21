@@ -12,7 +12,7 @@ import {
 import { Pencil, Trash, ChevronUp, ChevronDown, UserCircle2Icon } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
-import { SkeletonTable } from "@/components/ui/table-skeleton";
+import { SkeletonTable } from "@/components/ui/table/table-skeleton";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { EmployeesResponse } from '@/types/employees';
 import { toast } from 'react-toastify';

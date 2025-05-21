@@ -4,7 +4,6 @@ import React from "react";
 import {
     Card,
     CardDescription,
-    // CardFooter
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";

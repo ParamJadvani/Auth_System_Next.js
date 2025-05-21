@@ -63,7 +63,6 @@ export default function CompanyRegisterPage() {
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
-
                             <FormControl>
                                 <IconInput
                                     id="company_name"
@@ -73,7 +72,6 @@ export default function CompanyRegisterPage() {
                                     {...register("company_name")}
                                 />
                             </FormControl>
-
                             <FormControl>
                                 <IconInput
                                     id="email"
@@ -84,7 +82,6 @@ export default function CompanyRegisterPage() {
                                     {...register("email")}
                                 />
                             </FormControl>
-
                             <FormControl>
                                 <IconInput
                                     id="contact_no"
@@ -173,7 +170,6 @@ export default function CompanyRegisterPage() {
                                     </div>
                                 </div>
                             </FormControl>
-
                         </CardContent>
 
                         <CardFooter className="flex flex-col space-y-2 mt-4">

@@ -36,5 +36,4 @@ export interface FieldConfig<T> {
     icon: LucideIcon;
     type: string;
     placeholder: string;
-    required?: boolean;
 }
