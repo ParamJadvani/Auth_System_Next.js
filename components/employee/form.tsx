@@ -199,7 +199,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                     <div className="space-y-2">
                         <Label className="text-sm font-medium text-black">Salary Contract Period</Label>
                         <Select
-                            value={form.watch("salary_contract_period")?.toString() || ""}
+                            value={form.watch("salary_contract_period")?.toString() === "0" ? "" : form.watch("salary_contract_period")?.toString() || ""}
                             onValueChange={(value) => {
                                 const finalValue = value === "none" ? null : value;
                                 form.setValue("salary_contract_period", finalValue)

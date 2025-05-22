@@ -1,4 +1,3 @@
-import { ICreateAdminValues, IUpdateAdminValues } from "@/types/admin";
 import { ICreateEmployeeValues, IUpdateEmployeeValues } from "@/types/employees";
 import { FieldConfig } from "@/types/shared";
 
@@ -225,14 +224,4 @@ const employeeFields = {
     pf: createFields<IUpdateEmployeeValues>("pf"),
 };
 
-const adminFields = {
-    basic: createFields<ICreateAdminValues | IUpdateAdminValues>("basic"),
-    date: createFields<ICreateAdminValues | IUpdateAdminValues>("date"),
-    contact: createFields<IUpdateAdminValues>("contact"),
-    bank: createFields<IUpdateAdminValues>("bank"),
-    document: createFields<IUpdateAdminValues>("document"),
-    education: createFields<IUpdateAdminValues>("education"),
-    pf: createFields<IUpdateAdminValues>("pf"),
-};
-
-export { employeeFields, adminFields };
+export { employeeFields };

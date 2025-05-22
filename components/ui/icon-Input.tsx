@@ -43,9 +43,9 @@ export const IconInput = ({
                     ref={ref}
                     type={type}
                     className={`
-                        block w-full rounded-sm border 
+                        block w-full rounded-xs border 
                         ${Icon ? "pl-10" : "pl-4"} pr-4 
-                        py-2 transition-shadow focus:shadow-outline 
+                        px-3 py-2 transition-shadow focus:shadow-outline 
                         ${className}
                     `}
                     {...props}

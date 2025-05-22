@@ -68,6 +68,7 @@ export default function AdminPage() {
     };
 
     const handleDelete = async (id: number) => {
+        // TODO :confirm delete
         await deleteAdmin(id);
         fetchAdmins();
     };
