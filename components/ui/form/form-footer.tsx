@@ -15,7 +15,7 @@ export function FormFooter({ editing, submitting }: { editing: boolean; submitti
                     type="button"
                     variant="outline"
                     onClick={() => router.back()}
-                    className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none rounded-full"
                     disabled={submitting}
                 >
                     Cancel
@@ -25,7 +25,7 @@ export function FormFooter({ editing, submitting }: { editing: boolean; submitti
                     <Button
                         type="button"
                         variant="outline"
-                        className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
+                        className="border-gray-300 text-gray-700 hover:bg-gray-100 text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none rounded-full"
                         disabled={submitting}
                     >
                         Cancel
@@ -36,7 +36,7 @@ export function FormFooter({ editing, submitting }: { editing: boolean; submitti
                 type="submit"
                 disabled={submitting}
                 loading={submitting}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 sm:px-4 sm:py-2 flex-1 sm:flex-none rounded-full"
             >
                 Save
             </Button>

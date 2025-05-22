@@ -25,17 +25,17 @@ export function AppSidebar() {
         <Sidebar
             side="left"
             variant="inset"
-            className="w-64 flex-none bg-white border-r border-gray-200 shadow-sm"
+            className="w-60 flex-none bg-white border-r border-gray-200 shadow-sm"
         >
-            <SidebarHeader className="px-4 py-6">
+            <SidebarHeader className="px-3 py-5">
                 <div className="flex items-center justify-between">
                     {user?.company?.[0]?.logo_url ? (
                         <Image
                             src={user.company[0].logo_url}
                             alt={user.company[0].name}
-                            width={48}
-                            height={48}
-                            className="rounded-full"
+                            width={50}
+                            height={50}
+                            className="rounded-xs"
                         />
                     ) : (
                         <LucideUser className="w-12 h-12 text-gray-400" />
@@ -51,7 +51,7 @@ export function AppSidebar() {
                     {menuItems.map(({ title, url, icon: Icon }) => {
                         const active = pathname === url;
                         return (
-                            <SidebarMenuItem key={title}>
+                            <SidebarMenuItem key={title} className='my-0.5'>
                                 <SidebarMenuButton asChild className={active ? "bg-blue-50" : ""}>
                                     <Link
                                         href={url}

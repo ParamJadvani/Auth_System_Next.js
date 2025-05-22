@@ -37,7 +37,7 @@ export function AuthFooter({
 
             <Button
                 type="submit"
-                className="w-full h-10 text-sm font-semibold rounded-xl"
+                className="w-full h-10 text-sm font-semibold rounded-full"
                 disabled={isLoading}
                 loading={isLoading}
             >

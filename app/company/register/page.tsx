@@ -11,10 +11,7 @@ import { Form, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconInput } from "@/components/ui/icon-Input";
-import {
-    Building2, Mail, Phone, MapPin, Landmark,
-    Globe, Hash, MapIcon, LucideUploadCloud
-} from "lucide-react";
+import { LucideUploadCloud } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useAuth from "@/hooks/use-Auth";
 import { toast } from "react-toastify";
@@ -68,7 +65,6 @@ export default function CompanyRegisterPage() {
                                     id="company_name"
                                     label="Company Name"
                                     placeholder="company name..."
-                                    icon={Building2}
                                     {...register("company_name")}
                                 />
                             </FormControl>
@@ -78,7 +74,6 @@ export default function CompanyRegisterPage() {
                                     label="Email"
                                     type="email"
                                     placeholder="email address..."
-                                    icon={Mail}
                                     {...register("email")}
                                 />
                             </FormControl>
@@ -87,8 +82,7 @@ export default function CompanyRegisterPage() {
                                     id="contact_no"
                                     label="Contact Number"
                                     type="tel"
-                                    placeholder="contact number..."
-                                    icon={Phone}
+                                    placeholder="contact number.."
                                     {...register("contact_no")}
                                 />
                             </FormControl>
@@ -99,7 +93,6 @@ export default function CompanyRegisterPage() {
                                         id="city"
                                         label="City"
                                         placeholder="city..."
-                                        icon={MapPin}
                                         {...register("city")}
                                     />
                                 </FormControl>
@@ -108,7 +101,6 @@ export default function CompanyRegisterPage() {
                                         id="state"
                                         label="State"
                                         placeholder="state..."
-                                        icon={Landmark}
                                         {...register("state")}
                                     />
                                 </FormControl>
@@ -120,7 +112,6 @@ export default function CompanyRegisterPage() {
                                         id="country"
                                         label="Country"
                                         placeholder="country..."
-                                        icon={Globe}
                                         {...register("country")}
                                     />
                                 </FormControl>
@@ -129,7 +120,6 @@ export default function CompanyRegisterPage() {
                                         id="pincode"
                                         label="Pincode"
                                         placeholder="pincode..."
-                                        icon={Hash}
                                         {...register("pincode")}
                                     />
                                 </FormControl>
@@ -140,7 +130,6 @@ export default function CompanyRegisterPage() {
                                     id="address"
                                     label="Address"
                                     placeholder="address..."
-                                    icon={MapIcon}
                                     {...register("address")}
                                 />
                             </FormControl>

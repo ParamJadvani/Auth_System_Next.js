@@ -68,7 +68,6 @@ export default function AdminPage() {
     };
 
     const handleDelete = async (id: number) => {
-        // TODO :confirm delete
         await deleteAdmin(id);
         fetchAdmins();
     };
@@ -134,7 +133,7 @@ export default function AdminPage() {
                         <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] lg:max-w-[80vw] xl:max-w-[1200px] max-h-[90vh] overflow-y-auto px-2 sm:px-6 py-4">
                             <DialogTitle className="text-2xl">Create New Admin</DialogTitle>
                             <Separator className="bg-gray-500/50" />
-                            <AdminForm isEditing={false} onSubmit={handleCreate} />
+                            <AdminForm editing={false} onSubmit={handleCreate} />
                         </DialogContent>
                     </Dialog>
                 </div>

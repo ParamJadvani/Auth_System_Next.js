@@ -30,7 +30,7 @@ export default function AdminDetailPage() {
 
     return (
         <div>
-            {data && <AdminForm isEditing={true} data={data} onSubmit={handleUpdate} />}
+            {data && <AdminForm editing={true} data={data} onSubmit={handleUpdate} />}
         </div>
     );
 }

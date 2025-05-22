@@ -12,6 +12,18 @@ import { AdminsResponse } from "@/types/admin";
 import { EmployeesResponse } from "@/types/employees";
 import { TableNotFound } from "@/components/ui/table/table-notFound";
 import { TableSort } from '@/components/ui/table/table-sort';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 interface Column {
     label: string;
@@ -122,15 +134,31 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                         >
                                             <Pencil className="w-4 h-4" />
                                         </Link>
-                                        <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="hover:bg-red-50"
-                                            aria-label="Delete"
-                                            onClick={() => onDelete(obj.id)}
-                                        >
-                                            <Trash className="w-4 h-4 text-red-600" />
-                                        </Button>
+
+                                        <AlertDialog>
+                                            <AlertDialogTrigger>
+                                                <Trash className="w-4 h-4 text-red-600" />
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This action cannot be undone. This will permanently delete your account
+                                                        and remove your data from our servers.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel className='rounded-xs border-0 shadow-none'>
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction onClick={() => onDelete(obj.id)} className='bg-red-500 rounded-xs hover:bg-red-600'>
+                                                        Yes, Delete
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+
+
                                     </div>
                                 </TableCell>
                             </TableRow>

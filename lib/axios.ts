@@ -1,3 +1,4 @@
+// lib/axios.ts
 import { onRequest, onResponse, onResponseError } from "@/utils/apiInterception";
 import axios from "axios";
 

@@ -1,55 +1,3 @@
-// "use client";
-
-// import React, { useState } from "react";
-// import { Eye, EyeOff, LucideIcon } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { IconInput } from '@/components/ui/icon-Input';
-
-
-// interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-//     id: string;
-//     label: string;
-//     icon?: LucideIcon;
-//     error?: string;
-//     ref?: React.Ref<HTMLInputElement>;
-// }
-
-// export const PasswordInput = ({
-//     id,
-//     label,
-//     icon,
-//     error,
-//     className = "",
-//     ref,
-//     ...props
-// }: PasswordInputProps) => {
-//     const [showPassword, setShowPassword] = useState(false);
-//     return (
-//         <div className="relative">
-//             <IconInput
-//                 id={id}
-//                 label={label}
-//                 icon={icon}
-//                 type={showPassword ? "text" : "password"}
-//                 error={error}
-//                 className={`${className} ${showPassword ? "pr-10" : "pr-4"}`}
-//                 ref={ref}
-//                 {...props}
-//             />
-//             <Button
-//                 type="button"
-//                 variant="ghost"
-//                 size="icon"
-//                 className="absolute right-2 top-1/2 translate-y-3 text-gray-600 hover:bg-gray-100 transition-colors"
-//                 onClick={() => setShowPassword((v) => !v)}
-//                 aria-label={showPassword ? "Hide password" : "Show password"}
-//             >
-//                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-//             </Button>
-//         </div>
-//     );
-// };
-
 "use client";
 
 import React, { useState } from "react";
@@ -81,8 +29,8 @@ export const PasswordInput = ({
     const inputType = isPassword && showPassword ? "text" : type;
 
     return (
-        <div className="space-y-1">
-            <Label htmlFor={id} className="font-medium text-sm">
+        <div className="space-y-2">
+            <Label htmlFor={id} className="font-medium text-sm ml-2">
                 {label}
             </Label>
             <div className="relative">
@@ -91,7 +39,7 @@ export const PasswordInput = ({
                     ref={ref}
                     type={inputType}
                     className={`
-                        block w-full rounded-lg border 
+                        block w-full rounded-full border 
                        "pr-10"
                         py-2 transition-shadow focus:shadow-outline 
                         ${error ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-indigo-500"} 
@@ -104,7 +52,7 @@ export const PasswordInput = ({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 transition-colors hover:bg-transparent"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                 >

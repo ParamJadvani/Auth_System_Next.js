@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Bounce } from "react-toastify";
 import "./globals.css";
 import { fetchUserRepository } from "@/repository/user";
 import InitializeUser from "@/components/Initialize/InitializeUser";
@@ -33,12 +33,13 @@ export default async function RootLayout({
                     {children}
                     <ToastContainer
                         position="top-center"
-                        draggable={false}
-                        pauseOnHover={false}
                         autoClose={2500}
+                        hideProgressBar
                         closeButton={false}
-                        hideProgressBar={true}
+                        pauseOnHover={false}
+                        draggable={false}
                         theme="colored"
+                        transition={Bounce}
                     />
                 </InitializeUser>
             </body>

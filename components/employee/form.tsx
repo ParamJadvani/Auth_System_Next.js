@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import { Lock as LockIcon, } from "lucide-react";
 import { IconInput } from "@/components/ui/icon-Input";
 import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, salary_Contract_Period, statusList } from '@/helper/helper';
 import { Label } from '@/components/ui/label';
@@ -20,6 +19,7 @@ import { InputGroup } from '@/components/ui/form/input-group';
 import { FormSection } from '@/components/ui/form/form-section';
 import { FormFooter } from '@/components/ui/form/form-footer';
 import { employeeFields } from '@/constants/fields';
+import { PasswordInput } from '@/components/ui/password-Input';
 
 interface EmployeeFormProps {
     data?: IEmployeeValues;
@@ -114,11 +114,10 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                     />
                     {!editing && (
                         <FormControl>
-                            <IconInput
+                            <PasswordInput
                                 label="Password"
                                 id="password"
                                 type="password"
-                                icon={LockIcon}
                                 placeholder="Enter password"
                                 {...form.register("password")}
                                 className="border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -129,30 +128,32 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
 
                     {/* Status */}
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-black">
+                        <Label className="text-sm font-medium text-black ml-2">
                             Status <span className="text-red-500">*</span>
                         </Label>
-                        <Select
-                            value={form.watch("status")}
-                            onValueChange={(value) => form.setValue("status", value as IEmployeeValues["status"])}
-                            aria-label="Status"
-                        >
-                            <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full rounded-sm">
-                                <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {statusList.map((status) => (
-                                    <SelectItem key={status} value={status}>
-                                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <div className='relative'>
+                            <Select
+                                value={form.watch("status")}
+                                onValueChange={(value) => form.setValue("status", value as IEmployeeValues["status"])}
+                                aria-label="Status"
+                            >
+                                <SelectTrigger className="py-2 px-3 border-gray-300 focus:ring-blue-500 w-full rounded-full">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {statusList.map((status) => (
+                                        <SelectItem key={status} value={status}>
+                                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
 
                     {/* Gender */}
                     <div className="space-y-4">
-                        <Label className="text-sm font-medium text-black">
+                        <Label className="text-sm font-medium text-black ml-2">
                             Gender <span className="text-red-500">*</span>
                         </Label>
                         <RadioGroup
@@ -163,7 +164,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                         >
                             {genderList.map((gender) => (
                                 <div key={gender} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={gender} id={gender} />
+                                    <RadioGroupItem value={gender} id={gender} className='p-2' />
                                     <Label htmlFor={gender} className="text-sm text-gray-600 capitalize">{gender}</Label>
                                 </div>
                             ))}
@@ -171,7 +172,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                     </div>
                     {/* Marital Status */}
                     <div className="space-y-4">
-                        <Label className="text-sm font-medium text-black">
+                        <Label className="text-sm font-medium text-black ml-2">
                             Marital Status <span className="text-red-500">*</span>
                         </Label>
                         <RadioGroup
@@ -182,7 +183,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                         >
                             {maritalStatusList.map((status) => (
                                 <div key={status} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={status} id={status} />
+                                    <RadioGroupItem value={status} id={status} className='p-2' />
                                     <Label htmlFor={status} className="text-sm text-gray-600 capitalize">{status}</Label>
                                 </div>
                             ))}
@@ -197,7 +198,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
 
                     {/* salary contract period */}
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-black">Salary Contract Period</Label>
+                        <Label className="text-sm font-medium text-black ml-2">Salary Contract Period</Label>
                         <Select
                             value={form.watch("salary_contract_period")?.toString() === "0" ? "" : form.watch("salary_contract_period")?.toString() || ""}
                             onValueChange={(value) => {
@@ -206,7 +207,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                             }}
                             aria-label="Salary Contract Period"
                         >
-                            <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full rounded-sm">
+                            <SelectTrigger className="py-2 px-3 border-gray-300 focus:ring-blue-500 w-full rounded-full">
                                 <SelectValue placeholder="Salary Contract Period" />
                             </SelectTrigger>
                             <SelectContent>
@@ -239,7 +240,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                     />
                     {/* Blood Group */}
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-black">Blood Group</Label>
+                        <Label className="text-sm font-medium ml-2 text-black">Blood Group</Label>
                         <Select
                             value={form.watch("blood_group") || ""}
                             onValueChange={(value) => {
@@ -248,7 +249,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                             }}
                             aria-label="Blood Group"
                         >
-                            <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full rounded-sm">
+                            <SelectTrigger className="py-2 px-3 border-gray-300 focus:ring-blue-500 w-full rounded-full">
                                 <SelectValue placeholder="Blood Group" />
                             </SelectTrigger>
                             <SelectContent>
@@ -262,7 +263,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                     </div>
                     {/* Hold Percentage */}
                     <div className="space-y-2">
-                        <Label className="text-sm font-medium text-black">Hold Percentage</Label>
+                        <Label className="text-sm font-medium ml-2 text-black">Hold Percentage</Label>
                         <Select
                             value={form.watch("hold_percentage")?.toString()}
                             onValueChange={(value) => {
@@ -271,7 +272,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                             }}
                             aria-label="Hold Percentage"
                         >
-                            <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full rounded-sm">
+                            <SelectTrigger className="py-2 px-3 border-gray-300 focus:ring-blue-500 w-full rounded-full">
                                 <SelectValue placeholder="Hold Percentage" />
                             </SelectTrigger>
                             <SelectContent>
@@ -297,7 +298,6 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                             />
                         </div>
                     ))}
-
                 </FormSection>
                 {/* Update Fields... */}
                 {editing && (
@@ -314,9 +314,9 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                                 fields={employeeFields.bank}
                                 register={form.register}
                             />
-
+                            {/* Account Type */}
                             <div className="space-y-2">
-                                <Label className="text-sm font-medium text-black">Account Type</Label>
+                                <Label className="text-sm font-medium ml-2 text-black">Account Type</Label>
                                 <Select
                                     value={form.watch("account_type") || ""}
                                     onValueChange={(value) => {
@@ -325,7 +325,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                                     }}
                                     aria-label="Account Type"
                                 >
-                                    <SelectTrigger className="border-gray-300 focus:ring-blue-500 w-full rounded-sm">
+                                    <SelectTrigger className="py-2 px-3 border-gray-300 focus:ring-blue-500 w-full rounded-full">
                                         <SelectValue placeholder="Account Type" />
                                     </SelectTrigger>
                                     <SelectContent>
