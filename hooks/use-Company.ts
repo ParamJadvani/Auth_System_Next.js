@@ -16,5 +16,21 @@ export default function useCompany() {
         } catch {}
     };
 
-    return { registerCompany };
+    const getCompany = async (id: string): Promise<ICompanyDataValues | undefined> => {
+        try {
+            const res = await API.get(`/company/${id}`);
+            return res.data;
+        } catch {}
+    };
+
+    const updateCompany = async (id: number, data: ICompanyDataValues): Promise<boolean> => {
+        try {
+            await API.post(`/company/${id}`, data);
+            return false;
+        } catch {
+            return true;
+        }
+    };
+
+    return { registerCompany, getCompany, updateCompany };
 }

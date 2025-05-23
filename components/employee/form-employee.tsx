@@ -315,7 +315,7 @@ export function EmployeeForm({ data, editing = false, onSubmit }: EmployeeFormPr
                                 register={form.register}
                             />
                             {/* Account Type */}
-                            <div className="space-y-2">
+                            <div className="space-y-2   ">
                                 <Label className="text-sm font-medium ml-2 text-black">Account Type</Label>
                                 <Select
                                     value={form.watch("account_type") || ""}

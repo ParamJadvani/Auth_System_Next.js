@@ -5,7 +5,56 @@ export interface ICompanyDataValues {
     city: string;
     state: string;
     country: string;
-    pincode: string;
+    pincode: string | number;
     address: string;
-    logo: File;
+    logo: File | string;
+    file_size_limit?: number;
+    location_range?: number;
+    allowed_location_points?: [] | null;
 }
+
+export type ICompanyValues = {
+    access: null;
+    address: string;
+    allowed_location_points: null;
+    city: string;
+    contact_no: string;
+    country: string;
+    created_at: string;
+    deleted_at: null;
+    designation: null;
+    email: string;
+    file_size_limit: number;
+    id: number;
+    is_job_running: number;
+    location_range: number;
+    logo: string;
+    logo_url: string;
+    name: string;
+    pincode: number;
+    settings: {
+        basic: number;
+        epf_admin: number;
+        epf_edli: number;
+        epf_employee: number;
+        epf_employer: number;
+        epf_employer_pention: number;
+        esi_employee: number;
+        esi_employer: number;
+        friday: number;
+        house_rent_allowance: number;
+        leave_encashment: string;
+        monday: number;
+        salary_count: string;
+        saturday: number;
+        select_tax_regime: string;
+        sunday: number;
+        thursday: number;
+        tuesday: number;
+        wednesday: number;
+    };
+    state: string;
+    status: number;
+    updated_at: string;
+    user_id: number;
+};

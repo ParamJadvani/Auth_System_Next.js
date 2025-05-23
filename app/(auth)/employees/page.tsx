@@ -18,7 +18,7 @@ import { Label } from '@radix-ui/react-label';
 import { Separator } from '@/components/ui/separator';
 import useEmployees from '@/hooks/use-employees';
 import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
-import { EmployeeForm } from '@/components/employee/form';
+import { EmployeeForm } from '@/components/employee/form-employee';
 import { TableDisplay } from '@/components/ui/table/table-display';
 
 // Utility functions for month format conversion

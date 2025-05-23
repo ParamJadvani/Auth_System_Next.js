@@ -13,7 +13,13 @@ import {
     Settings,
     TagsIcon,
 } from "lucide-react";
-import { ADMIN_PAGE, CREDENTIALS_PAGE, EMPLOYEE_PAGE, HOME_PAGE } from "@/constants/redirect";
+import {
+    ADMIN_PAGE,
+    CREDENTIALS_PAGE,
+    EMPLOYEE_PAGE,
+    HOME_PAGE,
+    LEAVES_PAGE,
+} from "@/constants/redirect";
 
 export const menuItems = [
     {
@@ -42,7 +48,7 @@ export const menuItems = [
     },
     {
         title: "Leaves",
-        url: "#",
+        url: LEAVES_PAGE,
         icon: CalendarIcon,
         secure: true,
     },

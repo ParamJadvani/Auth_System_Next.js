@@ -19,7 +19,7 @@ import { useQueryParams } from "@/hooks/use-query-params";
 import { Search } from "@/components/ui/search";
 import { Label } from '@radix-ui/react-label';
 import { Separator } from '@/components/ui/separator';
-import { AdminForm } from '@/components/admin/form';
+import { AdminForm } from '@/components/admin/form-admin';
 import { TableDisplay } from '@/components/ui/table/table-display';
 
 const filterConfigs = [

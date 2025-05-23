@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Form, FormControl } from "@/components/ui/form";
-import { IconInput } from "@/components/ui/icon-Input";
 import { Separator } from "@/components/ui/separator";
 import { IChangePasswordValues } from "@/types/auth";
+import { PasswordInput } from '@/components/ui/password-Input';
 
 export function ChangePasswordDialog({
     onSubmit,
@@ -57,7 +57,7 @@ export function ChangePasswordDialog({
                                 },
                             ].map(({ id, label }) => (
                                 <FormControl key={id}>
-                                    <IconInput
+                                    <PasswordInput
                                         id={id}
                                         label={label}
                                         type="password"

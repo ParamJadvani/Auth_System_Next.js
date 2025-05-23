@@ -8,3 +8,4 @@ export const COMPANY_REGISTER_PAGE = "/company/register";
 export const ADMIN_PAGE = "/admin";
 export const EMPLOYEE_PAGE = "/employees";
 export const CREDENTIALS_PAGE = "/credentials";
+export const LEAVES_PAGE = "/leaves";

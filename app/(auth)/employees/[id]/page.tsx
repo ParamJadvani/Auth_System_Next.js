@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ICreateEmployeeValues, IEmployeeValues, IUpdateEmployeeValues } from '@/types/employees';
 import useEmployees from '@/hooks/use-employees';
-import { EmployeeForm } from '@/components/employee/form';
+import { EmployeeForm } from '@/components/employee/form-employee';
 
 
 export default function EmployeeDetailPage() {
