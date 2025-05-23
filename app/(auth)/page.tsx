@@ -46,7 +46,7 @@ export default function AuthPage() {
                                 toast.success("Logout Successful");
                             }}
                             className="rounded-full flex items-center justify-center hover:border-transparent font-medium text-sm sm:text-base h-8
-                             sm:h-10 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
+                             sm:h-10 px-4 sm:px-5 w-full sm:w-auto md:w-[158px] text-white"
                         >
                             Logout
                         </Button>

@@ -1,7 +1,10 @@
+import Link from 'next/link';
+
 export default function LeavesPage() {
     return (
         <div>
-            Leaves Page
+            <Link href={"/leaves/add"}>
+                Leaves Page</Link>
         </div>
     );
 }

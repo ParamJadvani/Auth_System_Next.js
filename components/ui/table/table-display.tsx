@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { Pencil, Trash, UserCircle2Icon } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { SkeletonTable } from "@/components/ui/table/table-skeleton";
 import { useQueryParams } from "@/hooks/use-query-params";
@@ -12,17 +11,7 @@ import { AdminsResponse } from "@/types/admin";
 import { EmployeesResponse } from "@/types/employees";
 import { TableNotFound } from "@/components/ui/table/table-notFound";
 import { TableSort } from '@/components/ui/table/table-sort';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 
 interface Column {
@@ -100,7 +89,8 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                 <TableCell className="px-4 py-2">₹0.00</TableCell>
                                 <TableCell className="px-4 py-2">{obj.designation ?? "-"}</TableCell>
                                 <TableCell className="px-4 py-2">
-                                    {format(new Date(obj.date_of_joining), "dd MMM yyyy")}
+                                    {/* {format(new Date(obj.date_of_joining), "dd MMM yyyy")} */}
+                                    {obj.date_of_joining}
                                 </TableCell>
                                 <TableCell className="px-4 py-2">
                                     <span
@@ -135,28 +125,28 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                             <Pencil className="w-4 h-4" />
                                         </Link>
 
-                                        <AlertDialog>
-                                            <AlertDialogTrigger>
+                                        <Dialog>
+                                            <DialogTrigger>
                                                 <Trash className="w-4 h-4 text-red-600" />
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                                    <DialogDescription>
                                                         This action cannot be undone. This will permanently delete your account
                                                         and remove your data from our servers.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel className='rounded-xs border-0 shadow-none'>
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <DialogFooter>
+                                                    <DialogClose className='rounded-xs border-0 shadow-none'>
                                                         Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => onDelete(obj.id)} className='bg-red-500 rounded-xs hover:bg-red-600'>
+                                                    </DialogClose>
+                                                    <DialogClose onClick={() => onDelete(obj.id)} className='bg-red-500 rounded-xs hover:bg-red-600'>
                                                         Yes, Delete
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
 
 
                                     </div>

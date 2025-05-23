@@ -68,7 +68,7 @@ export function ChangePasswordDialog({
                             ))}
                         </CardContent>
 
-                        <CardFooter className="flex justify-end space-x-3">
+                        <CardFooter className="flex justify-end space-x-3 mt-4">
                             <DialogClose asChild>
                                 <Button variant="outline" type="button">
                                     Cancel

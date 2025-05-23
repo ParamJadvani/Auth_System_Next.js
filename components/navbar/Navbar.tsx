@@ -12,7 +12,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ChangePasswordDialog } from "@/components/navbar/ChangePasswordDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +24,17 @@ import {
     ChevronUp,
 } from "lucide-react";
 import { IChangePasswordValues } from '@/types/auth';
+import { CompanyEditDialog } from '@/components/navbar/CompanyEditDialog';
+import { ICompanyDataValues, ICompanyValues } from '@/types/company';
+import useCompany from '@/hooks/use-Company';
 
 export function Navbar({ title }: { title: string }) {
     const user = authStore((s) => s.user);
     const { logout, changePassword } = useAuth();
+    const { updateCompany } = useCompany();
     const [openMenu, setOpenMenu] = useState(false);
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogPassword, setOpenDialogPassword] = useState(false);
+    const [openDialogCompany, setOpenDialogCompany] = useState(false);
 
     const handleLogout = useCallback(async () => {
         await logout();
@@ -39,13 +44,17 @@ export function Navbar({ title }: { title: string }) {
     const handleChangePwd = useCallback(
         async (data: IChangePasswordValues) => {
             const hasError = await changePassword(data);
-            setOpenDialog(hasError);
+            setOpenDialogPassword(hasError);
         },
         [changePassword]
     );
 
+    const onSubmitCompanyUpdate = useCallback(async (id: number, data: ICompanyDataValues) => {
+        await updateCompany(id, data);
+    }, [updateCompany]);
+
     return (
-        <div className="flex justify-between items-center bg-white w-full p-3">
+        <div className="flex justify-between items-center bg-white w-full p-3 relative">
             <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
             <DropdownMenu open={openMenu} onOpenChange={setOpenMenu}>
                 <DropdownMenuTrigger asChild>
@@ -65,14 +74,21 @@ export function Navbar({ title }: { title: string }) {
                             My Profile
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Button variant="ghost" className="w-full justify-start gap-2 focus-visible:ring-0 focus-visible:border-transparent focus-visible:outline-none" onClick={() => { }}>
-                            <Building2 className="w-4 h-4" color='black' />
-                            Edit Company
-                        </Button>
+                    <DropdownMenuItem asChild >
+                        <Dialog open={openDialogCompany} onOpenChange={setOpenDialogCompany}>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" className="w-full justify-start gap-2 focus-visible:ring-0 focus-visible:border-transparent focus-visible:outline-none">
+                                    <Building2 className="w-4 h-4" color='black' />
+                                    Edit Company
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className='max-h-[100vh] max-w-[70vw] overflow-auto'>
+                                <CompanyEditDialog comp_data={user?.company[0] as ICompanyValues} onSubmitCompany={onSubmitCompanyUpdate} />
+                            </DialogContent>
+                        </Dialog>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                        <Dialog open={openDialogPassword} onOpenChange={setOpenDialogPassword}>
                             <DialogTrigger asChild>
                                 <Button variant="ghost" className="w-full justify-start gap-2 focus-visible:ring-0 focus-visible:border-transparent focus-visible:outline-none">
                                     <KeyRound className="w-4 h-4" color='black' />

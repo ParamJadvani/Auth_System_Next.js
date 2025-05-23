@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 
 interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    label: string;
+    label: string | React.ReactNode;
     icon?: LucideIcon;
     ref?: React.Ref<HTMLInputElement>;
 }
@@ -33,7 +33,7 @@ export const IconInput = ({
 
     return (
         <div className="space-y-2">
-            <Label htmlFor={id} className="font-medium text-sm ml-2" aria-label={label}>
+            <Label htmlFor={id} className="font-medium text-sm ml-2" aria-label={id}>
                 {label}
             </Label>
             <div className="relative">
