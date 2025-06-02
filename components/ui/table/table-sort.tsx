@@ -7,11 +7,11 @@ import {
 
 interface TableSortProps {
     label: string;
-    width: string;
-    col_key: string | null;
-    sort_column: string;
-    sort_order: "asc" | "desc";
-    handleSort: (key: string) => void;
+    width?: string;
+    col_key?: string | null;
+    sort_column?: string;
+    sort_order?: "asc" | "desc";
+    handleSort?: (key: string) => void;
     className?: string;
 }
 
@@ -29,7 +29,7 @@ export function TableSort({
         <TableHead
             className={`whitespace-nowrap px-4 py-2 text-sm font-semibold text-white ${key ? "cursor-pointer hover:bg-white/10 transition-colors" : ""} ${className}`}
             style={{ width }}
-            onClick={key ? () => handleSort(key) : undefined}
+            onClick={key ? () => handleSort?.(key) : undefined}
         >
             <div className="flex items-center gap-2">
                 <span>{label}</span>

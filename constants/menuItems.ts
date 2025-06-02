@@ -17,6 +17,7 @@ import {
     ADMIN_PAGE,
     CREDENTIALS_PAGE,
     EMPLOYEE_PAGE,
+    HOLIDAY_PAGE,
     HOME_PAGE,
     LEAVES_PAGE,
 } from "@/constants/redirect";
@@ -66,7 +67,7 @@ export const menuItems = [
     },
     {
         title: "Holiday",
-        url: "#",
+        url: HOLIDAY_PAGE,
         icon: CalendarX2Icon,
         secure: true,
     },

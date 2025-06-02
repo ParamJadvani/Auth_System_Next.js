@@ -16,7 +16,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { IAdminValues, ICreateAdminValues, IUpdateAdminValues } from '@/types/admin';
-import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, statusList } from '@/helper/helper';
+import { accountType, bloodGroupList, contributionList, genderList, maritalStatusList, processDate, statusList } from 'helper/helper';
 import { Label } from '@/components/ui/label';
 import { FormFooter } from '@/components/ui/form/form-footer';
 import { IconInput } from '@/components/ui/icon-Input';

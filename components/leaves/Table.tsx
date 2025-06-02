@@ -1,18 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
-import { Pencil, Trash, UserCircle2Icon } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { SkeletonTable } from "@/components/ui/table/table-skeleton";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { toast } from "react-toastify";
-import { AdminsResponse } from "@/types/admin";
-import { EmployeesResponse } from "@/types/employees";
 import { TableNotFound } from "@/components/ui/table/table-notFound";
 import { TableSort } from '@/components/ui/table/table-sort';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { formateDate } from '@/lib/utils';
+import { LeavesResponse } from '@/types/leaves';
 
 
 interface Column {
@@ -22,27 +19,29 @@ interface Column {
 }
 
 interface TableDisplayProps {
-    data: EmployeesResponse | AdminsResponse | null;
+    data: LeavesResponse | null ;
     loading: boolean;
     admin?: boolean;
     onDelete: (id: number) => void;
     onCopyLoginLink?: (id: number) => void;
 }
 
-export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLoginLink }: TableDisplayProps) {
+export function TableDisplay({ data, loading, onDelete, }: TableDisplayProps) {
     const { getParams, applyFilters } = useQueryParams();
     const sort_column = getParams("sort_column") || "employee_id";
     const sort_order = getParams("sort_order") || "desc";
 
     const columns: Column[] = [
-        ...(admin ? [] : [{ label: "Employee ID", key: "employee_id", width: "15%" }]),
-        { label: "Name", key: "firstname", width: admin ? "22%" : "18%" },
-        { label: "Email", key: "email", width: admin ? "25%" : "22%" },
-        { label: "Salary", key: null, width: "12%" },
-        { label: "Designation", key: null, width: "15%" },
-        { label: "Joining Date", key: "date_of_joining", width: admin ? "14%" : "13%" },
-        { label: "Status", key: null, width: "8%" },
-        { label: "Action", key: null, width: admin ? "10%" : "12%" },
+        { label: "Employee ID", key: "employee_id", width: "20%" },
+        { label: "Name", key: "firstname", width: "20%" },
+        { label: "Leave Type", key: null, width: "15%" },
+        { label: "From", key: null, width: "17%" },
+        { label: "To", key: null, width: "17%" },
+        { label: "No. Of Days", key: null, width: "14%" },
+        { label: "Status", key: null, width: "15%" },
+        { label: "Apply Date", key: null, width: "15%" },
+        { label: "Reason", key: null, width: "10%" },
+        { label: "Action", key: null, width: "10%" },
     ];
 
     const handleSort = (key: string) => {
@@ -82,20 +81,20 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                 key={obj.id}
                                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100 transition-colors`}
                             >
-                                {!admin && <TableCell className="px-4 py-2">{obj.employee_id ?? "-"}</TableCell>}
+                                <TableCell className="px-4 py-2">{obj.employee_id ?? "-"}</TableCell>
                                 <TableCell className="px-4 py-2">
-                                    {obj.firstname} {obj.lastname ?? ""}
+                                    {obj.firstname}
                                 </TableCell>
-                                <TableCell className="px-4 py-2">{obj.email}</TableCell>
-                                <TableCell className="px-4 py-2">₹0.00</TableCell>
-                                <TableCell className="px-4 py-2">{obj.designation ?? "-"}</TableCell>
+                                <TableCell className="px-4 py-2">{obj.leave_type}</TableCell>
+                                <TableCell className="px-4 py-2">{formateDate(obj.from_date)}</TableCell>
+                                <TableCell className="px-4 py-2">{formateDate(obj.to_date)}</TableCell>
+                                <TableCell className="px-4 py-2">{obj.leave_day_count}</TableCell>
                                 <TableCell className="px-4 py-2">
-                                    {/* {format(new Date(obj.date_of_joining), "dd MMM yyyy")} */}
-                                    {formateDate(obj.date_of_joining)}
+                                    {formateDate(obj.created_at)}
                                 </TableCell>
                                 <TableCell className="px-4 py-2">
                                     <span
-                                        className={`px-2 py-1 text-xs rounded font-medium inline-block ${obj.status === "active"
+                                        className={`px-2 py-1 text-xs rounded font-medium inline-block ${obj.status === "approved"
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-red-100 text-red-700"
                                             }`}
@@ -103,24 +102,11 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                         {obj.status}
                                     </span>
                                 </TableCell>
+                                <TableCell className="px-4 py-2">{obj.note}</TableCell>
                                 <TableCell className="px-4 py-2 text-center">
                                     <div className="flex justify-start items-center gap-3">
-                                        {!admin && onCopyLoginLink && (
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="hover:bg-blue-50"
-                                                aria-label="Copy Login Link"
-                                                onClick={() => {
-                                                    onCopyLoginLink(obj.id);
-                                                    toast.success("Copied to clipboard");
-                                                }}
-                                            >
-                                                <UserCircle2Icon className="w-4 h-4 text-blue-600" />
-                                            </Button>
-                                        )}
                                         <Link
-                                            href={`/${admin ? "admin" : "employees"}/${obj.id}`}
+                                            href={`/leaves/${obj.id}`}
                                             className="text-blue-600 hover:text-blue-800"
                                         >
                                             <Pencil className="w-4 h-4" />
