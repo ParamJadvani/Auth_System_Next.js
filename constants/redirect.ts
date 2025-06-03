@@ -10,3 +10,4 @@ export const EMPLOYEE_PAGE = "/employees";
 export const CREDENTIALS_PAGE = "/credentials";
 export const LEAVES_PAGE = "/leaves";
 export const HOLIDAY_PAGE = "/holidays";
+export const TAGS_PAGE = "/tags";

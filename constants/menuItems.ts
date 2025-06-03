@@ -20,6 +20,7 @@ import {
     HOLIDAY_PAGE,
     HOME_PAGE,
     LEAVES_PAGE,
+    TAGS_PAGE,
 } from "@/constants/redirect";
 
 export const menuItems = [
@@ -91,7 +92,7 @@ export const menuItems = [
     },
     {
         title: "Tags",
-        url: "#",
+        url: TAGS_PAGE,
         icon: TagsIcon,
         secure: true,
     },

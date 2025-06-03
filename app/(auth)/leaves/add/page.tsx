@@ -246,6 +246,7 @@ export default function LeavesAddPage() {
                                             placeholder='End Date'
                                             onChange={(_, dates) => {
                                                 setValue('end_date', dates);
+                                                updateLeaveDates();
                                             }}
                                             options={{
                                                 dateFormat: 'Y-m-d',
@@ -275,7 +276,7 @@ export default function LeavesAddPage() {
                                 <Textarea
                                     placeholder="Enter the reason for leave"
                                     rows={3}
-                                    {...register('note', { required: 'Note is required' })}
+                                    {...register('note')}
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>

@@ -106,7 +106,7 @@ export default function HolidaysPage() {
         <div >
             <div >
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Holiday Management</h1>
+                    <></>
                     <Button
                         className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg transition-all duration-300 transform hover:scale-105"
                         onClick={onAddClick}
