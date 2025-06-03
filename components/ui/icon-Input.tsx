@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 
 interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    label: string | React.ReactNode;
+    label?: string | React.ReactNode;
     icon?: LucideIcon;
     ref?: React.Ref<HTMLInputElement>;
 }

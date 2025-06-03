@@ -1,132 +1,133 @@
+// components/holiday/HolidayDialogForm.tsx
 "use client";
+
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
 import { Button } from "@/components/ui/button";
-import {
-    DialogClose,
-    DialogContent,
-} from "@/components/ui/dialog";
-import { IconInput } from "@/components/ui/icon-Input";
-
-import useHolidays from "@/hooks/use-Holidays";
-import { IHolidayFormValues } from "@/types/holidays";
-import { formateDate } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { IHolidayFormValues, IHolidayValues } from "@/types/holidays";
 
 interface HolidayDialogFormProps {
-    editing?: boolean;
-    id?: number;
-    onSubmit: (
-        formData: IHolidayFormValues,
-        editing?: boolean,
-        id?: number
-    ) => void;
+    editingHoliday: IHolidayValues | null;
+    isOpen: boolean;
+    onOpenChange: (open: boolean) => void;
+    onSave: (data: IHolidayFormValues) => Promise<void>;
 }
 
 export function HolidayDialogForm({
-    editing = false,
-    id,
-    onSubmit,
+    editingHoliday,
+    isOpen,
+    onOpenChange,
+    onSave,
 }: HolidayDialogFormProps) {
-    const form = useForm<IHolidayFormValues>({
-        defaultValues: {
-            holiday_name: "",
-            holiday_date: "",
-            holiday_description: "",
-        },
-    });
+    const { register, handleSubmit, reset, setValue, watch, formState } =
+        useForm<IHolidayFormValues>({
+            defaultValues: {
+                holiday_name: "",
+                description: "",
+                holiday_date: "",
+            },
+        });
 
-    const {
-        handleSubmit,
-        register,
-        reset,
-        watch,
-        setValue,
-        formState: { isSubmitting },
-    } = form;
-
-    const { getHolidaysById } = useHolidays();
-
+    // Whenever editingHoliday changes, reset the form
     useEffect(() => {
-        if (id) {
-            (async () => {
-                const data = await getHolidaysById(id);
-                if (data) {
-                    reset({
-                        holiday_name: data.holiday_name || "",
-                        holiday_date: formateDate(data.holiday_date as string),
-                        holiday_description: data.description || "",
-                    });
-                }
-            })();
+        if (editingHoliday) {
+            reset({
+                holiday_name: editingHoliday.holiday_name,
+                description: editingHoliday.description || "",
+                holiday_date: editingHoliday.holiday_date.split("T")[0],
+            });
+        } else {
+            reset({ holiday_name: "", description: "", holiday_date: "" });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [editingHoliday, reset]);
+
+    const watchedDate = watch("holiday_date");
+    const selected = watchedDate ? new Date(watchedDate) : undefined;
 
     return (
-        <DialogContent className="max-w-md">
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-md rounded-lg shadow-xl bg-white">
+                <DialogHeader>
+                    <DialogTitle className="text-xl font-semibold text-gray-800">
+                        {editingHoliday ? "Update Holiday" : "Create New Holiday"}
+                    </DialogTitle>
+                </DialogHeader>
 
+                <form onSubmit={handleSubmit(onSave)} className="space-y-6 py-4">
+                    {/* Name */}
+                    <div className="space-y-2">
+                        <Label htmlFor="holiday_name" className="text-gray-700 font-medium">
+                            Holiday Name *
+                        </Label>
+                        <Input
+                            id="holiday_name"
+                            placeholder="e.g., Christmas"
+                            className="border-2 border-gray-300 rounded-lg p-3"
+                            {...register("holiday_name", { required: "Name is required" })}
+                        />
+                        {formState.errors.holiday_name && (
+                            <p className="text-red-500 text-sm">
+                                {formState.errors.holiday_name.message}
+                            </p>
+                        )}
+                    </div>
 
-            <form
-                onSubmit={handleSubmit((data) => onSubmit(data, editing, id))}
-                className="space-y-6"
-            >
-
-
-                <IconInput
-                    id="holiday_name"
-                    type="text"
-                    placeholder="Holiday Name"
-                    {...register("holiday_name", { required: true })}
-                    label="Holiday Name"
-                />
-
-
-                <div>
-                    <Label className="block mb-2 font-medium text-gray-700">
-                        Holiday Date
-                    </Label>
-                    <div className="flex items-center gap-2">
-                        <Flatpickr
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            value={watch('holiday_date')}
-                            placeholder='Holiday Date'
-                            options={{
-                                dateFormat: 'Y-m-d',
-                                altInput: true,
-                                altFormat: 'M j, Y',
-                                allowInput: true,
-                                onChange: (_, dates) => {
-                                    setValue('holiday_date', dates);
-                                }
+                    {/* Date */}
+                    <div className="space-y-2">
+                        <Label htmlFor="holiday_date" className="text-gray-700 font-medium">
+                            Date *
+                        </Label>
+                        <Calendar
+                            mode="single"
+                            selected={selected}
+                            onSelect={(d) => {
+                                if (d) setValue("holiday_date", d.toISOString().split("T")[0]);
                             }}
+                            className="rounded-lg border border-gray-300 p-3"
+                        />
+                        {!watchedDate && (
+                            <p className="text-red-500 text-sm">Date is required</p>
+                        )}
+                    </div>
+
+                    {/* Description */}
+                    <div className="space-y-2">
+                        <Label htmlFor="description" className="text-gray-700 font-medium">
+                            Description
+                        </Label>
+                        <Textarea
+                            id="description"
+                            placeholder="Describe the holiday..."
+                            className="border-2 border-gray-300 rounded-lg p-3 min-h-[100px]"
+                            {...register("description")}
                         />
                     </div>
-                </div>
 
-
-                <IconInput
-                    id="holiday_description"
-                    type="text"
-                    placeholder="Holiday Description"
-                    {...register("holiday_description")}
-                    label="Holiday Description"
-                />
-
-
-
-
-                <DialogClose asChild>
-                    <Button variant="outline" type="button">
-                        Cancel
-                    </Button>
-                </DialogClose>
-                <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-                    Save
-                </Button>
-            </form>
-        </DialogContent >
+                    {/* Actions */}
+                    <div className="flex justify-end space-x-4 pt-4">
+                        <Button
+                            type="button"
+                            onClick={() => onOpenChange(false)}
+                            className="bg-gray-200 text-gray-800 hover:bg-gray-300 border border-gray-300 transition-colors duration-300"
+                            disabled={formState.isSubmitting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-300 disabled:opacity-50"
+                            disabled={formState.isSubmitting || !watchedDate}
+                        >
+                            {editingHoliday ? "Update Holiday" : "Save Holiday"}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 }

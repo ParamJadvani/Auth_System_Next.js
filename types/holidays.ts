@@ -1,7 +1,7 @@
 export interface IHolidayFormValues {
     holiday_name: string;
     holiday_date: string;
-    holiday_description: string;
+    description: string;
 }
 
 export interface IHolidayValues {

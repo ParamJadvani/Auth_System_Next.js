@@ -4,6 +4,8 @@ import { ToastContainer, Bounce } from "react-toastify";
 import "./globals.css";
 import { fetchUserRepository } from "@/repository/user";
 import InitializeUser from "@/components/Initialize/InitializeUser";
+import "flatpickr/dist/themes/material_green.css";
+import "flatpickr/dist/flatpickr.css";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
