@@ -142,7 +142,7 @@ export function TableDisplay({ data, loading, admin = true, onDelete, onCopyLogi
                                                     <DialogClose className='rounded-xs border-0 shadow-none'>
                                                         Cancel
                                                     </DialogClose>
-                                                    <DialogClose onClick={() => onDelete(obj.id)} className='bg-red-500 rounded-xs hover:bg-red-600'>
+                                                    <DialogClose onClick={() => onDelete(obj.id)} className='bg-red-500 rounded-md p-2 text-white hover:bg-red-600'>
                                                         Yes, Delete
                                                     </DialogClose>
                                                 </DialogFooter>
