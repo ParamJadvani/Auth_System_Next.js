@@ -1,4 +1,5 @@
 import { Meta } from "@/types/admin";
+import { Tag } from "@/types/tag";
 
 export interface CredentialAdditional {
     label: string;
@@ -14,6 +15,7 @@ export interface CredentialFormValues {
     username: string;
     website: string[];
     tags?: string[];
+    two_factor_secret: string;
 }
 
 export interface CredentialData {
@@ -30,6 +32,7 @@ export interface CredentialData {
     created_at: string;
     updated_at: string;
     pass: string;
+    tags: Tag[];
 }
 
 export interface CredentialResponse {

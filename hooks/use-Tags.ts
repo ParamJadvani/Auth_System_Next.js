@@ -1,4 +1,5 @@
 import API from "@/lib/axios";
+import { TagResponse } from "@/types/tag";
 import { useCallback } from "react";
 
 export default function useTags() {
@@ -16,7 +17,7 @@ export default function useTags() {
                 limit?: number;
                 sort_column?: string;
                 sort_order?: string;
-            }) => {
+            }): Promise<TagResponse | undefined> => {
                 const defaultURL = `/tags?filter=${filter}&page=${page}&limit=${limit}&sort_column=${sort_column}&sort_order=${sort_order}`;
                 try {
                     return (await API.get(defaultURL)).data;

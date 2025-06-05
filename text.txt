@@ -736,3 +736,150 @@ export function EmployeeForm({ data, isEditing = false, onSubmit }: EmployeeForm
         </Form>
     );
 }
+
+
+
+Vercel V0
+Sora Open AI
+Veo 2 Google
+INVIDEO
+Perplexity
+
+I have to present PPT about AI tools so explain like that with contain AI tools like vercel v0, Open AI sora, Google Veo 2, perplexity AI and invideo AI with their detail images and strenghts
+
+
+Make one Web app of Loan Management with Authentication and after Authentication take details of Loan of name of loan which type loan when start, when complete , money of loan , interst of loan , how many already paid , moths of loan , paid months of loan etc.. and add also others important information for this system.
+
+User can notified every months date for paying interst of loan or paying loan amount and user can also see their loan information of how much they have to pay or how much they have to remain to pay and when will their loan going to complete or which loan interst we miss or pay late.
+
+Make very secure inforamtion of authentication and loan of every particular user.
+If I am new User and I just make new Loan toady then I just know the interest and amount and months of I am completing the loan so enhanced the prompt with automatically calculate the loan amount.
+and some loans in starting some months have no interest and then remaining months have interset, so also handled that.
+
+and also one that If I am User and I want to take loan of education then I just want to know that if I am taking this money loan for this certain time then I'll get this payment in every month to pay for this time duration. So, In market or from bank find the what is minimun interest on this loan so we can know how much payment we have to pay because I don't know the what is interset of every loan so fetch Data from online for every loan or get Live data from live to get information.
+
+
+At the end also intercation of AI Not put any chat icon for chat with AI but AI interaction help our website to manage user's Data and their calculations. and informations.
+
+give me enhanced Prompt to make in Loveable AI and supabase Database. Right now AI interaction I don't have any API key but there is optional for this time.
+
+
+
+
+
+
+You are a full-stack AI-enhanced web app developer building a Loan Management Platform using Next.js, Supabase (PostgreSQL), and ShadCN UI or Ant Design for frontend design.
+
+🔐 User Authentication (Secure)
+Use Supabase Auth with email/password authentication.
+
+Secure all data per-user. Every loan and user interaction is private and protected.
+
+Optional: Add 2FA and role-based access control.
+
+🧮 Intelligent Loan Entry & Calculation
+After login, users can create a new loan with minimal input:
+
+User enters:
+
+Loan Type (e.g., Education, Home, Car, Business)
+
+Total Loan Amount
+
+Duration (in months)
+
+Start Date
+
+Optional: Grace Period in Months (e.g., 3 months no interest)
+
+Optional: Known interest rate
+
+System should:
+
+If interest rate is unknown, fetch minimum average interest rates from live/public finance sources (e.g., government APIs or known banks).
+
+Calculate and display:
+
+Monthly payment estimate
+
+Total interest over loan period
+
+Adjusted payments after grace period
+
+Loan end date
+
+Store all calculations with explanation and allow users to save this simulation as a loan entry.
+
+📚 Use Case: Educational Loan Simulator
+If the user selects “Education Loan”:
+
+Let the user specify:
+
+Amount needed
+
+Duration of schooling in months
+
+The system calculates monthly disbursement and expected repayments based on market interest rates.
+
+Suggest bank options if interest rate APIs are available.
+
+🤖 AI Interaction (No Chat UI)
+Add internal AI logic that:
+
+Calculates repayment plans.
+
+Flags inconsistencies (e.g., grace period > loan period).
+
+Recommends better repayment options based on user profile or market data.
+
+Optionally summarizes user’s financial health or history across loans.
+
+This AI interaction is backend-driven, no chatbot interface, just smart interactions baked into UX.
+
+AI functions should be modular and allow for future integration with GPT or other LLM APIs (API key optional for now).
+
+🔔 Notifications & Reminders
+Notify users monthly via email (or in-app) of:
+
+Upcoming payment
+
+Missed or late interest
+
+Loan nearing completion
+
+📊 Loan Dashboard
+Display:
+
+Active and past loans
+
+Remaining balance
+
+Missed interest payments
+
+Payment breakdown table (Month-by-Month)
+
+Forecast charts for debt clearance
+
+📦 Tech Stack
+Frontend: Next.js + TypeScript + ShadCN UI or Ant Design
+
+Backend: Supabase (PostgreSQL + Auth + Edge Functions)
+
+Optional: Serverless Functions (e.g., Vercel or Supabase Edge) for AI logic
+
+Optional: Integrate external financial APIs for live interest rate data
+
+🛡️ Security
+Use Supabase row-level security to ensure users only access their data.
+
+Validate and sanitize all inputs.
+
+Use HTTPS, password hashing, and token-based authentication.
+
+
+
+
+
+
+
+https://payroll-appstonelab.vercel.app/credentials?signedToken=6C9w1yxSXXCjBcgsgy3aWoar0fXCSvEWKMkhfD4ewFRlRWoLVLbWNyan_PmnHfDHCk00z0c9mTMLNzR-2ONuUQ.ZzZFRmljWTdwU21MbFF6Zw.qd_BFM09EmfZrJRsFFaygLDvzTz3iEql3asOigR5j_Y&name=dakigow826%40bocapies.com's%20Org&username=node%40mailinator.com&website=https%3A%2F%2Fpayroll-appstonelab.vercel.app%2Fcredentials%2Fadd
