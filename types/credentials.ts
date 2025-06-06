@@ -7,15 +7,16 @@ export interface CredentialAdditional {
 }
 
 export interface CredentialFormValues {
-    customFields: CredentialAdditional[];
-    file: FileList;
+    additional: { label: string; value: string }[];
     name: string;
     notes: string;
     password: string;
     username: string;
     website: string[];
-    tags?: string[];
     two_factor_secret: string;
+    tag_ids: number[];
+    files: FileList[];
+    id?: number;
 }
 
 export interface CredentialData {

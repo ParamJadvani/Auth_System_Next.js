@@ -4,15 +4,18 @@ import { useCallback } from "react";
 
 export default function useCredentials() {
     return {
-        addCredentials: useCallback(async (data: CredentialFormValues, id: number) => {
-            try {
-                await API.post(`/user/credential/${id}`, data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-            } catch {}
-        }, []),
+        addCredentials: useCallback(
+            async (data: CredentialFormValues | undefined, id: number, signedToken?: string) => {
+                try {
+                    await API.post(`/user/credential/${id}`, signedToken ? { signedToken } : data, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
+                } catch {}
+            },
+            []
+        ),
         getCredentials: useCallback(
             async (
                 id: number,
@@ -59,6 +62,18 @@ export default function useCredentials() {
                 try {
                     const res = await API.get(`user/credential/show/${id}`);
                     return res.data;
+                } catch {}
+            },
+            []
+        ),
+        updateCredentials: useCallback(
+            async (data: CredentialFormValues, id: number, user_id: number) => {
+                try {
+                    await API.post(`/user/credential/update/${user_id}/${id}`, data, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
                 } catch {}
             },
             []
