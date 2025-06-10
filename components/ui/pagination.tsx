@@ -19,7 +19,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ data, currentPage, onPageChange, onLimitChange }: PaginationProps) {
-    if (!data || data.total <= data.per_page) return null;
+    if (!data || data.total <= 10) return null;
 
     const totalPages = data.last_page;
     const hasMore = currentPage < totalPages;

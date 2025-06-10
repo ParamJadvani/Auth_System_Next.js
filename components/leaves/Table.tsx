@@ -19,7 +19,7 @@ interface Column {
 }
 
 interface TableDisplayProps {
-    data: LeavesResponse | null ;
+    data: LeavesResponse | null;
     loading: boolean;
     admin?: boolean;
     onDelete: (id: number) => void;

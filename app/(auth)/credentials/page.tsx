@@ -8,14 +8,12 @@ import useCredentials from "@/hooks/use-Credentials";
 import authStore from "@/store/authStore";
 import { TableDisplay } from '@/components/credentials/table-display';
 import { TagResponse } from '@/types/tag';
-import { Search } from '@/components/ui/search';
-import { Select, SelectContent, SelectItem } from '@/components/ui/select';
 import { useQueryParams } from '@/hooks/use-query-params';
 import { useSearchParams } from 'next/navigation';
-import { SelectTrigger, SelectValue } from '@radix-ui/react-select';
 import { Pagination } from '@/components/ui/pagination';
 import useTags from '@/hooks/use-Tags';
 import { AlertDialog, AlertDialogContent, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import DynamicHeader from '@/components/headerSection/header-section';
 
 export default function CredentialsPage() {
     const [data, setData] = useState<CredentialResponse | undefined>(undefined);
@@ -58,6 +56,15 @@ export default function CredentialsPage() {
         fetchData();
     }, [userStore?.user?.id, searchParams, fetchData]);
 
+    const filterConfigs = [
+        {
+            key: "tag_ids",
+            label: "Tags",
+            type: "select" as const,
+            options: [{ value: "all", label: "All Tags" }, ...(tags?.data?.map(tag => ({ value: tag.id.toString(), label: tag.name })) || [])],
+        },
+    ];
+
     if (params["signedToken"]) {
         return (
             <AlertDialog open={!!params["signedToken"]}>
@@ -66,7 +73,7 @@ export default function CredentialsPage() {
                         <div className="space-y-2">
                             <AlertDialogTitle className="text-lg font-semibold">Confirm Shared Credential</AlertDialogTitle>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
-                                Are you sure you want to save this shared credential? Confirm the details below and click &apos;Save&apos; to keep it, or &apos;Cancel&apos; to discard.
+                                Are you sure you want to save this shared credential? Confirm the details below and click &apos;Save&apos; to keep it, or &apos;Cancel&apos; to discard
                             </p>
                             <div className="space-y-1">
                                 <p className="text-sm"><strong>Name:</strong> {params["name"] || "N/A"}</p>
@@ -108,40 +115,14 @@ export default function CredentialsPage() {
                     </Button>
                 </Link>
             </div>
-            <div className="flex items-center gap-4">
-                <Search />
-                <div className="space-y-2">
-                    <Select
-                        value={params["tag_ids"] || ''}
-                        onValueChange={(value) => applyFilters({ tag_ids: value === 'all' ? '' : value })}
-                    >
-                        <SelectTrigger
-                            id="tag_ids"
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            aria-label="Filter by tags"
-                        >
-                            <SelectValue placeholder={params["tag_ids"] ? `Tag: ${tags?.data.find(t => t.id.toString() === params["tag_ids"])?.name || "Selected"}` : "Select Tag"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Tags</SelectItem>
-                            {tags?.data?.map((option) => (
-                                <SelectItem key={option.name} value={option.id.toString()}>
-                                    {option.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="flex justify-end">
-                    <Button
-                        variant="outline"
-                        className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg"
-                        onClick={() => resetAll()}
-                    >
-                        Reset Filters
-                    </Button>
-                </div>
-            </div>
+            <DynamicHeader
+                section="credentials"
+                filterConfigs={filterConfigs}
+                params={params}
+                applyFilters={applyFilters}
+                resetAll={resetAll}
+                gridClass="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            />
             <div className="border rounded-lg overflow-auto">
                 <TableDisplay data={data} onDelete={deleteCredential} loading={loading} />
             </div>

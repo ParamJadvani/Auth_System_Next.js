@@ -22,7 +22,7 @@ export default function useCredentials() {
                 {
                     filter = "",
                     page = 1,
-                    limit = 50,
+                    limit = 10,
                     sort_column = "",
                     sort_order = "desc",
                     tag_ids,

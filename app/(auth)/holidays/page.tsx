@@ -7,17 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PlusIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
+import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
 import useHolidays from "@/hooks/use-Holidays";
 import { IHolidayFormValues, IHolidayValues } from "@/types/holidays";
 import { TableDisplay } from "@/components/holiday/table-display";
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 export default function HolidaysPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingHoliday, setEditingHoliday] = useState<IHolidayValues | undefined | null>(null);
     const [holidays, setHolidays] = useState<IHolidayValues[] | undefined>(undefined);
+    const [dateOpen, setDateOpen] = useState(false);
 
     const { getHolidays, getHolidaysById, addHolidays, updateHoliday, deleteHoliday } = useHolidays();
 
@@ -140,21 +142,35 @@ export default function HolidaysPage() {
                             </div>
 
                             {/* — Date — */}
-                            <div className="space-y-2">
-                                <Label htmlFor="holiday_date" className="text-gray-700 font-medium">
-                                    Date *
+                            <div className="flex flex-col gap-3">
+                                <Label htmlFor="date" className="px-1">
+                                    Date of birth
                                 </Label>
-                                <Calendar
-                                    mode="single"
-                                    selected={selectedDate}
-                                    onSelect={(day) => {
-                                        if (day) {
-                                            const iso = day.toISOString().split("T")[0];
-                                            setValue("holiday_date", iso);
-                                        }
-                                    }}
-                                    className="rounded-lg border border-gray-300 p-3"
-                                />
+                                <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            id="date"
+                                            className="w-48 justify-between font-normal"
+                                        >
+                                            {selectedDate ? selectedDate.toLocaleDateString() : "Select date"}
+                                            <ChevronDownIcon />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={selectedDate}
+                                            captionLayout="dropdown"
+                                            onSelect={(day) => {
+                                                if (day) {
+                                                    const iso = day.toISOString().split("T")[0];
+                                                    setValue("holiday_date", iso);
+                                                }
+                                            }}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
 
                             {/* — Description — */}

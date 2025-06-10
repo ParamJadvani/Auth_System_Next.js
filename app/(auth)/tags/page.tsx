@@ -1,10 +1,10 @@
 "use client";
+import DynamicHeader from '@/components/headerSection/header-section';
 import { TagDialogForm } from "@/components/tags/dialog-form";
 import { TagTableDisplay } from "@/components/tags/table";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Pagination } from '@/components/ui/pagination';
-import { Search } from "@/components/ui/search";
 import { useQueryParams } from '@/hooks/use-query-params';
 import useTags from "@/hooks/use-Tags";
 import { useSearchParams } from 'next/navigation';
@@ -64,30 +64,27 @@ export default function TagsPage() {
         <div className="space-y-6">
             {/* Top bar: Search + Add Tag */}
             <div className="flex flex-col sm:flex-row justify-between items-center  mb-4">
-                <div className="w-full sm:w-auto flex items-center justify-between">
-                    <Search />
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={resetAll}
-                        className="px-4 py-2 border-blue-500 text-blue-500 hover:bg-blue-50 rounded-lg"
-                    >
-                        Reset Filters
-                    </Button>
-                </div>
+                <DynamicHeader
+                    params={params}
+                    section="tags"
+                    filterConfigs={[]}
+                    resetAll={resetAll}
+                    gridClass="grid grid-cols-1 gap-4"
+                    addButton={
+                        <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+                            <DialogTrigger asChild>
+                                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+                                    + Add Tag
+                                </Button>
+                            </DialogTrigger>
 
-                <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
-                            + Add Tag
-                        </Button>
-                    </DialogTrigger>
-
-                    <TagDialogForm
-                        onClose={() => setOpenCreate(false)}
-                        onSubmit={addTags}
-                    />
-                </Dialog>
+                            <TagDialogForm
+                                onClose={() => setOpenCreate(false)}
+                                onSubmit={addTags}
+                            />
+                        </Dialog>
+                    }
+                />
             </div>
 
             {/* Tag table */}
