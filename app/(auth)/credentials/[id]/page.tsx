@@ -360,7 +360,7 @@ export default function AddCredentialsPage() {
     };
 
     return (
-        <Card className="mx-auto max-w-4xl w-full bg-card shadow-2xl shadow-gray-200/50 dark:shadow-black/50">
+        <Card className="mx-auto w-full bg-card shadow-2xl shadow-gray-200/50 dark:shadow-black/50">
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <div>

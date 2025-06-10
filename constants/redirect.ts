@@ -11,3 +11,5 @@ export const CREDENTIALS_PAGE = "/credentials";
 export const LEAVES_PAGE = "/leaves";
 export const HOLIDAY_PAGE = "/holidays";
 export const TAGS_PAGE = "/tags";
+export const PAY_PAGE = "/pay";
+export const REPORTS_PAGE = "/reports";

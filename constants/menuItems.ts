@@ -20,6 +20,8 @@ import {
     HOLIDAY_PAGE,
     HOME_PAGE,
     LEAVES_PAGE,
+    PAY_PAGE,
+    REPORTS_PAGE,
     TAGS_PAGE,
 } from "@/constants/redirect";
 
@@ -56,7 +58,7 @@ export const menuItems = [
     },
     {
         title: "pay",
-        url: "#",
+        url: PAY_PAGE,
         icon: BadgeIndianRupeeIcon,
         secure: true,
     },
@@ -74,7 +76,7 @@ export const menuItems = [
     },
     {
         title: "Reports",
-        url: "#",
+        url: REPORTS_PAGE,
         icon: FileClockIcon,
         secure: true,
     },
