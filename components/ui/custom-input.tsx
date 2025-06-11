@@ -136,7 +136,7 @@ export const CustomInput: React.FC<CustomInputProps> = ({
                         <SelectContent>
                             {normalizedOptions.map((opt) => (
                                 <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
+                                    {opt.label === "none" ? placeholder : opt.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>

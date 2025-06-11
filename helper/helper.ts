@@ -17,13 +17,13 @@ export const processDate = (dateStr?: string | null, type: "date" | "month" = "d
 };
 
 export const IntervieweesStatusList = [
-    { label: "Status", value: "all" },
-    { label: "Not Connected", value: -1 },
-    { label: "Selected", value: 0 },
-    { label: "Rejected", value: 1 },
-    { label: "Ongoing", value: 2 },
-    { label: "Skipped", value: 3 },
-    { label: "1st Round", value: 4 },
-    { label: "On hold", value: 5 },
-    { label: "Lined-up", value: 6 },
+    { label: "Select Status", value: "none" },
+    { label: "Not Connected", value: "-1" },
+    { label: "Selected", value: "0" },
+    { label: "Rejected", value: "1" },
+    { label: "Ongoing", value: "2" },
+    { label: "Skipped", value: "3" },
+    { label: "1st Round", value: "4" },
+    { label: "On hold", value: "5" },
+    { label: "Lined-up", value: "6" },
 ];

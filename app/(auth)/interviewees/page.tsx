@@ -1,5 +1,8 @@
 "use client"
 import DynamicHeader from '@/components/headerSection/header-section'
+import { AddInterviewees } from '@/components/interviewees/create-dialog'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { IntervieweesStatusList } from '@/helper/helper'
 import { useState } from 'react'
 
@@ -12,6 +15,7 @@ const filterConfigs = [{ key: "interview_date", label: "Interview Date", type: "
 
 export default function IntervieweesPage() {
     const [params, setParams] = useState<Record<string, string>>({});
+    const [open, setOpen] = useState(false)
 
     const applyFilter = (key: string, value: string | null) => {
         setParams((prevParams) => ({ ...prevParams, [key]: value }) as Record<string, string>)
@@ -32,5 +36,13 @@ export default function IntervieweesPage() {
             resetAll={resetFilter}
             gridClass="grid grid-cols-1 gap-4 md:grid-cols-4"
         />
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button className="bg-blue-950 hover:bg-blue-950/90 text-white">
+                    Add Interviewee
+                </Button>
+            </DialogTrigger>
+            <AddInterviewees />
+        </Dialog>
     </div>
 }
