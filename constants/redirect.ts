@@ -13,3 +13,4 @@ export const HOLIDAY_PAGE = "/holidays";
 export const TAGS_PAGE = "/tags";
 export const PAY_PAGE = "/pay";
 export const REPORTS_PAGE = "/reports";
+export const INTERVIEWEES_PAGE = "/interviewees";

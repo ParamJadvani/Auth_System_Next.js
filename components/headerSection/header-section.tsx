@@ -13,7 +13,7 @@ interface FilterConfig {
     key: string;
     label: string;
     type: "date" | "month" | "select";
-    options?: (string | { value: string; label: string })[];
+    options?: (string | { value: string | number; label: string })[];
     onChange?: (value: string) => string;
     render?: (
         params: Record<string, string>,
@@ -28,7 +28,7 @@ interface DynamicHeaderProps {
     filterConfigs?: FilterConfig[];
     params: Record<string, string>;
     applyFilter?: (key: string, value: string | null) => void;
-    applyFilters?: (filters: Record<string, string>) => void;
+    // applyFilters?: (filters: Record<string, string>) => void;
     resetAll?: () => void;
     addButton?: ReactNode;
     gridClass?: string;
@@ -46,7 +46,6 @@ const DynamicHeader = ({
     filterConfigs = [],
     params,
     applyFilter,
-    applyFilters,
     resetAll,
     addButton,
     gridClass = "grid grid-cols-1 gap-4 md:grid-cols-5",
@@ -54,14 +53,6 @@ const DynamicHeader = ({
 }: DynamicHeaderProps) => {
     const renderFilters = () => {
         return filterConfigs.map((config) => {
-            // Use custom render function if provided
-            if (config.render) {
-                return (
-                    <div key={config.key} className="space-y-2">
-                        {config.render(params, applyFilter, applyFilters)}
-                    </div>
-                );
-            }
 
             // Default rendering for date inputs with Flatpickr
             if (config.type === "date") {
@@ -76,9 +67,7 @@ const DynamicHeader = ({
                             value={params[config.key] || ""}
                             placeholder={`Select ${config.label.toLowerCase()}`}
                             onChange={(_, dateStr) => {
-                                if (applyFilters) {
-                                    applyFilters({ [config.key]: dateStr });
-                                } else if (applyFilter) {
+                                if (applyFilter) {
                                     applyFilter(config.key, dateStr || null);
                                 }
                             }}
@@ -126,20 +115,19 @@ const DynamicHeader = ({
                             {config.label}
                         </Label>
                         <Select
-                            value={params[config.key] || "all"}
+                            value={params[config.key]?.toString() || "all"}
                             onValueChange={(value: string) => {
                                 if (
                                     config.key === "tag_ids" ||
                                     config.key === "leave_type" ||
                                     config.key === "status"
                                 ) {
-                                    if (applyFilters) {
-                                        applyFilters({ [config.key]: value === "all" ? "" : value });
+                                    if (applyFilter) {
+                                        applyFilter(config.key, value);
                                     }
-                                } else if (applyFilter) {
-                                    applyFilter(config.key, value);
                                 }
-                            }}
+                            }
+                            }
                         >
                             <SelectTrigger
                                 id={config.key}
@@ -152,7 +140,7 @@ const DynamicHeader = ({
                                     const value = typeof option === "object" ? option.value : option;
                                     const label = typeof option === "object" ? option.label : option;
                                     return (
-                                        <SelectItem key={value} value={value}>
+                                        <SelectItem key={value as string} value={value.toString()}>
                                             {label.charAt(0).toUpperCase() + label.slice(1)}
                                         </SelectItem>
                                     );

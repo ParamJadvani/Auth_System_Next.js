@@ -19,6 +19,7 @@ import {
     EMPLOYEE_PAGE,
     HOLIDAY_PAGE,
     HOME_PAGE,
+    INTERVIEWEES_PAGE,
     LEAVES_PAGE,
     PAY_PAGE,
     REPORTS_PAGE,
@@ -64,7 +65,7 @@ export const menuItems = [
     },
     {
         title: "Interviewees",
-        url: "#",
+        url: INTERVIEWEES_PAGE,
         icon: UserIcon,
         secure: true,
     },
