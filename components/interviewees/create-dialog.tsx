@@ -12,15 +12,17 @@ import { ChevronDownIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
+import useInterviewees from '@/hooks/use-Interviewees';
 
 export function AddInterviewees() {
     const form = useForm<CandidateProfile>();
     const source = form.watch("source_of_profile");
     const dateValue = form.watch("date_of_joining");
     const [dateOpen, setDateOpen] = useState(false);
+    const { add } = useInterviewees();
 
-    const onSubmit = (data: CandidateProfile) => {
-        console.log(data);
+    const onSubmit = async (data: CandidateProfile) => {
+        await add(data);
     };
 
     return (
@@ -33,13 +35,13 @@ export function AddInterviewees() {
             </div>
 
             <Form {...form}>
-                <form className="space-y-12" onSubmit={form.handleSubmit(onSubmit)}>
+                <form className="space-y-12" onSubmit={form.handleSubmit(onSubmit)} encType='multipart/form-data'>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                         <CustomInput id="firstname" label="First Name" placeholder="First Name..." {...form.register("firstname")} />
                         <CustomInput id="lastname" label="Last Name" placeholder="Last Name..." {...form.register("lastname")} />
-                        <CustomInput id="contact_no" label="Contact No" placeholder="Contact no..." {...form.register("contact_no")} />
+                        <CustomInput id="contact_no" label="Contact No" type='number' placeholder="Contact no..." {...form.register("contact_no")} />
 
                         <div className="space-y-2">
                             <CustomInput
@@ -80,14 +82,14 @@ export function AddInterviewees() {
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">Experience (Years / Months)</Label>
                             <div className="flex gap-3">
-                                <CustomInput id="experience_year" placeholder="Year(s)..." {...form.register("experience_year")} className='w-28 border' />
-                                <CustomInput id="experience_month" placeholder="Month(s)..." {...form.register("experience_month")} className='w-28' />
+                                <CustomInput id="experience_year" placeholder="Year(s)..." {...form.register("experience_year")} className='w-28 border' type='number' />
+                                <CustomInput id="experience_month" placeholder="Month(s)..." {...form.register("experience_month")} className='w-28' type='number' />
                             </div>
                         </div>
 
-                        <CustomInput id="current_salary" label="Current Salary" placeholder="Current Salary..." {...form.register("current_salary")} />
+                        <CustomInput id="current_salary" label="Current Salary" placeholder="Current Salary..." {...form.register("current_salary")} type='number' />
 
-                        <CustomInput id="expected_salary" label="Expected Salary" placeholder="Expected salary..." {...form.register("expected_salary")} />
+                        <CustomInput id="expected_salary" label="Expected Salary" placeholder="Expected salary..." {...form.register("expected_salary")} type='number' />
 
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
@@ -155,8 +157,6 @@ export function AddInterviewees() {
                         <CustomInput id="reason_job_change" label="Reason for Job Change" placeholder="Reason..." {...form.register("reason_job_change")} textarea />
                         <CustomInput id="hr_remark" label="HR Remark" placeholder="Remarks..." {...form.register("hr_remark")} textarea />
                         <div />
-                        <CustomInput id="resume_file" label="Resume File*" type="file" {...form.register("resume_file")} />
-                        <CustomInput id="google_file_id" label="Google File ID" {...form.register("google_file_id")} />
                     </div>
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-4 pt-4">

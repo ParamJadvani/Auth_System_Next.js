@@ -21,7 +21,7 @@ import DynamicHeader from "@/components/headerSection/header-section";
 const filterConfigs = [
     { key: "date_of_joining", label: "Date of Joining", type: "date" as const },
     { key: "last_working_date", label: "Last Working Date", type: "date" as const },
-    { key: "status", label: "Status", type: "select" as const, options: ["all", "active", "inactive"] },
+    { key: "status", label: "Status", type: "select" as const, options: [{ label: "Select status", value: "none" }, "active", "inactive"] },
 ];
 
 export default function AdminPage() {
@@ -49,7 +49,7 @@ export default function AdminPage() {
 
     const applyFilter = useCallback(
         (key: string, value: string | null) => {
-            applyFilters({ [key]: value === "all" ? null : value, page: "1" });
+            applyFilters({ [key]: value === "none" ? null : value, page: "1" });
         },
         [applyFilters]
     );
@@ -58,7 +58,7 @@ export default function AdminPage() {
         const res = await createAdmin(formData as ICreateAdminValues);
         setOpen(res);
         if (!res) {
-            applyFilters({ page: "1" });
+            resetAll()
         }
     };
 

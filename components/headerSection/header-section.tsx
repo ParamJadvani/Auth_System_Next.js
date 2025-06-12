@@ -42,7 +42,6 @@ const toYYYYMM = (value: string): string => {
 };
 
 const DynamicHeader = ({
-    section,
     filterConfigs = [],
     params,
     applyFilter,
@@ -115,7 +114,7 @@ const DynamicHeader = ({
                             {config.label}
                         </Label>
                         <Select
-                            value={params[config.key]?.toString() || "all"}
+                            value={params[config.key]?.toString() || ""}
                             onValueChange={(value: string) => {
                                 if (
                                     config.key === "tag_ids" ||

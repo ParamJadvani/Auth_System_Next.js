@@ -1,24 +1,54 @@
-export interface CandidateProfile {
-    contact_no: string | number;
-    current_last_company: string;
-    current_salary: number | string;
-    date_of_joining: string;
-    email: string;
-    expected_salary: number | string;
-    experience_month: number;
-    experience_year: number;
+import { Meta } from "@/types/admin";
+
+// A single source of truth for the common fields:
+export interface BasicInfo {
     firstname: string;
     lastname: string;
+    email: string;
     location: string;
-    notice_period: number | string | undefined;
+    contact_no: string;
+    source_of_profile: string;
+    source_of_profile_other: string | null;
+    experience_year: string;
+    experience_month?: string;
+    current_last_company: string;
+    current_salary: number;
+    expected_salary: number;
+    notice_period: number | string;
+    date_of_joining: string;
     reason_job_change: string;
     linkedin_link: string;
-    source_of_profile: string | undefined;
-    source_of_profile_other?: string;
-    status: string | undefined;
-    hr_remark?: string;
+    resume_file: string | null;
+    google_folder_id: string | null;
+    hr_remark: string;
+    status: number | string;
+    round?: InterviewRound;
+    resume_url: string;
+    designation: string;
+}
+
+export interface InterviewRound {
+    no: number;
+    interview_id: number;
+}
+
+export interface Interviewee extends BasicInfo {
+    id: number;
+    company_id: number;
+    position: string;
+    contact_no2: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string;
+}
+
+export interface CandidateProfile extends Omit<BasicInfo, "resume_file" | "google_folder_id"> {
     resume_file: FileList;
     google_folder_id: string;
     google_file_id: string;
-    designation: string;
+}
+
+export interface IntervieweeApiResponse {
+    meta: Meta;
+    data: Interviewee[];
 }
