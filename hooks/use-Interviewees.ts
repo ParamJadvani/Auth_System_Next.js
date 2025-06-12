@@ -69,9 +69,13 @@ export default function useInterviewees() {
         } catch {}
     };
 
-    const update = async (id: number, data: Interviewee) => {
+    const update = async (id: number, data: FormData) => {
         try {
-            await API.post(`/interviews/${id}`, data);
+            await API.post(`/interviews/${id}`, data, {
+                headers: {
+                    "Content-Type": "multi-part/form-data",
+                },
+            });
         } catch {}
     };
 
@@ -82,19 +86,23 @@ export default function useInterviewees() {
         } catch {}
     }, []);
 
-    const getInterviewRounds = async (
-        interviewId: number
-    ): Promise<InterviewRoundApiResponse | undefined> => {
-        try {
-            const res = await API.get(`/interview-rounds/${interviewId}`);
-            return res.data;
-        } catch {}
-    };
+    const getInterviewRounds = useCallback(
+        async (interviewId: number): Promise<InterviewRoundApiResponse | undefined> => {
+            try {
+                const res = await API.get(`/interview-rounds/${interviewId}`);
+                return res.data;
+            } catch {}
+        },
+        []
+    );
 
     const addInterviewRounds = async (id: number, data: createInterviewRoundDetail) => {
         try {
             await API.post(`/interview-rounds/${id}`, data);
-        } catch {}
+            return true;
+        } catch {
+            return false;
+        }
     };
 
     const getInterviewRoundsDetail = async (
@@ -109,7 +117,10 @@ export default function useInterviewees() {
     const updateInterviewRound = async (id: number, data: createInterviewRoundDetail) => {
         try {
             await API.post(`/interview-rounds/update/${id}`, data);
-        } catch {}
+            return true;
+        } catch {
+            return false;
+        }
     };
 
     const deleteInterviewRound = async (id: number) => {

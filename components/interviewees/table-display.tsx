@@ -109,6 +109,7 @@ export function IntervieweesTableDisplay({ data, loading, onDelete, }: TableDisp
 
                                         <Link
                                             href={`/interviewees/${obj.id}`}
+                                            target='_blank'
                                             className="text-blue-600 hover:text-blue-800"
                                         >
                                             <Pencil className="w-4 h-4" />
@@ -136,8 +137,6 @@ export function IntervieweesTableDisplay({ data, loading, onDelete, }: TableDisp
                                                 </DialogFooter>
                                             </DialogContent>
                                         </Dialog>
-
-
                                     </div>
                                 </TableCell>
                             </TableRow>

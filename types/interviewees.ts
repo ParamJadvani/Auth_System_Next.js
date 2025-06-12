@@ -27,7 +27,7 @@ export interface BasicInfo {
     designation: string;
 }
 
-export interface InterviewRound {
+interface InterviewRound {
     no: number;
     interview_id: number;
 }
@@ -40,6 +40,7 @@ export interface Interviewee extends BasicInfo {
     created_at: string;
     updated_at: string;
     deleted_at: string;
+    user_id: { id: number }[];
 }
 
 export interface CandidateProfile extends Omit<BasicInfo, "resume_file" | "google_folder_id"> {

@@ -1,5 +1,10 @@
 import API from "@/lib/axios";
-import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from "@/types/employees";
+import {
+    EmployeesResponse,
+    ICreateEmployeeValues,
+    IUpdateEmployeeValues,
+    ShortEmployee,
+} from "@/types/employees";
 import { useCallback } from "react";
 
 export default function useEmployees() {
@@ -71,6 +76,13 @@ export default function useEmployees() {
         []
     );
 
+    const getShortEmployeeData = useCallback(async (): Promise<ShortEmployee[] | undefined> => {
+        try {
+            const res = await API.get("/interviews/dependent/information");
+            return res.data;
+        } catch {}
+    }, []);
+
     return {
         getEmployee,
         createEmployee,
@@ -78,5 +90,6 @@ export default function useEmployees() {
         updateEmployee,
         deleteEmployee,
         getEmployeeLoginURL,
+        getShortEmployeeData,
     };
 }
