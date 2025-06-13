@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 const fredoka = Fredoka({
     subsets: ["latin"],
-    weight: ["400"]
+    weight: ["300", "400", "500", '600', '700']
 })
 
 export const metadata: Metadata = {

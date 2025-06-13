@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { TableCell, TableRow } from '@/components/ui/table';
+import { CREDENTIALS_PAGE, EMPLOYEE_PAGE } from '@/constants/redirect';
 import { formateDate } from '@/lib/utils';
 import { CredentialData } from '@/types/credentials';
 import { CopyIcon, Eye, EyeOff, Pencil, Share2, Trash2 } from 'lucide-react';
@@ -9,7 +10,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export function CredentialRow({ credential, onDelete, shareLoginURL }: { credential: CredentialData, onDelete: (id: number) => void, shareLoginURL: (id: number) => void }) {
+export function CredentialRow({ credential, onDelete, shareLoginURL, isEmp = undefined }: { credential: CredentialData, onDelete: (id: number) => void, shareLoginURL: (id: number) => void, isEmp?: number }) {
     const [showPassword, setShowPassword] = useState(false);
 
     const copyToClipboard = async (text: string) => {
@@ -113,7 +114,9 @@ export function CredentialRow({ credential, onDelete, shareLoginURL }: { credent
                 <Button size="icon" variant="ghost" onClick={() => shareLoginURL(credential.id)}>
                     <Share2 className="w-4 h-4" />
                 </Button>
-                <Link href={`/credentials/${credential.id}`}>
+                <Link href={isEmp
+                    ? `${EMPLOYEE_PAGE}/${isEmp}${CREDENTIALS_PAGE}/${credential.id}`
+                    : `${CREDENTIALS_PAGE}${credential.id}`}>
                     <Button size="icon" variant="ghost">
                         <Pencil className="w-4 h-4" />
                     </Button>

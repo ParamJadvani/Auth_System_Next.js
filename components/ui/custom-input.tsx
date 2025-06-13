@@ -23,7 +23,6 @@ interface CustomInputProps
     label?: React.ReactNode;
     className?: string;
     text?: boolean;
-    password?: boolean;
     textarea?: boolean;
     select?: boolean;
     radio?: boolean;
@@ -38,7 +37,6 @@ export const CustomInput: React.FC<CustomInputProps> = ({
     label,
     className = "",
     text = false,
-    password = false,
     textarea = false,
     select = false,
     radio = false,
@@ -50,15 +48,13 @@ export const CustomInput: React.FC<CustomInputProps> = ({
 }) => {
     const controlType = text
         ? "text"
-        : password
-            ? "password"
-            : textarea
-                ? "textarea"
-                : select
-                    ? "select"
-                    : radio
-                        ? "radio"
-                        : "text";
+        : textarea
+            ? "textarea"
+            : select
+                ? "select"
+                : radio
+                    ? "radio"
+                    : "text";
 
     const normalizedOptions = options.map((opt) =>
         typeof opt === "string" ? { label: opt, value: opt } : opt

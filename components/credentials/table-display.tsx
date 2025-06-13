@@ -22,9 +22,10 @@ interface TableDisplayProps {
     loading: boolean;
     admin?: boolean;
     onDelete: (id: number) => void;
+    isEmp?: number
 }
 
-export function TableDisplay({ data, loading, onDelete, }: TableDisplayProps) {
+export function TableDisplay({ data, loading, onDelete, isEmp = undefined }: TableDisplayProps) {
     const { getParams, applyFilters } = useQueryParams();
     const sort_column = getParams("sort_column") || "employee_id";
     const sort_order = getParams("sort_order") || "desc";
@@ -78,7 +79,7 @@ export function TableDisplay({ data, loading, onDelete, }: TableDisplayProps) {
                 ) : (
                     <TableBody>
                         {data?.data?.map((credential) => (
-                            <CredentialRow key={credential.id} credential={credential} onDelete={onDelete} shareLoginURL={shareLoginURL} />
+                            <CredentialRow key={credential.id} credential={credential} onDelete={onDelete} shareLoginURL={shareLoginURL} isEmp={isEmp} />
                         ))}
                     </TableBody>
                 )}
