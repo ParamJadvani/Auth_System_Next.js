@@ -33,6 +33,9 @@ import {
     MessageCircle,
 } from "lucide-react";
 import { formateDate } from "@/lib/utils";
+import authStore from '@/store/authStore';
+import { useRouter } from 'next/navigation';
+import { COMPANY_REGISTER_PAGE, CREDENTIALS_PAGE, LOGIN_PAGE, VERIFY_EMAIL_PAGE } from '@/constants/redirect';
 
 export default function DashboardPage() {
     const [dashboard, setDashboard] = useState<DashboardResponse>();
@@ -40,20 +43,25 @@ export default function DashboardPage() {
     const [openHoliday, setOpenHoliday] = useState(false);
     const [openInterview, setOpenInterview] = useState(false);
 
+    const user = authStore.getState().user;
+    const router = useRouter();
+
     const fetchDashboard = useCallback(async () => {
         try {
             const res = await API.get<DashboardResponse>(
                 "/dashboard?month=june&financial_year=2025-2026"
             );
             setDashboard(res.data);
-        } catch {
-            console.error("Failed to fetch dashboard data");
-        }
+        } catch { }
     }, []);
 
     useEffect(() => {
+        if (!user) return router.push(LOGIN_PAGE);
+        if (!user.user?.email_verified_at) return router.replace(VERIFY_EMAIL_PAGE);
+        if (!user.user.is_admin) return router.replace(CREDENTIALS_PAGE);
+        if (!user.company.length) return router.replace(COMPANY_REGISTER_PAGE);
         fetchDashboard();
-    }, [fetchDashboard]);
+    }, [user, router, fetchDashboard]);
 
     if (!dashboard) {
         return <div className="p-8 text-center text-gray-600">Loading…</div>;

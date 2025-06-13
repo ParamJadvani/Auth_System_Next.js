@@ -46,8 +46,8 @@ export function CompanyEditDialog({
             allowed_location_points: (
                 comp_data.allowed_location_points ?? []
             ).length > 0
-                ? comp_data.allowed_location_points!
-                : [{ latitude: "", longitude: "" }],
+                ? comp_data.allowed_location_points
+                : [{ "0": "", "1": "" }],
         },
     });
 
@@ -95,8 +95,8 @@ export function CompanyEditDialog({
         }
 
         data.allowed_location_points?.forEach((pt, idx) => {
-            formData.append(`allowed_location_points[${idx}][latitude]`, pt.latitude);
-            formData.append(`allowed_location_points[${idx}][longitude]`, pt.longitude);
+            formData.append(`allowed_location_points[${idx}][0]`, pt["0"]);
+            formData.append(`allowed_location_points[${idx}][1]`, pt["1"]);
         });
 
         onSubmitCompany(comp_data.id, formData);
@@ -273,7 +273,7 @@ export function CompanyEditDialog({
                                 <div key={field.id} className="flex gap-2 items-end mb-2">
                                     <Controller
                                         control={control}
-                                        name={`allowed_location_points.${idx}.latitude`}
+                                        name={`allowed_location_points.${idx}.0`}
                                         render={({ field }) => (
                                             <Input
                                                 {...field}
@@ -284,7 +284,7 @@ export function CompanyEditDialog({
                                     />
                                     <Controller
                                         control={control}
-                                        name={`allowed_location_points.${idx}.longitude`}
+                                        name={`allowed_location_points.${idx}.1`}
                                         render={({ field }) => (
                                             <Input
                                                 {...field}
@@ -307,7 +307,7 @@ export function CompanyEditDialog({
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => append({ latitude: "", longitude: "" })}
+                                onClick={() => append({ "0": "", "1": "" })}
                             >
                                 Add Point
                             </Button>

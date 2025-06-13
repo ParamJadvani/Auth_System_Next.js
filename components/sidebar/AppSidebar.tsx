@@ -48,25 +48,31 @@ export function AppSidebar() {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarMenu>
-                    {menuItems.map(({ title, url, icon: Icon }) => {
-                        const active = pathname === url;
-                        return (
-                            <SidebarMenuItem key={title} className='my-0.5'>
-                                <SidebarMenuButton asChild className={active ? "bg-blue-50" : ""}>
-                                    <Link
-                                        href={url}
-                                        className={`flex items-center gap-3 px-4 py-2 rounded-lg transition ${active
-                                            ? "bg-blue-50 text-blue-600"
-                                            : "text-gray-700 hover:bg-gray-100"
-                                            }`}
-                                    >
-                                        <Icon className="w-5 h-5" />
-                                        <span>{title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        );
-                    })}
+                    {[...menuItems]
+                        .filter(({ secure }) => {
+                            if (user?.user?.is_admin) return true;
+                            return !secure;
+                        })
+                        .map(({ title, url, icon: Icon }) => {
+                            const active = pathname === url;
+
+                            return (
+                                <SidebarMenuItem key={title} className="my-0.5">
+                                    <SidebarMenuButton asChild className={active ? "bg-blue-50" : ""}>
+                                        <Link
+                                            href={url}
+                                            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition ${active
+                                                ? "bg-blue-50 text-blue-600"
+                                                : "text-gray-700 hover:bg-gray-100"
+                                                }`}
+                                        >
+                                            <Icon className="w-5 h-5" />
+                                            <span>{title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            );
+                        })}
                 </SidebarMenu>
             </SidebarContent>
         </Sidebar>

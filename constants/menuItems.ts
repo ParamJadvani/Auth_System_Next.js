@@ -21,7 +21,6 @@ import {
     HOME_PAGE,
     INTERVIEWEES_PAGE,
     LEAVES_PAGE,
-    PAY_PAGE,
     REPORTS_PAGE,
     TAGS_PAGE,
 } from "@/constants/redirect";
@@ -31,7 +30,7 @@ export const menuItems = [
         title: "Dashboard",
         url: HOME_PAGE,
         icon: Home,
-        secure: false,
+        secure: true,
     },
     {
         title: "Admin",
@@ -59,7 +58,7 @@ export const menuItems = [
     },
     {
         title: "pay",
-        url: PAY_PAGE,
+        url: "#",
         icon: BadgeIndianRupeeIcon,
         secure: true,
     },
