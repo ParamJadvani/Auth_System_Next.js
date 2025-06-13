@@ -1,22 +1,33 @@
+"use client";
+
 import { useState, ChangeEvent } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import {
-    Card, CardHeader,
-    CardContent, CardFooter,
-    CardDescription
+    Card, CardHeader, CardContent, CardFooter, CardDescription,
 } from "@/components/ui/card";
 import { Form, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/icon-Input";
 import { CircleHelpIcon, LucideUploadCloud } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ICompanyDataValues, ICompanyValues } from "@/types/company";
-import { DialogClose, DialogTitle } from '@/components/ui/dialog';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Separator } from '@/components/ui/separator';
-import { Input } from '@/components/ui/input';
+import {
+    DialogClose, DialogTitle
+} from "@/components/ui/dialog";
+import {
+    Tooltip, TooltipContent, TooltipProvider, TooltipTrigger
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from '@/components/ui/label';
+import { ICompanyDataValues, ICompanyValues } from '@/types/company';
 
-export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: ICompanyValues, onSubmitCompany: (id: number, data: ICompanyDataValues) => void; }) {
+export function CompanyEditDialog({
+    comp_data,
+    onSubmitCompany,
+}: {
+    comp_data: ICompanyValues
+    onSubmitCompany: (id: number, data: FormData) => void;
+}) {
     const [logoPreview, setLogoPreview] = useState<string>(comp_data.logo_url);
 
     const form = useForm<ICompanyDataValues>({
@@ -30,13 +41,27 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
             pincode: comp_data.pincode,
             address: comp_data.address,
             logo: comp_data.logo_url,
-            allowed_location_points: comp_data.allowed_location_points,
             file_size_limit: comp_data.file_size_limit,
             location_range: comp_data.location_range,
+            allowed_location_points: (
+                comp_data.allowed_location_points ?? []
+            ).length > 0
+                ? comp_data.allowed_location_points!
+                : [{ latitude: "", longitude: "" }],
         },
     });
 
-    const { register, handleSubmit } = form;
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { isSubmitting },
+    } = form;
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "allowed_location_points",
+    });
 
     const handleLogoChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -45,12 +70,41 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
         }
     };
 
-    const onSubmit = async (data: ICompanyDataValues) => {
-        onSubmitCompany(comp_data.id, data);
+    const onSubmit = (data: ICompanyDataValues) => {
+
+        const formData = new FormData();
+
+        // 1) Append basic scalar fields:
+        formData.append("company_name", data.company_name);
+        formData.append("email", data.email);
+        formData.append("contact_no", data.contact_no);
+        formData.append("city", data.city);
+        formData.append("state", data.state);
+        formData.append("country", data.country);
+        formData.append("pincode", String(data.pincode));
+        formData.append("address", data.address);
+        if (data.file_size_limit != null) {
+            formData.append("file_size_limit", String(data.file_size_limit));
+        }
+        if (data.location_range != null) {
+            formData.append("location_range", String(data.location_range));
+        }
+
+        if (data.logo instanceof File) {
+            formData.append("logo", data.logo);
+        }
+
+        data.allowed_location_points?.forEach((pt, idx) => {
+            formData.append(`allowed_location_points[${idx}][latitude]`, pt.latitude);
+            formData.append(`allowed_location_points[${idx}][longitude]`, pt.longitude);
+        });
+
+        onSubmitCompany(comp_data.id, formData);
+
     };
 
     return (
-        <Card className="shadow-none border-0 m-0 p-0 ">
+        <Card className="shadow-none border-0 m-0 p-0">
             <CardHeader className="space-y-2 pb-2">
                 <div className="flex flex-col items-center space-y-4">
                     <label htmlFor="logo" className="relative group cursor-pointer">
@@ -68,8 +122,12 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                         </div>
                     </label>
                     <div className="text-center">
-                        <DialogTitle className="text-2xl font-bold text-gray-900">Edit Company Profile</DialogTitle>
-                        <CardDescription className="text-gray-600">Update your organization&apos;s information and settings</CardDescription>
+                        <DialogTitle className="text-2xl font-bold text-gray-900">
+                            Edit Company Profile
+                        </DialogTitle>
+                        <CardDescription className="text-gray-600">
+                            Update your organization&apos;s information and settings
+                        </CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -89,6 +147,7 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                                 {...register("company_name")}
                             />
                         </FormControl>
+
                         <FormControl>
                             <IconInput
                                 id="email"
@@ -98,6 +157,7 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                                 {...register("email")}
                             />
                         </FormControl>
+
                         <FormControl>
                             <IconInput
                                 id="contact_no"
@@ -166,6 +226,7 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                                 {...register("file_size_limit")}
                             />
                         </FormControl>
+
                         <FormControl>
                             <IconInput
                                 id="location_range"
@@ -178,7 +239,10 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                                                     <CircleHelpIcon className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                                                 </TooltipTrigger>
                                                 <TooltipContent className="max-w-[300px]">
-                                                    <p className="text-sm">The radius (in meters) within which attendance locations are considered valid. Larger values allow for wider location acceptance.</p>
+                                                    <p className="text-sm">
+                                                        The radius (in meters) within which attendance
+                                                        locations are considered valid.
+                                                    </p>
                                                 </TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
@@ -190,7 +254,7 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                             />
                         </FormControl>
 
-                        {/* Hidden File Input */}
+                        {/* Hidden file input for logo */}
                         <FormControl>
                             <Input
                                 id="logo"
@@ -201,6 +265,53 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                                 onChange={handleLogoChange}
                             />
                         </FormControl>
+
+                        {/* Dynamic Allowed Location Points */}
+                        <div>
+                            <Label className="font-medium">Allowed Location Points</Label>
+                            {fields.map((field, idx) => (
+                                <div key={field.id} className="flex gap-2 items-end mb-2">
+                                    <Controller
+                                        control={control}
+                                        name={`allowed_location_points.${idx}.latitude`}
+                                        render={({ field }) => (
+                                            <Input
+                                                {...field}
+                                                placeholder="Enter latitude..."
+                                                className="flex-1"
+                                            />
+                                        )}
+                                    />
+                                    <Controller
+                                        control={control}
+                                        name={`allowed_location_points.${idx}.longitude`}
+                                        render={({ field }) => (
+                                            <Input
+                                                {...field}
+                                                placeholder="Enter longitude..."
+                                                className="flex-1"
+                                            />
+                                        )}
+                                    />
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => remove(idx)}
+                                        aria-label="Remove location"
+                                    >
+                                        &times;
+                                    </Button>
+                                </div>
+                            ))}
+
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => append({ latitude: "", longitude: "" })}
+                            >
+                                Add Point
+                            </Button>
+                        </div>
                     </CardContent>
 
                     <CardFooter className="flex justify-end gap-3 p-6 bg-gray-50 rounded-b-xl">
@@ -208,7 +319,7 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                             <Button
                                 variant="outline"
                                 className="px-6 rounded-full"
-                                disabled={form.formState.isSubmitting}
+                                disabled={isSubmitting}
                             >
                                 Discard Changes
                             </Button>
@@ -216,8 +327,8 @@ export function CompanyEditDialog({ comp_data, onSubmitCompany }: { comp_data: I
                         <Button
                             type="submit"
                             className="px-6 rounded-full bg-primary hover:bg-primary-dark"
-                            disabled={form.formState.isSubmitting}
-                            loading={form.formState.isSubmitting}
+                            disabled={isSubmitting}
+                            loading={isSubmitting}
                         >
                             Save Changes
                         </Button>

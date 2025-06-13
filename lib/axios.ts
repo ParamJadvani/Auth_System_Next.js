@@ -5,9 +5,6 @@ import axios from "axios";
 const API = axios.create({
     baseURL: "https://adonis-payroll.s.arrangic.com",
     withCredentials: true,
-    headers: {
-        Accept: "application/json",
-    },
 });
 
 API.interceptors.request.use(onRequest);

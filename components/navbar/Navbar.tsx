@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { IChangePasswordValues } from '@/types/auth';
 import { CompanyEditDialog } from '@/components/navbar/CompanyEditDialog';
-import { ICompanyDataValues, ICompanyValues } from '@/types/company';
+import {  ICompanyValues } from '@/types/company';
 import useCompany from '@/hooks/use-Company';
 
 export function Navbar({ title }: { title: string }) {
@@ -49,7 +49,7 @@ export function Navbar({ title }: { title: string }) {
         [changePassword]
     );
 
-    const onSubmitCompanyUpdate = useCallback(async (id: number, data: ICompanyDataValues) => {
+    const onSubmitCompanyUpdate = useCallback(async (id: number, data: FormData) => {
         await updateCompany(id, data);
     }, [updateCompany]);
 

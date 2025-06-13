@@ -23,7 +23,7 @@ export default function useCompany() {
         } catch {}
     };
 
-    const updateCompany = async (id: number, data: ICompanyDataValues): Promise<boolean> => {
+    const updateCompany = async (id: number, data: FormData): Promise<boolean> => {
         try {
             await API.post(`/company/${id}`, data);
             return false;

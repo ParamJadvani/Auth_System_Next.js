@@ -10,7 +10,7 @@ export interface ICompanyDataValues {
     logo: File | string;
     file_size_limit?: number;
     location_range?: number;
-    allowed_location_points?: [] | null;
+    allowed_location_points?: Array<{ latitude: string; longitude: string }> | null;
 }
 
 export type ICompanyValues = {
