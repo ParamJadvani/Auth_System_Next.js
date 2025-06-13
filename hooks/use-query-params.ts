@@ -5,8 +5,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export function useQueryParams() {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const getParams = useCallback(
         (key: string): string | null => {
@@ -21,24 +21,20 @@ export function useQueryParams() {
 
     const applyFilters = useCallback(
         (filters: Record<string, string | null | undefined>) => {
-            const params = new URLSearchParams(searchParams.toString());
+            const current = new URLSearchParams(searchParams.toString());
 
             Object.entries(filters).forEach(([key, value]) => {
                 if (value === null || value === undefined || value === "") {
-                    params.delete(key);
+                    current.delete(key);
                 } else {
-                    params.set(key, value);
+                    current.set(key, value);
                 }
             });
 
-            const newQueryString = params.toString();
-            const currentQueryString = searchParams.toString();
+            const newQueryString = current.toString();
+            const query = newQueryString ? `?${newQueryString}` : "";
 
-            if (newQueryString === currentQueryString) {
-                return;
-            }
-
-            router.replace(`${pathname}?${newQueryString}`);
+            router.push(`${pathname}${query}`);
         },
         [router, searchParams, pathname]
     );
@@ -48,7 +44,7 @@ export function useQueryParams() {
             return;
         }
 
-        router.replace(pathname);
+        router.push(pathname);
     }, [router, searchParams, pathname]);
 
     return { getParams, applyFilters, getAllParams, resetAll };

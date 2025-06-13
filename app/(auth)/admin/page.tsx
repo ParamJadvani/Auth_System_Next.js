@@ -17,6 +17,7 @@ import { AdminsResponse, ICreateAdminValues, IUpdateAdminValues } from "@/types/
 import { AdminForm } from '@/components/admin/form-admin';
 import { TableDisplay } from '@/components/ui/table/table-display';
 import DynamicHeader from "@/components/headerSection/header-section";
+import { AdminTable } from '@/components/admin/admin-table';
 
 const filterConfigs = [
     { key: "date_of_joining", label: "Date of Joining", type: "date" as const },
@@ -96,7 +97,8 @@ export default function AdminPage() {
                 gridClass="grid grid-cols-1 gap-4 md:grid-cols-5"
             />
             <main>
-                <TableDisplay data={data} onDelete={handleDelete} loading={loading} />
+                {/* <TableDisplay data={data} onDelete={handleDelete} loading={loading} /> */}
+                <AdminTable data={data} loading={loading} onDelete={handleDelete} />
             </main>
             <Pagination
                 data={data?.meta}

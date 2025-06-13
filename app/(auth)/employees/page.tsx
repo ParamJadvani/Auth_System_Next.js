@@ -17,6 +17,7 @@ import { EmployeesResponse, ICreateEmployeeValues, IUpdateEmployeeValues } from 
 import { EmployeeForm } from '@/components/employee/form-employee';
 import { TableDisplay } from '@/components/ui/table/table-display';
 import DynamicHeader from '@/components/headerSection/header-section';
+import { EmployeesTable } from '@/components/employee/emp-table';
 
 // Utility functions for month format conversion
 const toMMYYYY = (value: string): string => {
@@ -120,13 +121,14 @@ export default function EmployeesPage() {
                 gridClass="grid grid-cols-1 gap-4 md:grid-cols-4"
             />
             <main>
-                <TableDisplay
+                {/* <TableDisplay
                     data={data}
                     onDelete={handleDelete}
                     admin={false}
                     loading={loading}
                     onCopyLoginLink={getEmployeeLoginURL}
-                />
+                /> */}
+                <EmployeesTable data={data} onDelete={handleDelete} loading={loading} />
             </main>
             <Pagination
                 data={data?.meta}
